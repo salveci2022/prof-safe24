@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel Central - PROF-SAFE 24</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <script defer src="/static/js/main.js"></script>
+</head>
+<body data-role="central">
+  <div class="container">
+    <h1>Painel Central</h1>
+    <p>Monitoramento em tempo real dos alertas dos professores.</p>
+    <div id="alerts"></div>
+    <div class="actions">
+      <button id="btn-resolve">Marcar alerta como resolvido</button>
+      <button id="btn-clear">Limpar histórico</button>
+      <button id="btn-siren-on">Ligar sirene</button>
+      <button id="btn-siren-off">Desligar sirene</button>
+      <a class="btn-link" href="/report.pdf" target="_blank">📄 Gerar relatório PDF</a>
+    </div>
+    <p id="status"></p>
+    <a href="/">Voltar ao início</a>
+  </div>
+</body>
+</html>
