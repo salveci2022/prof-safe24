@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>PROF-SAFE 24 - App do Professor</title>
+    <!-- ESSENCIAL PARA CELULAR -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg: #020617;
+        }
+        * { box-sizing:border-box; }
+        body {
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
+            color:#e5e7eb;
+        }
+        .shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px 18px 32px;
+        }
+        header {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:14px 16px;
+            border-radius:18px;
+            background: radial-gradient(circle at top left, #0b1120, #020617);
+            box-shadow:0 18px 40px rgba(0,0,0,0.85);
+            border:1px solid rgba(15,118,110,0.7);
+            margin-bottom:18px;
+        }
+        .brand {
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .brand-icon {
+            width:32px;
+            height:32px;
+            border-radius:999px;
+            background:radial-gradient(circle at 30% 20%, #4ade80, #22c55e 35%, #064e3b 100%);
+            box-shadow:0 0 20px rgba(34,197,94,0.8);
+        }
+        .brand-text-title {
+            font-size:26px;
+            font-weight:800;
+            letter-spacing:0.08em;
+        }
+        .brand-text-sub {
+            font-size:14px;
+            color:#9ca3af;
+        }
+        .status-area {
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .pill-online {
+            font-size:12px;
+            padding:4px 12px;
+            border-radius:999px;
+            border:1px solid #22c55e;
+            color:#bbf7d0;
+            background:rgba(6,95,70,0.7);
+        }
+        .clock {
+            font-size:16px;
+            color:#facc15;
+            font-weight:bold;
+        }
+        a.voltar {
+            display:inline-block;
+            margin:10px 0 4px;
+            color:#22d3ee;
+            font-size:13px;
+            text-decoration:none;
+        }
+        .panel {
+            margin-top:4px;
+            border-radius:22px;
+            background: radial-gradient(circle at top left, #020617, #020617 50%, #000 100%);
+            border:1px solid rgba(15,23,42,0.9);
+            padding:16px 18px 22px;
+            box-shadow:0 20px 45px rgba(0,0,0,0.95);
+        }
+        .panel-title {
+            font-size:20px;
+            font-weight:bold;
+            margin-bottom:4px;
+        }
+        .panel-sub {
+            font-size:13px;
+            color:#9ca3af;
+            margin-bottom:18px;
+        }
+
+        /* LAYOUT DESKTOP: DUAS COLUNAS */
+        .grid {
+            display:grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap:20px;
+            align-items:flex-start;
+        }
+
+        .card {
+            background:rgba(15,23,42,0.95);
+            border-radius:18px;
+            padding:16px;
+            border:1px solid rgba(30,64,175,0.8);
+            box-shadow:0 18px 40px rgba(0,0,0,0.9);
+        }
+        .card h2 {
+            margin:0 0 10px;
+            font-size:17px;
+        }
+        label {
+            display:block;
+            margin-top:10px;
+            margin-bottom:4px;
+            font-size:14px;
+            color:#cbd5f5;
+        }
+        input, textarea {
+            width:100%;
+            padding:10px;
+            background:#020617;
+            color:#e5e7eb;
+            border-radius:10px;
+            border:1px solid #1f2937;
+            font-size:15px;
+        }
+        input::placeholder, textarea::placeholder { color:#6b7280; }
+        textarea {
+            min-height:120px;
+            resize:vertical;
+        }
+        .btn-row {
+            margin-top:18px;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        button {
+            flex:1;
+            padding:12px;
+            font-size:16px;
+            border-radius:999px;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+            color:#fff;
+            box-shadow:0 0 20px rgba(0,0,0,0.9);
+        }
+        #btnAlertar {
+            background:linear-gradient(135deg,#ff0040,#ff6a00);
+        }
+        #btnReiniciar {
+            background:linear-gradient(135deg,#f97316,#ea580c);
+        }
+        #btnLimpar {
+            background:linear-gradient(135deg,#0ea5e9,#2563eb);
+        }
+        #btnSair {
+            background:linear-gradient(135deg,#4b5563,#020617);
+        }
+        #status {
+            margin-top:12px;
+            font-size:14px;
+        }
+        .log-box {
+            height:260px;
+            background:#020617;
+            border-radius:14px;
+            border:1px solid #0f172a;
+            padding:10px;
+            font-size:13px;
+            color:#9ca3af;
+            overflow-y:auto;
+        }
+        .log-title {
+            font-size:14px;
+            margin-bottom:6px;
+        }
+
+        /* ==============================
+           MODO CELULAR / TABLET
+           ============================== */
+        @media (max-width: 768px) {
+            .shell {
+                padding:12px 10px 24px;
+            }
+            header {
+                flex-direction:column;
+                align-items:flex-start;
+                gap:8px;
+            }
+            .status-area {
+                align-self:flex-end;
+            }
+            .grid {
+                grid-template-columns: 1fr;  /* vira UMA coluna só */
+            }
+            .card {
+                padding:14px;
+            }
+            .btn-row {
+                flex-direction:column;  /* botões um embaixo do outro */
+            }
+            button {
+                width:100%;             /* ocupa toda a largura */
+                font-size:15px;
+            }
+            .log-box {
+                height:200px;           /* reduz um pouco pra caber melhor */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <header>
+        <div class="brand">
+            <div class="brand-icon"></div>
+            <div>
+                <div class="brand-text-title">PROF-SAFE 24</div>
+                <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
+            </div>
+        </div>
+        <div class="status-area">
+            <span class="pill-online">● Online</span>
+            <span class="clock" id="clock"></span>
+        </div>
+    </header>
+
+    <a href="/" class="voltar">⬅ Voltar para o início</a>
+
+    <section class="panel">
+        <div class="panel-title">App do Professor</div>
+        <div class="panel-sub">Preencha e acione o botão de pânico para enviar um alerta à Central.</div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Dados do Alerta</h2>
+
+                <label for="teacher">Nome do Professor</label>
+                <input id="teacher" type="text" placeholder="Ex.: Maria Souza">
+
+                <label for="room">Sala/Nº da Turma</label>
+                <input id="room" type="text" placeholder="Ex.: Sala 203">
+
+                <label for="description">Descrição do Problema</label>
+                <textarea id="description" placeholder="Ex.: briga entre alunos, suspeita de objeto, aluno passando mal..."></textarea>
+
+                <div class="btn-row">
+                    <button id="btnAlertar">🚨 ACIONAR PÂNICO</button>
+                    <button id="btnReiniciar">⟳ REINICIAR</button>
+                    <button id="btnLimpar">🧹 LIMPAR</button>
+                    <button id="btnSair">⏻ SAIR</button>
+                </div>
+
+                <div id="status"></div>
+            </div>
+
+            <div class="card">
+                <div class="log-title">Log do Professor</div>
+                <div id="logBox" class="log-box">
+                    Nenhum alerta enviado ainda.
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+async function enviarAlerta(){
+    const teacher = document.getElementById('teacher').value.trim();
+    const room = document.getElementById('room').value.trim();
+    const desc = document.getElementById('description').value.trim();
+    const statusEl = document.getElementById('status');
+    const logBox = document.getElementById('logBox');
+
+    if (!room || !desc){
+        statusEl.textContent = "Preencha ao menos Sala/Nº da Turma e a Descrição do Problema.";
+        statusEl.style.color = "#fca5a5";
+        return;
+    }
+    statusEl.textContent = "Enviando alerta...";
+    statusEl.style.color = "#38bdf8";
+
+    try{
+        const resp = await fetch('/api/alert', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({ teacher, room, description: desc })
+        });
+        const data = await resp.json();
+        if(data.ok){
+            statusEl.textContent = "✅ Alerta enviado com sucesso para o Painel Central.";
+            statusEl.style.color = "#4ade80";
+            const now = new Date().toLocaleTimeString('pt-BR',{hour12:false});
+            const line = `[${now}] Alerta enviado - Sala: ${room} | Desc: ${desc}`;
+            if (logBox.textContent.includes("Nenhum alerta")){
+                logBox.textContent = line;
+            } else {
+                logBox.textContent = line + "\\n" + logBox.textContent;
+            }
+        } else {
+            statusEl.textContent = "Falha ao enviar alerta.";
+            statusEl.style.color = "#fca5a5";
+        }
+    }catch(e){
+        console.error(e);
+        statusEl.textContent = "Erro de comunicação com o servidor.";
+        statusEl.style.color = "#fca5a5";
+    }
+}
+
+document.getElementById('btnAlertar').addEventListener('click', enviarAlerta);
+
+document.getElementById('btnReiniciar').addEventListener('click', () => {
+    document.getElementById('teacher').value = "";
+    document.getElementById('room').value = "";
+    document.getElementById('description').value = "";
+    document.getElementById('status').textContent = "";
+});
+
+document.getElementById('btnLimpar').addEventListener('click', () => {
+    document.getElementById('status').textContent = "";
+    document.getElementById('logBox').textContent = "Nenhum alerta enviado ainda.";
+});
+
+document.getElementById('btnSair').addEventListener('click', () => {
+    window.location.href = '/';
+});
+
+function updateClock(){
+    const el = document.getElementById('clock');
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
+}
+setInterval(updateClock,1000);
+updateClock();
+</script>
+</body>
+</html>
