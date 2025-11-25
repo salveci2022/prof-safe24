@@ -26,6 +26,11 @@ app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
+# --- Dados da Escola (para aparecer no PDF) ---------------------------------
+SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
+SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
+SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
+
 # --- Segurança: limites de login e sessão -----------------------------------
 MAX_LOGIN_ATTEMPTS = 5          # tentativas máximas antes de bloquear
 LOCK_TIME_MINUTES = 10          # tempo de bloqueio do IP
@@ -297,9 +302,26 @@ def report_pdf():
     pdf = canvas.Canvas(buffer)
     pdf.setTitle("Relatório PROF-SAFE 24")
 
+    # Cabeçalho
+    pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(40, 800, "PROF-SAFE 24 - Relatório de Alertas")
-    y = 780
 
+    pdf.setFont("Helvetica", 10)
+    y = 780
+    pdf.drawString(40, y, f"Escola: {SCHOOL_NAME}")
+    y -= 12
+    pdf.drawString(40, y, f"Endereço: {SCHOOL_ADDRESS}")
+    y -= 12
+    pdf.drawString(40, y, f"Contato: {SCHOOL_CONTACT}")
+    y -= 12
+
+    data_geracao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    pdf.drawString(40, y, f"Gerado em: {data_geracao}")
+    y -= 24
+
+    pdf.setFont("Helvetica", 10)
+
+    # Corpo do relatório
     if not alerts:
         pdf.drawString(40, y, "Nenhum alerta registrado até o momento.")
     else:
@@ -307,6 +329,7 @@ def report_pdf():
             if y < 80:
                 pdf.showPage()
                 y = 800
+                pdf.setFont("Helvetica", 10)
 
             pdf.drawString(
                 40,
