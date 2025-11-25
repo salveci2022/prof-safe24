@@ -2,321 +2,137 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - App do Professor</title>
-    <!-- ESSENCIAL PARA CELULAR -->
+    <title>PROF-SAFE 24 – Painel do Professor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        :root {
-            --bg: #020617;
-        }
-        * { box-sizing:border-box; }
         body {
-            margin:0;
+            background: #020617;
+            color: #e2e8f0;
             font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color:#e5e7eb;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        .shell {
-            width:100%;
-            max-width:540px;
-            background:rgba(2,8,23,0.96);
-            border-radius:20px;
-            border:1px solid rgba(56,189,248,0.35);
-            box-shadow:0 22px 60px rgba(0,0,0,0.9);
-            padding:16px 16px 18px;
-            position:relative;
-            overflow:hidden;
-        }
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-        .shell-inner{
-            position:relative;
-            z-index:1;
-        }
-        header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:14px;
-        }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:8px;
-        }
-        .brand-icon{
-            width:36px;
-            height:36px;
-            border-radius:14px;
-            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 26px rgba(248,250,252,0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:10px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.08em;
-        }
-        .brand-text-title{
-            font-size:16px;
-            font-weight:600;
-            letter-spacing:0.08em;
-            text-transform:uppercase;
-            color:#e5e7eb;
-        }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .status-area{
-            text-align:right;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .pill-online{
-            font-size:11px;
-            padding:3px 9px;
-            border-radius:999px;
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            background:rgba(6,95,70,0.7);
-            display:inline-flex;
-            gap:4px;
-            align-items:center;
-        }
-        .clock{
-            margin-top:4px;
-            font-size:11px;
-            color:#facc15;
-            font-weight:bold;
-        }
-        main{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.92), rgba(15,23,42,0.98));
-            border-radius:16px;
-            border:1px solid rgba(148,163,184,0.45);
-            box-shadow:0 16px 40px rgba(15,23,42,0.9);
-            padding:12px 14px 14px;
-            font-size:12px;
-        }
-        .intro{
-            margin-bottom:10px;
-            color:#cbd5f5;
-            font-size:12px;
-        }
-        .intro strong{
-            color:#e5e7eb;
-        }
-        .form-group{
-            margin-bottom:10px;
-        }
-        label{
-            display:block;
-            font-size:11px;
-            margin-bottom:3px;
-            color:#cbd5f5;
-        }
-        input, textarea{
-            width:100%;
-            padding:7px 9px;
-            border-radius:10px;
-            border:1px solid rgba(148,163,184,0.9);
-            background:rgba(15,23,42,0.98);
-            color:#e5e7eb;
-            font-size:13px;
-        }
-        textarea{
-            resize:vertical;
-            min-height:70px;
-        }
-        input:focus, textarea:focus{
-            outline:none;
-            border-color:#22d3ee;
-            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
-        }
-        .btn-alert{
-            width:100%;
-            border-radius:999px;
-            border:none;
-            padding:9px 0;
-            margin-top:6px;
-            background:linear-gradient(135deg,#f97316,#b91c1c);
-            color:#f9fafb;
-            font-size:14px;
-            font-weight:700;
-            letter-spacing:0.04em;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-            box-shadow:0 16px 40px rgba(127,29,29,0.95);
-        }
-        .btn-alert span.icon{
-            font-size:18px;
-        }
-        .btn-alert:active{
-            transform:translateY(1px);
-            box-shadow:0 8px 26px rgba(127,29,29,0.9);
-        }
-        .tip{
-            margin-top:8px;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .tip strong{
-            color:#e5e7eb;
-        }
-        .feedback{
-            margin-top:6px;
-            font-size:11px;
-            color:#bbf7d0;
-            display:none;
-        }
-        .logo-banner {
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            margin: 10px 0 20px;
-        }
-        .logo-banner img {
-            max-width: 260px;
-            width: 100%;
-            height:auto;
-            filter: drop-shadow(0 0 25px rgba(34,211,238,0.6));
+            margin: 0;
+            padding: 20px;
+            text-align: center;
         }
 
-        @media (max-width:520px){
-            .shell{
-                margin:12px;
-                padding:14px;
-            }
-            header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:6px;
-            }
-            .status-area{
-                text-align:left;
-            }
-            main{
-                padding:10px 10px 12px;
-            }
+        /* Logo estilosa */
+        .logo-banner {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
         }
+
+        .logo-banner img {
+            width: 180px;
+            max-width: 90%;
+            filter: drop-shadow(0 0 18px rgba(34,211,238,0.45));
+        }
+
+        h1 {
+            margin-top: 5px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        input, textarea, button {
+            width: 90%;
+            max-width: 340px;
+            margin: 8px auto;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 90px;
+        }
+
+        button {
+            cursor: pointer;
+            background: #0ea5e9;
+            color: white;
+            font-weight: bold;
+            transition: 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background: #0284c7;
+        }
+
+        /* Botões extras */
+        .extra-buttons {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .extra-buttons button {
+            width: 90%;
+            max-width: 260px;
+            background: #1e293b;
+            border: 1px solid #3b82f6;
+        }
+
+        .extra-buttons button:hover {
+            background: #334155;
+        }
+
     </style>
 </head>
 <body>
-<div class="shell">
+
+    <!-- LOGO -->
     <div class="logo-banner">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}">
     </div>
-    <div class="shell-inner">
-        <header>
-            <div class="brand">
-                <div class="brand-icon"></div>
-                <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
-                </div>
-            </div>
-            <div class="status-area">
-                <div class="pill-online">● Conectado à Central</div>
-                <div class="clock" id="clockProf"></div>
-            </div>
-        </header>
 
-        <main>
-            <p class="intro">
-                <strong>Use este painel para pedir ajuda</strong> em qualquer situação de risco, conflito ou emergência na escola.
-            </p>
+    <h1>Painel do Professor</h1>
 
-            <form id="alertForm">
-                <div class="form-group">
-                    <label for="teacher">Seu nome (opcional)</label>
-                    <input type="text" id="teacher" name="teacher" placeholder="Ex.: Prof. Ana, Prof. João">
-                </div>
-                <div class="form-group">
-                    <label for="room">Sala / Local *</label>
-                    <input type="text" id="room" name="room" required placeholder="Ex.: 5º A, Pátio, Corredor 2">
-                </div>
-                <div class="form-group">
-                    <label for="description">Descreva rapidamente o que está acontecendo *</label>
-                    <textarea id="description" name="description" required placeholder="Ex.: briga entre alunos, aluno passando mal, pessoa suspeita no portão..."></textarea>
-                </div>
+    <form id="alertForm">
+        <input type="text" id="teacher" placeholder="Seu nome" required>
+        <input type="text" id="room" placeholder="Sala" required>
+        <textarea id="description" placeholder="Descrição do incidente" required></textarea>
+        <button type="submit">🚨 ENVIAR ALERTA</button>
+    </form>
 
-                <button type="submit" class="btn-alert">
-                    <span class="icon">🚨</span>
-                    ENVIAR ALERTA PARA A CENTRAL
-                </button>
-            </form>
-
-            <div class="feedback" id="feedbackMsg">
-                Alerta enviado com sucesso à Central. Aguarde o retorno da equipe.
-            </div>
-
-            <p class="tip">
-                <strong>Dica:</strong> mantenha este atalho salvo na tela inicial do seu celular para acesso mais rápido.
-            </p>
-        </main>
+    <!-- BOTÕES NOVOS -->
+    <div class="extra-buttons">
+        <button onclick="window.location.reload();">⟳ REINICIAR</button>
+        <button onclick="fetch('/api/clear', {method:'POST'}).then(()=>alert('Todos alertas limpos!')); ">
+            🧹 LIMPAR
+        </button>
+        <button onclick="window.location.href='/'">⏻ SAIR</button>
     </div>
-</div>
+
 
 <script>
-const form = document.getElementById('alertForm');
-const feedback = document.getElementById('feedbackMsg');
-
-form.addEventListener('submit', async (e) => {
+document.getElementById("alertForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const teacher = document.getElementById('teacher').value;
-    const room = document.getElementById('room').value;
-    const description = document.getElementById('description').value;
 
-    if(!room || !description){
-        alert('Por favor, preencha Sala/Local e Descrição.');
-        return;
-    }
+    const data = {
+        teacher: document.getElementById("teacher").value,
+        room: document.getElementById("room").value,
+        description: document.getElementById("description").value
+    };
 
-    try{
-        const res = await fetch('/api/alert', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({teacher, room, description})
-        });
-        const data = await res.json();
-        if(data.ok){
-            feedback.style.display = 'block';
-            form.reset();
-            setTimeout(() => {
-                feedback.style.display = 'none';
-            }, 4000);
-        }else{
-            alert('Não foi possível enviar o alerta. Tente novamente.');
-        }
-    }catch(e){
-        console.error(e);
-        alert('Erro de comunicação com a Central. Verifique a conexão.');
+    const res = await fetch("/api/alert", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+        alert("Alerta enviado com sucesso!");
+        document.getElementById("alertForm").reset();
+    } else {
+        alert("Erro ao enviar alerta!");
     }
 });
-
-function updateClockProf(){
-    const el = document.getElementById('clockProf');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-}
-setInterval(updateClockProf,1000);
-updateClockProf();
 </script>
+
 </body>
 </html>
