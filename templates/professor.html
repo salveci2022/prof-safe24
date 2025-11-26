@@ -219,8 +219,10 @@
             width: 100%;
             height:auto;
             filter: drop-shadow(0 0 25px rgba(34,211,238,0.6));
+            /* NOVO: Cantos arredondados na logo */
+            border-radius: 12px;
         }
-        
+
         /* NOVOS ESTILOS */
         .quick-alerts {
             display: grid;
@@ -307,6 +309,12 @@
         .teacher-preferences input {
             width: auto;
             margin-right: 4px;
+        }
+        .auto-save-notice {
+            font-size: 10px;
+            color: #22c55e;
+            margin-top: 4px;
+            display: none;
         }
 
         @media (max-width:520px){
@@ -419,6 +427,7 @@
                 <input type="checkbox" id="savePreferences">
                 <label for="savePreferences">Salvar meus dados para próximos alertas</label>
             </div>
+            <div class="auto-save-notice" id="autoSaveNotice">✓ Dados salvos automaticamente</div>
 
             <div class="feedback" id="feedbackMsg">
                 Alerta enviado com sucesso à Central. Aguarde o retorno da equipe.
@@ -442,11 +451,13 @@ const quickAlertBtns = document.querySelectorAll('.quick-alert-btn');
 const levelBtns = document.querySelectorAll('.level-btn');
 const locationStatus = document.getElementById('locationStatus');
 const savePreferences = document.getElementById('savePreferences');
+const autoSaveNotice = document.getElementById('autoSaveNotice');
 
-// Carregar preferências salvas
+// CORREÇÃO: Carregar preferências salvas automaticamente
 function loadPreferences() {
     const savedTeacher = localStorage.getItem('profSafeTeacher');
     const savedRoom = localStorage.getItem('profSafeRoom');
+    const savedAutoSave = localStorage.getItem('profSafeAutoSave');
     
     if (savedTeacher) {
         document.getElementById('teacher').value = savedTeacher;
@@ -455,13 +466,53 @@ function loadPreferences() {
     if (savedRoom) {
         document.getElementById('room').value = savedRoom;
     }
+    
+    // Marcar checkbox se já estava salvo
+    if (savedAutoSave === 'true') {
+        savePreferences.checked = true;
+        autoSaveNotice.style.display = 'block';
+    }
 }
 
-// Salvar preferências
+// CORREÇÃO: Salvar preferências automaticamente quando os campos mudam
+function setupAutoSave() {
+    const teacherField = document.getElementById('teacher');
+    const roomField = document.getElementById('room');
+    
+    teacherField.addEventListener('input', saveUserPreferences);
+    roomField.addEventListener('input', saveUserPreferences);
+    
+    // Salvar quando o checkbox for alterado
+    savePreferences.addEventListener('change', function() {
+        if (this.checked) {
+            saveUserPreferences();
+            autoSaveNotice.style.display = 'block';
+            // Salvar a preferência de auto-save
+            localStorage.setItem('profSafeAutoSave', 'true');
+        } else {
+            autoSaveNotice.style.display = 'none';
+            // Remover a preferência de auto-save
+            localStorage.setItem('profSafeAutoSave', 'false');
+        }
+    });
+}
+
+// CORREÇÃO: Função melhorada para salvar preferências
 function saveUserPreferences() {
-    if (savePreferences.checked) {
-        localStorage.setItem('profSafeTeacher', document.getElementById('teacher').value);
-        localStorage.setItem('profSafeRoom', document.getElementById('room').value);
+    const teacher = document.getElementById('teacher').value;
+    const room = document.getElementById('room').value;
+    
+    // Salvar apenas se o checkbox estiver marcado
+    if (savePreferences.checked && (teacher || room)) {
+        localStorage.setItem('profSafeTeacher', teacher);
+        localStorage.setItem('profSafeRoom', room);
+        localStorage.setItem('profSafeAutoSave', 'true');
+        
+        // Mostrar feedback visual
+        autoSaveNotice.style.display = 'block';
+        setTimeout(() => {
+            autoSaveNotice.style.display = 'none';
+        }, 2000);
     }
 }
 
@@ -586,6 +637,7 @@ btnLimpar.addEventListener('click', () => {
     quickAlertBtns.forEach(btn => btn.classList.remove('active'));
     levelBtns[1].classList.add('active'); // Reset para nível médio
     feedback.style.display = 'none';
+    autoSaveNotice.style.display = 'none';
 });
 
 // Botão REINICIAR: recarrega a página
@@ -601,6 +653,7 @@ btnSair.addEventListener('click', () => {
 // Inicialização
 function init() {
     loadPreferences();
+    setupAutoSave(); // CORREÇÃO: Configurar auto-save
     getLocation();
     updateClockProf();
 }
