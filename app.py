@@ -14,10 +14,21 @@ from flask import (
 )
 from dotenv import load_dotenv
 from reportlab.pdfgen import canvas
+import pytz  # <<< timezone Brasil
+
+# --------------------------------------------------------------------------- #
+#                          Configuração inicial
+# --------------------------------------------------------------------------- #
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Timezone Brasil
+BR_TZ = pytz.timezone("America/Sao_Paulo")
+
+# Caminho do .env (para salvar dados da escola)
+ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
 
 # --- Configuração básica / segredos -----------------------------------------
 app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
@@ -26,7 +37,7 @@ app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
-# --- Dados da Escola (para relatório / telas) ---------------------------------
+# --- Dados da Escola (para relatório / telas) ------------------------------- #
 SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
@@ -109,6 +120,38 @@ def reset_login_attempts(ip: str) -> None:
         login_attempts.pop(ip, None)
 
 
+def save_school_to_env(school: dict) -> None:
+    """
+    Atualiza/insere SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT, SCHOOL_DIRECTOR no .env.
+    (Em alguns ambientes de hospedagem o .env pode não ser persistente, mas local funciona.)
+    """
+    try:
+        env_data = {}
+
+        if os.path.exists(ENV_PATH):
+            with open(ENV_PATH, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    k, v = line.split("=", 1)
+                    env_data[k.strip()] = v.strip()
+
+        env_data["SCHOOL_NAME"] = school.get("nome", "")
+        env_data["SCHOOL_ADDRESS"] = school.get("endereco", "")
+        env_data["SCHOOL_CONTACT"] = school.get("telefone", "")
+        env_data["SCHOOL_DIRECTOR"] = school.get("diretor", "")
+
+        with open(ENV_PATH, "w", encoding="utf-8") as f:
+            for k, v in env_data.items():
+                f.write(f"{k}={v}\n")
+
+        app.logger.info("[ADMIN] .env atualizado com dados da escola.")
+
+    except Exception as e:
+        app.logger.error(f"[ADMIN] Erro ao salvar .env: {e}")
+
+
 # --------------------------------------------------------------------------- #
 #                      Controle de sessão / timeout automático
 # --------------------------------------------------------------------------- #
@@ -167,7 +210,7 @@ def admin():
 @app.route("/admin/escola", methods=["GET", "POST"])
 def admin_escola():
     """
-    Tela para editar os dados da escola em memória.
+    Tela para editar os dados da escola em memória + salvar no .env.
     """
     global SCHOOL_DATA, SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT, SCHOOL_DIRECTOR
 
@@ -187,6 +230,9 @@ def admin_escola():
         SCHOOL_ADDRESS = endereco
         SCHOOL_CONTACT = telefone
         SCHOOL_DIRECTOR = diretor
+
+        # Tenta gravar no .env
+        save_school_to_env(SCHOOL_DATA)
 
         app.logger.info(
             f"[ADMIN] Dados da escola atualizados: "
@@ -268,7 +314,9 @@ def api_alert():
     if not room or not description:
         return jsonify({"ok": False}), 400
 
-    ts = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    # Horário Brasil
+    ts = datetime.now(BR_TZ).strftime("%d/%m/%Y %H:%M:%S")
+
     alerts.insert(
         0,
         {
@@ -363,7 +411,8 @@ def report_pdf():
     pdf.drawString(40, y, f"Contato: {contato_escola}")
     y -= 12
 
-    data_geracao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    # Horário de geração em BRT
+    data_geracao = datetime.now(BR_TZ).strftime("%d/%m/%Y %H:%M:%S")
     pdf.drawString(40, y, f"Gerado em: {data_geracao}")
     y -= 24
 
