@@ -2,139 +2,167 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - Configurar Escola</title>
+    <title>Configuração da Escola – PROF-SAFE 24</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing:border-box; }
         body {
-            margin: 0;
+            margin:0;
             font-family: Arial, sans-serif;
-            min-height: 100vh;
             background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color: #e5e7eb;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
+            color:#e5e7eb;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
         }
-        .shell {
-            width: 100%;
-            max-width: 600px;
-            background: rgba(2, 8, 23, 0.96);
-            border-radius: 20px;
-            border: 1px solid rgba(56,189,248,0.3);
-            box-shadow: 0 22px 60px rgba(0,0,0,0.85);
-            padding: 22px;
-            position: relative;
+
+        .shell{
+            width:100%;
+            max-width:620px;
+            background:rgba(2,8,23,0.96);
+            border-radius:18px;
+            border:1px solid rgba(56,189,248,0.35);
+            padding:22px 26px;
+            box-shadow:0 24px 60px rgba(0,0,0,0.9);
+            position:relative;
+            overflow:hidden;
         }
+
+        .shell::before{
+            content:"";
+            position:absolute;
+            inset:-35%;
+            background:
+                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
+                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
+            opacity:0.9;
+            pointer-events:none;
+        }
+
+        .shell-inner{
+            position:relative;
+            z-index:1;
+        }
+
         h2 {
-            text-align: center;
-            margin-bottom: 18px;
-            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color:#e5e7eb;
+            margin-bottom:12px;
+            font-size:18px;
         }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
-        label {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 14px;
-            color: #cbd5f5;
-        }
-        input {
-            width: 100%;
-            padding: 9px 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(148,163,184,0.7);
-            background: rgba(15,23,42,0.9);
-            color: #e5e7eb;
-            font-size: 14px;
-        }
-        input:focus {
-            outline: none;
-            border-color: #22d3ee;
-            box-shadow: 0 0 0 1px rgba(34,211,238,0.6);
+        .form-group{
+            margin-bottom:14px;
         }
 
-        .btn-main {
-            width: 100%;
-            padding: 10px 18px;
-            border-radius: 14px;
-            border: none;
-            background: linear-gradient(135deg, #22d3ee, #0369a1);
-            color: #0f172a;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 12px 25px rgba(8,47,73,0.9);
-        }
-        .btn-main:hover {
-            filter: brightness(1.05);
+        label{
+            display:block;
+            font-size:12px;
+            color:#cbd5f5;
+            margin-bottom:4px;
         }
 
-        .back-btn {
-            margin-top: 16px;
-            text-align: center;
-        }
-        .back-btn a {
-            color: #22d3ee;
-            text-decoration: none;
-            font-size: 13px;
-        }
-        .back-btn a:hover {
-            text-decoration: underline;
+        input{
+            width:100%;
+            padding:9px 12px;
+            border-radius:12px;
+            border:1px solid rgba(148,163,184,0.75);
+            background:rgba(15,23,42,0.95);
+            color:#e5e7eb;
+            font-size:13px;
         }
 
-        .success {
-            background: rgba(34,197,94,0.2);
-            border: 1px solid rgba(34,197,94,0.4);
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            color: #bbf7d0;
-            font-size: 13px;
-            text-align: center;
+        input:focus{
+            outline:none;
+            border-color:#22d3ee;
+            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
+        }
+
+        .btn{
+            width:100%;
+            border-radius:999px;
+            padding:10px 0;
+            background:linear-gradient(135deg,#22d3ee,#0369a1);
+            color:#0f172a;
+            font-weight:bold;
+            font-size:14px;
+            border:none;
+            cursor:pointer;
+            box-shadow:0 14px 32px rgba(8,47,73,0.9);
+        }
+
+        .btn:hover{
+            filter:brightness(1.06);
+        }
+
+        .success-box{
+            background:rgba(6,95,70,0.5);
+            border:1px solid #22c55e;
+            color:#bbf7d0;
+            padding:10px 14px;
+            border-radius:10px;
+            font-size:12px;
+            margin-bottom:12px;
+        }
+
+        .footer{
+            text-align:right;
+            font-size:10px;
+            color:#6b7280;
+            margin-top:14px;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-bottom:12px;
+            font-size:12px;
+            color:#22d3ee;
+            text-decoration:none;
         }
     </style>
 </head>
+
 <body>
-
 <div class="shell">
+    <div class="shell-inner">
 
-    <h2>⚙️ Configurar Escola</h2>
+        <a class="back-btn" href="/admin">← Voltar ao Painel Admin</a>
 
-    {% if saved %}
-    <div class="success">
-        ✔️ Dados salvos com sucesso!
-    </div>
-    {% endif %}
+        <h2>Configuração da Escola</h2>
 
-    <form method="POST">
-
-        <div class="form-group">
-            <label>Nome da Escola</label>
-            <input type="text" name="school_name" value="{{ school_name }}" required>
+        {% if saved %}
+        <div class="success-box">
+            ✔ Dados atualizados com sucesso!
         </div>
+        {% endif %}
 
-        <div class="form-group">
-            <label>Endereço da Escola</label>
-            <input type="text" name="school_address" value="{{ school_address }}" required>
+        <form method="POST">
+            <div class="form-group">
+                <label for="school_name">Nome da Escola</label>
+                <input type="text" id="school_name" name="school_name" value="{{ school_name }}">
+            </div>
+
+            <div class="form-group">
+                <label for="school_address">Endereço</label>
+                <input type="text" id="school_address" name="school_address" value="{{ school_address }}">
+            </div>
+
+            <div class="form-group">
+                <label for="school_contact">Contato (Telefone / WhatsApp / E-mail)</label>
+                <input type="text" id="school_contact" name="school_contact" value="{{ school_contact }}">
+            </div>
+
+            <button class="btn" type="submit">Salvar Dados da Escola</button>
+        </form>
+
+        <div class="footer">
+            PROF-SAFE 24 — Administração da Escola
         </div>
-
-        <div class="form-group">
-            <label>Contato (telefone, WhatsApp ou e-mail)</label>
-            <input type="text" name="school_contact" value="{{ school_contact }}" required>
-        </div>
-
-        <button type="submit" class="btn-main">Salvar Configurações</button>
-    </form>
-
-    <div class="back-btn">
-        <a href="/admin">⬅️ Voltar ao Painel da Central</a>
     </div>
 </div>
-
 </body>
 </html>
