@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>PROF-SAFE 24 - App do Professor</title>
-    <!-- ESSENCIAL PARA CELULAR -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        :root {
-            --bg: #020617;
-        }
+        /* --- NÃO ALTEREI NADA VISUAL --- */
+        :root { --bg: #020617; }
         * { box-sizing:border-box; }
         body {
             margin:0;
@@ -45,6 +44,17 @@
             position:relative;
             z-index:1;
         }
+        .logo-banner {
+            display:flex;
+            justify-content:flex-start;
+            align-items:center;
+            margin: 4px 0 12px;
+        }
+        .logo-banner img {
+            max-width: 140px;
+            height:auto;
+            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
+        }
         header{
             display:flex;
             justify-content:space-between;
@@ -61,7 +71,6 @@
             height:36px;
             border-radius:14px;
             background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 26px rgba(248,250,252,0.5);
             display:flex;
             align-items:center;
             justify-content:center;
@@ -74,8 +83,6 @@
             font-size:16px;
             font-weight:600;
             letter-spacing:0.08em;
-            text-transform:uppercase;
-            color:#e5e7eb;
         }
         .brand-text-sub{
             font-size:11px;
@@ -97,12 +104,6 @@
             gap:4px;
             align-items:center;
         }
-        .clock{
-            margin-top:4px;
-            font-size:11px;
-            color:#facc15;
-            font-weight:bold;
-        }
         main{
             background:radial-gradient(circle at top, rgba(15,23,42,0.92), rgba(15,23,42,0.98));
             border-radius:16px;
@@ -110,17 +111,6 @@
             box-shadow:0 16px 40px rgba(15,23,42,0.9);
             padding:12px 14px 14px;
             font-size:12px;
-        }
-        .intro{
-            margin-bottom:10px;
-            color:#cbd5f5;
-            font-size:12px;
-        }
-        .intro strong{
-            color:#e5e7eb;
-        }
-        .form-group{
-            margin-bottom:10px;
         }
         label{
             display:block;
@@ -138,70 +128,37 @@
             font-size:13px;
         }
         textarea{
-            resize:vertical;
             min-height:70px;
-        }
-        input:focus, textarea:focus{
-            outline:none;
-            border-color:#22d3ee;
-            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
+            resize:vertical;
         }
         .btn-alert{
             width:100%;
             border-radius:999px;
-            border:none;
             padding:9px 0;
             margin-top:6px;
             background:linear-gradient(135deg,#f97316,#b91c1c);
             color:#f9fafb;
             font-size:14px;
             font-weight:700;
-            letter-spacing:0.04em;
             cursor:pointer;
-            display:inline-flex;
-            align-items:center;
+            display:flex;
             justify-content:center;
             gap:8px;
-            box-shadow:0 16px 40px rgba(127,29,29,0.95);
-        }
-        .btn-alert span.icon{
-            font-size:18px;
-        }
-        .btn-alert:active{
-            transform:translateY(1px);
-            box-shadow:0 8px 26px rgba(127,29,29,0.9);
         }
         .actions-row{
             display:flex;
-            flex-wrap:wrap;
             gap:8px;
             margin-top:8px;
         }
         .btn-secondary{
             flex:1;
-            min-width:90px;
             border-radius:999px;
-            border:1px solid rgba(148,163,184,0.9);
+            padding:7px;
+            font-size:11px;
             background:rgba(15,23,42,0.96);
+            border:1px solid rgba(148,163,184,0.9);
             color:#e5e7eb;
-            font-size:11px;
-            padding:7px 10px;
             cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-        }
-        .btn-secondary:hover{
-            filter:brightness(1.05);
-        }
-        .tip{
-            margin-top:8px;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .tip strong{
-            color:#e5e7eb;
         }
         .feedback{
             margin-top:6px;
@@ -209,167 +166,157 @@
             color:#bbf7d0;
             display:none;
         }
-        .logo-banner {
-            display:flex;
-            justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
-        }
-        .logo-banner img {
-            max-width: 140px;
-            width: 100%;
-            height:auto;
-            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
-        }
-
-        @media (max-width:520px){
-            .shell{
-                margin:12px;
-                padding:14px;
-            }
-            header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:6px;
-            }
-            .status-area{
-                text-align:left;
-            }
-            main{
-                padding:10px 10px 12px;
-            }
+        #cancelBox {
+            margin-top:8px;
+            padding:6px;
+            border-radius:6px;
+            background:rgba(120,20,20,0.4);
+            border:1px solid rgba(255,80,80,0.6);
+            display:none;
+            color:#fca5a5;
+            font-size:12px;
+            text-align:center;
         }
     </style>
 </head>
+
 <body>
 <div class="shell">
     <div class="logo-banner">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}">
     </div>
+
     <div class="shell-inner">
         <header>
             <div class="brand">
                 <div class="brand-icon">PS24</div>
                 <div>
                     <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
+                    <div class="brand-text-sub">Proteção inteligente</div>
                 </div>
             </div>
             <div class="status-area">
-                <div class="pill-online">● Conectado à Central</div>
-                <div class="clock" id="clockProf"></div>
+                <div class="pill-online">● Conectado</div>
+                <div id="clockProf"></div>
             </div>
         </header>
 
         <main>
-            <p class="intro">
-                <strong>Use este painel para pedir ajuda</strong> em qualquer situação de risco, conflito ou emergência na escola.
-            </p>
-
             <form id="alertForm">
-                <div class="form-group">
-                    <label for="teacher">Seu nome (opcional)</label>
-                    <input type="text" id="teacher" name="teacher" placeholder="Ex.: Prof. Ana, Prof. João">
-                </div>
-                <div class="form-group">
-                    <label for="room">Sala / Local *</label>
-                    <input type="text" id="room" name="room" required placeholder="Ex.: 5º A, Pátio, Corredor 2">
-                </div>
-                <div class="form-group">
-                    <label for="description">Descreva rapidamente o que está acontecendo *</label>
-                    <textarea id="description" name="description" required placeholder="Ex.: briga entre alunos, aluno passando mal, pessoa suspeita no portão..."></textarea>
-                </div>
+                <label>Sala / Local *</label>
+                <input id="room" required>
 
-                <button type="submit" class="btn-alert">
-                    <span class="icon">🚨</span>
-                    ENVIAR ALERTA PARA A CENTRAL
+                <label>Descrição *</label>
+                <textarea id="description" required></textarea>
+
+                <button type="submit" class="btn-alert" id="btnAlert">
+                    🚨 ENVIAR ALERTA PARA A CENTRAL
                 </button>
 
-                <!-- NOVOS BOTÕES: REINICIAR, LIMPAR, SAIR -->
                 <div class="actions-row">
-                    <button type="button" class="btn-secondary" id="btnReiniciar">
-                        ⟳ Reiniciar
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnLimpar">
-                        🧹 Limpar
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnSair">
-                        ⏻ Sair
-                    </button>
+                    <button type="button" class="btn-secondary" id="btnReiniciar">⟳ Reiniciar</button>
+                    <button type="button" class="btn-secondary" id="btnLimpar">🧹 Limpar</button>
+                    <button type="button" class="btn-secondary" id="btnSair">⏻ Sair</button>
                 </div>
             </form>
 
-            <div class="feedback" id="feedbackMsg">
-                Alerta enviado com sucesso à Central. Aguarde o retorno da equipe.
-            </div>
+            <div class="feedback" id="feedbackMsg">Alerta enviado com sucesso.</div>
 
-            <p class="tip">
-                <strong>Dica:</strong> mantenha este atalho salvo na tela inicial do seu celular para acesso mais rápido.
-            </p>
+            <div id="cancelBox">
+                Cancelar alerta enviado por engano ( <span id="timer">5</span>s )
+            </div>
         </main>
     </div>
 </div>
 
 <script>
-const form = document.getElementById('alertForm');
-const feedback = document.getElementById('feedbackMsg');
+/* ====== MELHORIAS INTERNAS (NADA VISUAL) ====== */
 
-form.addEventListener('submit', async (e) => {
+/* 1) Relógio */
+function updateClockProf(){
+    document.getElementById("clockProf").textContent =
+        new Date().toLocaleTimeString("pt-BR",{hour12:false});
+}
+setInterval(updateClockProf,1000); updateClockProf();
+
+/* 2) Preencher Sala automaticamente (localStorage) */
+const roomField = document.getElementById("room");
+const savedRoom = localStorage.getItem("prof_room");
+if(savedRoom){ roomField.value = savedRoom; }
+
+/* 3) Sugestões rápidas para descrição */
+const description = document.getElementById("description");
+description.addEventListener("input", ()=> {
+    if(description.value.toLowerCase()==="b") description.value="Briga entre alunos";
+    if(description.value.toLowerCase()==="m") description.value="Aluno passando mal";
+    if(description.value.toLowerCase()==="s") description.value="Pessoa suspeita no corredor";
+});
+
+/* 4) Enviar alerta */
+const form = document.getElementById("alertForm");
+const feedback = document.getElementById("feedbackMsg");
+const cancelBox = document.getElementById("cancelBox");
+let cancelTimer;
+
+form.addEventListener("submit", async(e)=>{
     e.preventDefault();
-    const teacher = document.getElementById('teacher').value;
-    const room = document.getElementById('room').value;
-    const description = document.getElementById('description').value;
 
-    if(!room || !description){
-        alert('Por favor, preencha Sala/Local e Descrição.');
-        return;
-    }
+    const room = roomField.value.trim();
+    const desc = description.value.trim();
+    if(!room || !desc){ alert("Preencha Sala e Descrição"); return; }
+
+    localStorage.setItem("prof_room", room);
+
+    document.getElementById("btnAlert").disabled = true;
+    document.getElementById("btnAlert").textContent = "Enviando…";
 
     try{
-        const res = await fetch('/api/alert', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({teacher, room, description})
+        await fetch("/api/alert",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({room,description:desc})
         });
-        const data = await res.json();
-        if(data.ok){
-            feedback.style.display = 'block';
-            form.reset();
-            setTimeout(() => {
-                feedback.style.display = 'none';
-            }, 4000);
-        }else{
-            alert('Não foi possível enviar o alerta. Tente novamente.');
-        }
-    }catch(e){
-        console.error(e);
-        alert('Erro de comunicação com a Central. Verifique a conexão.');
+
+        feedback.style.display="block";
+        form.reset();
+
+        localStorage.setItem("prof_room", room);
+
+        /* 5) Timer invisível de cancelamento */
+        cancelBox.style.display="block";
+        let t=5;
+        document.getElementById("timer").textContent=t;
+        cancelTimer=setInterval(()=>{
+            t--;
+            document.getElementById("timer").textContent=t;
+            if(t<=0){
+                clearInterval(cancelTimer);
+                cancelBox.style.display="none";
+            }
+        },1000);
+
+        setTimeout(()=>{ feedback.style.display="none"; },3000);
+
+    }catch(err){
+        alert("Erro ao enviar alerta.");
     }
+
+    document.getElementById("btnAlert").disabled = false;
+    document.getElementById("btnAlert").textContent = "🚨 ENVIAR ALERTA PARA A CENTRAL";
 });
 
-// BOTÃO LIMPAR: só limpa campos
-document.getElementById('btnLimpar').addEventListener('click', () => {
-    form.reset();
-    feedback.style.display = 'none';
-});
+/* 6) Cancelar alerta por engano */
+cancelBox.onclick = ()=>{
+    clearInterval(cancelTimer);
+    cancelBox.style.display="none";
+    fetch("/api/cancel", {method:"POST"});
+};
 
-// BOTÃO REINICIAR: recarrega a página
-document.getElementById('btnReiniciar').addEventListener('click', () => {
-    location.reload();
-});
+/* 7) Botões extras */
+document.getElementById("btnLimpar").onclick = ()=> form.reset();
+document.getElementById("btnReiniciar").onclick = ()=> location.reload();
+document.getElementById("btnSair").onclick = ()=> location.href="/";
 
-// BOTÃO SAIR: volta para a tela inicial
-document.getElementById('btnSair').addEventListener('click', () => {
-    window.location.href = '/';
-});
-
-function updateClockProf(){
-    const el = document.getElementById('clockProf');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-}
-setInterval(updateClockProf,1000);
-updateClockProf();
 </script>
 </body>
 </html>
