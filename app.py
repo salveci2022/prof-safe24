@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from datetime import datetime, timedelta
 from io import BytesIO
 
@@ -11,6 +12,7 @@ from flask import (
     url_for,
     session,
     send_file,
+    g,
 )
 from dotenv import load_dotenv
 from reportlab.pdfgen import canvas
@@ -26,10 +28,55 @@ app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
-# --- Dados da Escola (para aparecer no PDF) ---------------------------------
+# --- Dados da Escola (defaults / fallback) ----------------------------------
 SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
+
+# --- Banco de dados (SQLite simples) ----------------------------------------
+DATABASE = "prof_safe24.db"
+
+
+def get_db():
+    if "db" not in g:
+        g.db = sqlite3.connect(DATABASE)
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()
+
+
+def init_db():
+    db = get_db()
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS school (
+            id INTEGER PRIMARY KEY,
+            nome TEXT,
+            endereco TEXT,
+            contato TEXT,
+            diretor TEXT
+        )
+        """
+    )
+    # registro único padrão da escola (id = 1)
+    db.execute(
+        """
+        INSERT OR IGNORE INTO school (id, nome, endereco, contato, diretor)
+        VALUES (1, ?, ?, ?, ?)
+        """,
+        (SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT, "Direção não cadastrada"),
+    )
+    db.commit()
+
+
+with app.app_context():
+    init_db()
 
 # --- Segurança: limites de login e sessão -----------------------------------
 MAX_LOGIN_ATTEMPTS = 5          # tentativas máximas antes de bloquear
@@ -141,7 +188,22 @@ muted = False
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    # Busca dados da escola no banco para usar na home (se o template quiser)
+    db = get_db()
+    row = db.execute("SELECT * FROM school WHERE id = 1").fetchone()
+
+    escola_nome = row["nome"] if row and row["nome"] else SCHOOL_NAME
+    escola_endereco = row["endereco"] if row and row["endereco"] else SCHOOL_ADDRESS
+    escola_contato = row["contato"] if row and row["contato"] else SCHOOL_CONTACT
+    escola_diretor = row["diretor"] if row and row["diretor"] else "Direção não cadastrada"
+
+    return render_template(
+        "home.html",
+        escola_nome=escola_nome,
+        escola_endereco=escola_endereco,
+        escola_telefone=escola_contato,
+        escola_diretor=escola_diretor,
+    )
 
 
 @app.route("/professor")
@@ -211,6 +273,42 @@ def logout_central():
     app.logger.info(f"[SEC] Logout manual da Central para usuário {user}")
     session.clear()
     return redirect(url_for("home"))
+
+
+# -------------------------- ADMIN: Dados da Escola -------------------------- #
+@app.route("/admin/escola", methods=["GET", "POST"])
+def admin_escola():
+    """
+    Tela administrativa para configurar os dados oficiais da escola.
+    Esses dados aparecem na tela inicial e no relatório em PDF.
+    """
+    if not session.get("central_logged"):
+        # opcional: só a Central logada pode editar
+        return redirect(url_for("login_central"))
+
+    db = get_db()
+
+    if request.method == "POST":
+        nome = (request.form.get("nome") or "").strip()
+        endereco = (request.form.get("endereco") or "").strip()
+        contato = (request.form.get("contato") or "").strip()
+        diretor = (request.form.get("diretor") or "").strip()
+
+        db.execute(
+            """
+            UPDATE school
+               SET nome = ?, endereco = ?, contato = ?, diretor = ?
+             WHERE id = 1
+            """,
+            (nome, endereco, contato, diretor),
+        )
+        db.commit()
+
+        return redirect(url_for("admin_escola"))
+
+    row = db.execute("SELECT * FROM school WHERE id = 1").fetchone()
+
+    return render_template("admin_school.html", escola=row)
 
 
 # -------------------------- API de alertas / sirene ------------------------- #
@@ -298,6 +396,15 @@ def api_clear():
 # ---------------------------- Relatório em PDF ------------------------------ #
 @app.route("/report.pdf")
 def report_pdf():
+    # Busca dados da escola no banco
+    db = get_db()
+    row = db.execute("SELECT * FROM school WHERE id = 1").fetchone()
+
+    school_name = row["nome"] if row and row["nome"] else SCHOOL_NAME
+    school_address = row["endereco"] if row and row["endereco"] else SCHOOL_ADDRESS
+    school_contact = row["contato"] if row and row["contato"] else SCHOOL_CONTACT
+    diretor = row["diretor"] if row and row["diretor"] else "Direção não cadastrada"
+
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer)
     pdf.setTitle("Relatório PROF-SAFE 24")
@@ -308,11 +415,13 @@ def report_pdf():
 
     pdf.setFont("Helvetica", 10)
     y = 780
-    pdf.drawString(40, y, f"Escola: {SCHOOL_NAME}")
+    pdf.drawString(40, y, f"Escola: {school_name}")
     y -= 12
-    pdf.drawString(40, y, f"Endereço: {SCHOOL_ADDRESS}")
+    pdf.drawString(40, y, f"Endereço: {school_address}")
     y -= 12
-    pdf.drawString(40, y, f"Contato: {SCHOOL_CONTACT}")
+    pdf.drawString(40, y, f"Contato: {school_contact}")
+    y -= 12
+    pdf.drawString(40, y, f"Diretor(a): {diretor}")
     y -= 12
 
     data_geracao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
