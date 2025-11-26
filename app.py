@@ -31,8 +31,7 @@ SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
 
-# --- NOVO: Bloco em memória para edição no /admin/escola --------------------
-# (não altera o comportamento atual do PDF, que continua usando as variáveis acima)
+# --- Bloco em memória para edição no /admin/escola -------------------------
 SCHOOL_DATA = {
     "nome": SCHOOL_NAME,
     "endereco": SCHOOL_ADDRESS,
@@ -163,12 +162,11 @@ def admin():
     return render_template("admin.html")
 
 
-# ------------------------- NOVA ROTA /admin/escola -------------------------- #
+# ------------------------- ROTA /admin/escola ------------------------------- #
 @app.route("/admin/escola", methods=["GET", "POST"])
 def admin_escola():
     """
-    Tela simples para editar os dados da escola em memória,
-    sem alterar o comportamento atual do sistema.
+    Tela simples para editar os dados da escola em memória.
     """
     global SCHOOL_DATA
 
@@ -190,8 +188,6 @@ def admin_escola():
         return redirect(url_for("admin_escola"))
 
     return render_template("admin_school.html", escola=SCHOOL_DATA)
-
-# --------------------------------------------------------------------------- #
 
 
 @app.route("/login_central", methods=["GET", "POST"])
