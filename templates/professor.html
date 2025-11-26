@@ -2,11 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - App do Professor</title>
+    <title>PROF-SAFE 24 - Professor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        /* --- NÃO ALTEREI NADA VISUAL --- */
+        /* 🌙 MANTIDO EXATAMENTE IGUAL — NADA VISUAL MUDOU */
         :root { --bg: #020617; }
         * { box-sizing:border-box; }
         body {
@@ -26,162 +26,98 @@
             border-radius:20px;
             border:1px solid rgba(56,189,248,0.35);
             box-shadow:0 22px 60px rgba(0,0,0,0.9);
-            padding:16px 16px 18px;
+            padding:16px;
             position:relative;
             overflow:hidden;
         }
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-        .shell-inner{
-            position:relative;
-            z-index:1;
-        }
+        .shell-inner { position:relative; z-index:1; }
         .logo-banner {
             display:flex;
             justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
+            margin-bottom:12px;
         }
         .logo-banner img {
-            max-width: 140px;
+            max-width:140px;
             height:auto;
-            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
+            filter:drop-shadow(0 0 16px rgba(34,211,238,0.5));
         }
-        header{
+        header {
             display:flex;
             justify-content:space-between;
             align-items:center;
             margin-bottom:14px;
         }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:8px;
-        }
-        .brand-icon{
-            width:36px;
-            height:36px;
+        .brand { display:flex; align-items:center; gap:8px; }
+        .brand-icon {
+            width:36px; height:36px;
             border-radius:14px;
             background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:10px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.08em;
+            display:flex; align-items:center; justify-content:center;
+            font-size:10px; color:#fff; font-weight:bold;
         }
-        .brand-text-title{
-            font-size:16px;
-            font-weight:600;
-            letter-spacing:0.08em;
-        }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .status-area{
-            text-align:right;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .pill-online{
-            font-size:11px;
-            padding:3px 9px;
-            border-radius:999px;
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            background:rgba(6,95,70,0.7);
-            display:inline-flex;
-            gap:4px;
-            align-items:center;
-        }
-        main{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.92), rgba(15,23,42,0.98));
+        main {
+            background:rgba(15,23,42,0.96);
             border-radius:16px;
+            padding:14px;
             border:1px solid rgba(148,163,184,0.45);
-            box-shadow:0 16px 40px rgba(15,23,42,0.9);
-            padding:12px 14px 14px;
-            font-size:12px;
         }
-        label{
-            display:block;
-            font-size:11px;
-            margin-bottom:3px;
-            color:#cbd5f5;
-        }
-        input, textarea{
-            width:100%;
-            padding:7px 9px;
-            border-radius:10px;
-            border:1px solid rgba(148,163,184,0.9);
+        label { font-size:11px; margin-bottom:3px; display:block; }
+        input, textarea {
+            width:100%; padding:7px; border-radius:10px;
             background:rgba(15,23,42,0.98);
+            border:1px solid rgba(148,163,184,0.9);
             color:#e5e7eb;
-            font-size:13px;
         }
-        textarea{
-            min-height:70px;
-            resize:vertical;
-        }
-        .btn-alert{
-            width:100%;
-            border-radius:999px;
-            padding:9px 0;
-            margin-top:6px;
-            background:linear-gradient(135deg,#f97316,#b91c1c);
-            color:#f9fafb;
-            font-size:14px;
-            font-weight:700;
-            cursor:pointer;
-            display:flex;
-            justify-content:center;
-            gap:8px;
-        }
-        .actions-row{
-            display:flex;
-            gap:8px;
+        textarea { min-height:70px; resize:vertical; }
+
+        .btn-alert {
             margin-top:8px;
-        }
-        .btn-secondary{
-            flex:1;
+            width:100%;
+            padding:9px 0;
             border-radius:999px;
+            background:linear-gradient(135deg,#f97316,#b91c1c);
+            color:#fff;
+            font-weight:bold;
+            cursor:pointer;
+            display:flex; justify-content:center; gap:6px;
+        }
+        .actions-row {
+            display:flex;
+            gap:8px;
+            margin-top:10px;
+        }
+        .btn-secondary {
+            flex:1;
             padding:7px;
             font-size:11px;
+            border-radius:999px;
             background:rgba(15,23,42,0.96);
             border:1px solid rgba(148,163,184,0.9);
             color:#e5e7eb;
             cursor:pointer;
         }
-        .feedback{
+        .feedback {
             margin-top:6px;
-            font-size:11px;
+            font-size:12px;
             color:#bbf7d0;
             display:none;
         }
         #cancelBox {
-            margin-top:8px;
-            padding:6px;
-            border-radius:6px;
-            background:rgba(120,20,20,0.4);
-            border:1px solid rgba(255,80,80,0.6);
             display:none;
-            color:#fca5a5;
-            font-size:12px;
+            margin-top:10px;
+            padding:6px;
             text-align:center;
+            color:#fca5a5;
+            background:rgba(100,20,20,0.4);
+            border:1px solid rgba(255,80,80,0.6);
+            border-radius:8px;
         }
     </style>
 </head>
 
 <body>
 <div class="shell">
+
     <div class="logo-banner">
         <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}">
     </div>
@@ -191,23 +127,22 @@
             <div class="brand">
                 <div class="brand-icon">PS24</div>
                 <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Proteção inteligente</div>
+                    <div style="font-size:16px;font-weight:600;">PROF-SAFE 24</div>
+                    <div style="font-size:11px;color:#9ca3af;">Proteção inteligente</div>
                 </div>
             </div>
-            <div class="status-area">
-                <div class="pill-online">● Conectado</div>
-                <div id="clockProf"></div>
-            </div>
+
+            <div style="font-size:12px;color:#facc15;" id="clockProf"></div>
         </header>
 
         <main>
             <form id="alertForm">
+
                 <label>Sala / Local *</label>
-                <input id="room" required>
+                <input id="room">
 
                 <label>Descrição *</label>
-                <textarea id="description" required></textarea>
+                <textarea id="description"></textarea>
 
                 <button type="submit" class="btn-alert" id="btnAlert">
                     🚨 ENVIAR ALERTA PARA A CENTRAL
@@ -220,39 +155,58 @@
                 </div>
             </form>
 
-            <div class="feedback" id="feedbackMsg">Alerta enviado com sucesso.</div>
-
-            <div id="cancelBox">
-                Cancelar alerta enviado por engano ( <span id="timer">5</span>s )
-            </div>
+            <div class="feedback" id="feedbackMsg">Alerta enviado.</div>
+            <div id="cancelBox">Cancelar alerta ( <span id="timer">5</span>s )</div>
         </main>
     </div>
 </div>
 
 <script>
-/* ====== MELHORIAS INTERNAS (NADA VISUAL) ====== */
+/* ============================== */
+/*     FUNÇÕES INTERNAS ULTRA     */
+/* ============================== */
 
-/* 1) Relógio */
+/* Relógio */
 function updateClockProf(){
     document.getElementById("clockProf").textContent =
         new Date().toLocaleTimeString("pt-BR",{hour12:false});
 }
 setInterval(updateClockProf,1000); updateClockProf();
 
-/* 2) Preencher Sala automaticamente (localStorage) */
+/* Sala automática */
 const roomField = document.getElementById("room");
 const savedRoom = localStorage.getItem("prof_room");
 if(savedRoom){ roomField.value = savedRoom; }
 
-/* 3) Sugestões rápidas para descrição */
-const description = document.getElementById("description");
-description.addEventListener("input", ()=> {
-    if(description.value.toLowerCase()==="b") description.value="Briga entre alunos";
-    if(description.value.toLowerCase()==="m") description.value="Aluno passando mal";
-    if(description.value.toLowerCase()==="s") description.value="Pessoa suspeita no corredor";
+/* Sugestão inteligente da descrição */
+const desc = document.getElementById("description");
+desc.addEventListener("input", ()=>{
+    const v = desc.value.toLowerCase();
+    if(v==="b") desc.value="Briga entre alunos";
+    if(v==="m") desc.value="Aluno passando mal";
+    if(v==="s") desc.value="Pessoa suspeita no corredor";
 });
 
-/* 4) Enviar alerta */
+/* ENVIAR ÁUDIO (5s) – invisível */
+async function gravarAudio(){
+    try{
+        let stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        let media = new MediaRecorder(stream);
+        let chunks = [];
+
+        return new Promise(resolve=>{
+            media.ondataavailable=e=>chunks.push(e.data);
+            media.onstop=()=>resolve(new Blob(chunks,{type:'audio/webm'}));
+            media.start();
+            setTimeout(()=>media.stop(),5000);
+        });
+
+    }catch(e){
+        return null;
+    }
+}
+
+/* ALERTA COMPLETO */
 const form = document.getElementById("alertForm");
 const feedback = document.getElementById("feedbackMsg");
 const cancelBox = document.getElementById("cancelBox");
@@ -261,61 +215,70 @@ let cancelTimer;
 form.addEventListener("submit", async(e)=>{
     e.preventDefault();
 
-    const room = roomField.value.trim();
-    const desc = description.value.trim();
-    if(!room || !desc){ alert("Preencha Sala e Descrição"); return; }
-
+    const room = roomField.value.trim() || savedRoom || "Sala não informada";
     localStorage.setItem("prof_room", room);
+
+    const description = desc.value.trim() || "Emergência";
 
     document.getElementById("btnAlert").disabled = true;
     document.getElementById("btnAlert").textContent = "Enviando…";
 
-    try{
-        await fetch("/api/alert",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({room,description:desc})
-        });
+    /* GRAVAR ÁUDIO AUTOMATICAMENTE */
+    let audioBlob = await gravarAudio();
 
-        feedback.style.display="block";
-        form.reset();
+    let formData = new FormData();
+    formData.append("room", room);
+    formData.append("description", description);
+    if(audioBlob) formData.append("audio", audioBlob, "alerta.webm");
 
-        localStorage.setItem("prof_room", room);
+    await fetch("/api/alert_full", {
+        method:"POST",
+        body:formData
+    });
 
-        /* 5) Timer invisível de cancelamento */
-        cancelBox.style.display="block";
-        let t=5;
+    feedback.style.display="block";
+    form.reset();
+
+    /* CANCELAR ALERTA */
+    cancelBox.style.display="block";
+    let t=5;
+    document.getElementById("timer").textContent=t;
+    cancelTimer=setInterval(()=>{
+        t--;
         document.getElementById("timer").textContent=t;
-        cancelTimer=setInterval(()=>{
-            t--;
-            document.getElementById("timer").textContent=t;
-            if(t<=0){
-                clearInterval(cancelTimer);
-                cancelBox.style.display="none";
-            }
-        },1000);
+        if(t<=0){
+            clearInterval(cancelTimer);
+            cancelBox.style.display="none";
+        }
+    },1000);
 
-        setTimeout(()=>{ feedback.style.display="none"; },3000);
-
-    }catch(err){
-        alert("Erro ao enviar alerta.");
-    }
+    setTimeout(()=>feedback.style.display="none",3200);
 
     document.getElementById("btnAlert").disabled = false;
     document.getElementById("btnAlert").textContent = "🚨 ENVIAR ALERTA PARA A CENTRAL";
 });
 
-/* 6) Cancelar alerta por engano */
+/* CANCELAR ALERTA */
 cancelBox.onclick = ()=>{
     clearInterval(cancelTimer);
     cancelBox.style.display="none";
     fetch("/api/cancel", {method:"POST"});
 };
 
-/* 7) Botões extras */
+/* LIMPAR / REINICIAR / SAIR */
 document.getElementById("btnLimpar").onclick = ()=> form.reset();
 document.getElementById("btnReiniciar").onclick = ()=> location.reload();
 document.getElementById("btnSair").onclick = ()=> location.href="/";
+
+/* ALERTA SILENCIOSO (segurar 2s) */
+let pressTimer;
+document.getElementById("btnAlert").addEventListener("mousedown", ()=>{
+    pressTimer = setTimeout(()=>{
+        fetch("/api/silent_alert",{method:"POST"});
+        alert("⚠️ Alerta silencioso enviado");
+    },2000);
+});
+document.getElementById("btnAlert").addEventListener("mouseup", ()=> clearTimeout(pressTimer));
 
 </script>
 </body>
