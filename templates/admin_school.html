@@ -1,10 +1,149 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Configurar Escola</title>
+    <title>PROF-SAFE 24 – Dados da Escola</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top left,#0f172a 0,#020617 55%,#000 100%);
+            color:#e5e7eb;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-height:100vh;
+            padding:20px;
+        }
+        .shell{
+            width:100%;
+            max-width:520px;
+            background:rgba(2,8,23,0.96);
+            border-radius:20px;
+            border:1px solid rgba(56,189,248,0.35);
+            box-shadow:0 24px 60px rgba(0,0,0,0.85);
+            padding:22px;
+            position:relative;
+            overflow:hidden;
+        }
+        .shell::before{
+            content:"";
+            position:absolute;
+            inset:-35%;
+            background:
+                radial-gradient(circle at 0 0,rgba(56,189,248,0.16),transparent 55%),
+                radial-gradient(circle at 100% 0,rgba(59,130,246,0.2),transparent 55%);
+            opacity:0.9;
+            pointer-events:none;
+        }
+        .shell-inner{
+            position:relative;
+            z-index:1;
+        }
+        h2{
+            margin:0 0 12px;
+            font-size:20px;
+            font-weight:700;
+            text-align:center;
+            letter-spacing:0.06em;
+            color:#22d3ee;
+        }
+        p.sub{
+            text-align:center;
+            margin:-4px 0 16px;
+            font-size:12px;
+            color:#9ca3af;
+        }
+        .form-group{
+            margin-bottom:14px;
+        }
+        label{
+            display:block;
+            margin-bottom:4px;
+            font-size:13px;
+            color:#cbd5f5;
+        }
+        input{
+            width:100%;
+            padding:10px;
+            border-radius:10px;
+            border:1px solid rgba(148,163,184,0.8);
+            background:rgba(15,23,42,0.9);
+            color:#e5e7eb;
+            font-size:14px;
+        }
+        input:focus{
+            outline:none;
+            border-color:#22d3ee;
+            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
+        }
+        .btn-save{
+            width:100%;
+            margin-top:10px;
+            padding:10px 0;
+            border-radius:999px;
+            border:none;
+            background:linear-gradient(135deg,#22d3ee,#0369a1);
+            font-size:14px;
+            font-weight:600;
+            color:#0f172a;
+            cursor:pointer;
+            box-shadow:0 12px 28px rgba(8,47,73,0.8);
+        }
+        .btn-save:hover{ filter:brightness(1.05); }
+
+        .back{
+            margin-top:12px;
+            text-align:center;
+        }
+        .back a{
+            font-size:12px;
+            color:#22d3ee;
+            text-decoration:none;
+        }
+        .back a:hover{
+            text-decoration:underline;
+        }
+    </style>
 </head>
 <body>
-    
+<div class="shell">
+    <div class="shell-inner">
+
+        <h2>Configuração da Escola</h2>
+        <p class="sub">Essas informações aparecerão no relatório PDF e no sistema.</p>
+
+        <form method="POST">
+
+            <div class="form-group">
+                <label>Nome da Escola</label>
+                <input type="text" name="nome" value="{{ escola.nome }}">
+            </div>
+
+            <div class="form-group">
+                <label>Endereço Completo</label>
+                <input type="text" name="endereco" value="{{ escola.endereco }}">
+            </div>
+
+            <div class="form-group">
+                <label>Telefone / WhatsApp</label>
+                <input type="text" name="telefone" value="{{ escola.telefone }}">
+            </div>
+
+            <div class="form-group">
+                <label>Diretor(a) / Responsável</label>
+                <input type="text" name="diretor" value="{{ escola.diretor }}">
+            </div>
+
+            <button class="btn-save" type="submit">Salvar Dados</button>
+        </form>
+
+        <div class="back">
+            <a href="/admin">← Voltar para o Painel Admin</a>
+        </div>
+
+    </div>
+</div>
 </body>
 </html>
