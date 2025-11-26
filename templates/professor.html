@@ -2,13 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - App do Professor</title>
-    <!-- ESSENCIAL PARA CELULAR -->
+    <title>PROF-SAFE 24 - Professor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        :root {
-            --bg: #020617;
-        }
+        :root { --bg: #020617; }
         * { box-sizing:border-box; }
         body {
             margin:0;
@@ -28,262 +26,119 @@
             border:1px solid rgba(56,189,248,0.35);
             box-shadow:0 22px 60px rgba(0,0,0,0.9);
             padding:16px 16px 18px;
-            position:relative;
-            overflow:hidden;
         }
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-        .shell-inner{
-            position:relative;
-            z-index:1;
-        }
-        header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:14px;
-        }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:8px;
-        }
-        .brand-icon{
-            width:36px;
-            height:36px;
-            border-radius:14px;
-            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 26px rgba(248,250,252,0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:10px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.08em;
-        }
-        .brand-text-title{
-            font-size:16px;
-            font-weight:600;
-            letter-spacing:0.08em;
-            text-transform:uppercase;
-            color:#e5e7eb;
-        }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .status-area{
-            text-align:right;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .pill-online{
-            font-size:11px;
-            padding:3px 9px;
-            border-radius:999px;
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            background:rgba(6,95,70,0.7);
-            display:inline-flex;
-            gap:4px;
-            align-items:center;
-        }
-        .clock{
-            margin-top:4px;
-            font-size:11px;
-            color:#facc15;
-            font-weight:bold;
-        }
-        main{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.92), rgba(15,23,42,0.98));
-            border-radius:16px;
-            border:1px solid rgba(148,163,184,0.45);
-            box-shadow:0 16px 40px rgba(15,23,42,0.9);
-            padding:12px 14px 14px;
-            font-size:12px;
-        }
-        .intro{
-            margin-bottom:10px;
-            color:#cbd5f5;
-            font-size:12px;
-        }
-        .intro strong{
-            color:#e5e7eb;
-        }
-        .form-group{
-            margin-bottom:10px;
-        }
-        label{
-            display:block;
-            font-size:11px;
-            margin-bottom:3px;
-            color:#cbd5f5;
-        }
-        input, textarea{
-            width:100%;
-            padding:7px 9px;
-            border-radius:10px;
-            border:1px solid rgba(148,163,184,0.9);
-            background:rgba(15,23,42,0.98);
-            color:#e5e7eb;
-            font-size:13px;
-        }
-        textarea{
-            resize:vertical;
-            min-height:70px;
-        }
-        input:focus, textarea:focus{
-            outline:none;
-            border-color:#22d3ee;
-            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
-        }
-        .btn-alert{
-            width:100%;
-            border-radius:999px;
-            border:none;
-            padding:9px 0;
-            margin-top:6px;
-            background:linear-gradient(135deg,#f97316,#b91c1c);
-            color:#f9fafb;
-            font-size:14px;
-            font-weight:700;
-            letter-spacing:0.04em;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-            box-shadow:0 16px 40px rgba(127,29,29,0.95);
-        }
-        .btn-alert span.icon{
-            font-size:18px;
-        }
-        .btn-alert:active{
-            transform:translateY(1px);
-            box-shadow:0 8px 26px rgba(127,29,29,0.9);
-        }
-        .actions-row{
-            display:flex;
-            flex-wrap:wrap;
-            gap:8px;
-            margin-top:8px;
-        }
-        .btn-secondary{
-            flex:1;
-            min-width:90px;
-            border-radius:999px;
-            border:1px solid rgba(148,163,184,0.9);
-            background:rgba(15,23,42,0.96);
-            color:#e5e7eb;
-            font-size:11px;
-            padding:7px 10px;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-        }
-        .btn-secondary:hover{
-            filter:brightness(1.05);
-        }
-        .tip{
-            margin-top:8px;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .tip strong{
-            color:#e5e7eb;
-        }
-        .feedback{
-            margin-top:6px;
-            font-size:11px;
-            color:#bbf7d0;
-            display:none;
-        }
+        .shell-inner { position:relative; z-index:1; }
+
         .logo-banner {
             display:flex;
             justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
+            margin-bottom:12px;
         }
         .logo-banner img {
-            max-width: 140px;
-            width: 100%;
+            max-width:140px;
             height:auto;
-            filter: drop-shadow(0 0 25px rgba(34,211,238,0.6));
+            filter: drop-shadow(0 0 20px rgba(34,211,238,0.6));
         }
 
-        @media (max-width:520px){
-            .shell{
-                margin:12px;
-                padding:14px;
-            }
-            header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:6px;
-            }
-            .status-area{
-                text-align:left;
-            }
-            main{
-                padding:10px 10px 12px;
-            }
+        header {
+            display:flex;
+            justify-content:space-between;
+            margin-bottom:14px;
+        }
+        .brand { display:flex; align-items:center; gap:8px; }
+        .brand-icon {
+            width:36px; height:36px;
+            border-radius:14px;
+            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
+            color:#fff; font-size:11px; display:flex; justify-content:center; align-items:center;
+        }
+
+        .pill-online {
+            padding:4px 10px;
+            border-radius:999px;
+            font-size:12px;
+            border:1px solid #22c55e;
+            color:#bbf7d0;
+            background:rgba(6,95,70,0.6);
+        }
+        .clock { text-align:right; font-size:12px; color:#facc15; margin-top:4px; }
+
+        main {
+            background:rgba(15,23,42,0.95);
+            padding:14px;
+            border-radius:16px;
+            border:1px solid rgba(148,163,184,0.4);
+        }
+
+        label { display:block; margin-bottom:4px; font-size:12px; }
+        input, textarea {
+            width:100%; padding:8px; margin-bottom:10px;
+            border-radius:10px; border:1px solid rgba(148,163,184,0.9);
+            background:rgba(15,23,42,0.96); color:#e5e7eb;
+        }
+        textarea { min-height:70px; resize:vertical; }
+
+        .btn-alert {
+            width:100%; padding:10px; margin-top:8px;
+            border-radius:999px;
+            background:linear-gradient(135deg,#f97316,#b91c1c);
+            border:none; color:#fff; font-size:15px;
+            font-weight:bold; cursor:pointer;
+        }
+
+        .actions-row {
+            display:flex; gap:8px; margin-top:10px;
+        }
+        .btn-secondary {
+            flex:1; padding:8px; font-size:12px;
+            border-radius:999px;
+            border:1px solid rgba(148,163,184,0.8);
+            background:rgba(15,23,42,0.96);
+            color:#e5e7eb; cursor:pointer;
+        }
+
+        .feedback {
+            margin-top:8px; font-size:12px;
+            color:#bbf7d0; display:none;
         }
     </style>
 </head>
+
 <body>
 <div class="shell">
+
     <div class="logo-banner">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}">
     </div>
+
     <div class="shell-inner">
+
         <header>
             <div class="brand">
                 <div class="brand-icon">PS24</div>
                 <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
+                    <div style="font-size:16px; font-weight:600;">PROF-SAFE 24</div>
+                    <div style="font-size:11px; color:#9ca3af;">Proteção inteligente</div>
                 </div>
             </div>
-            <div class="status-area">
-                <div class="pill-online">● Conectado à Central</div>
+            <div>
+                <div class="pill-online">● Conectado</div>
                 <div class="clock" id="clockProf"></div>
             </div>
         </header>
 
         <main>
-            <p class="intro">
-                <strong>Use este painel para pedir ajuda</strong> em qualquer situação de risco, conflito ou emergência na escola.
-            </p>
-
             <form id="alertForm">
-                <div class="form-group">
-                    <label for="teacher">Seu nome (opcional)</label>
-                    <input type="text" id="teacher" name="teacher" placeholder="Ex.: Prof. Ana, Prof. João">
-                </div>
-                <div class="form-group">
-                    <label for="room">Sala / Local *</label>
-                    <input type="text" id="room" name="room" required placeholder="Ex.: 5º A, Pátio, Corredor 2">
-                </div>
-                <div class="form-group">
-                    <label for="description">Descreva rapidamente o que está acontecendo *</label>
-                    <textarea id="description" name="description" required placeholder="Ex.: briga entre alunos, aluno passando mal, pessoa suspeita no portão..."></textarea>
-                </div>
+                <label>Seu nome (opcional)</label>
+                <input id="teacher" placeholder="Ex.: Prof. Ana">
 
-                <button type="submit" class="btn-alert" id="btnAlert">
-                    <span class="icon">🚨</span>
-                    ENVIAR ALERTA PARA A CENTRAL
-                </button>
+                <label>Sala / Local *</label>
+                <input id="room" placeholder="Ex.: 5º A" required>
+
+                <label>Descrição *</label>
+                <textarea id="description" placeholder="Ex.: aluno passando mal" required></textarea>
+
+                <button type="submit" class="btn-alert" id="btnAlert">🚨 ENVIAR ALERTA</button>
 
                 <div class="actions-row">
                     <button type="button" class="btn-secondary" id="btnReiniciar">⟳ Reiniciar</button>
@@ -292,88 +147,68 @@
                 </div>
             </form>
 
-            <div class="feedback" id="feedbackMsg">
-                Alerta enviado com sucesso à Central. Aguarde o retorno da equipe.
-            </div>
-
-            <p class="tip">
-                <strong>Dica:</strong> mantenha este atalho salvo na tela inicial do seu celular para acesso mais rápido.
-            </p>
+            <div class="feedback" id="feedbackMsg">Alerta enviado com sucesso.</div>
         </main>
     </div>
 </div>
 
 <script>
-const form = document.getElementById('alertForm');
-const feedback = document.getElementById('feedbackMsg');
-const btnAlert = document.getElementById('btnAlert');
-const btnReiniciar = document.getElementById('btnReiniciar');
-const btnLimpar = document.getElementById('btnLimpar');
-const btnSair = document.getElementById('btnSair');
-
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const teacher = document.getElementById('teacher').value;
-    const room = document.getElementById('room').value;
-    const description = document.getElementById('description').value;
-
-    if(!room || !description){
-        alert('Por favor, preencha Sala/Local e Descrição.');
-        return;
-    }
-
-    const originalLabel = btnAlert.innerHTML;
-    btnAlert.disabled = true;
-    btnAlert.innerHTML = 'Enviando...';
-
-    try{
-        const res = await fetch('/api/alert', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({teacher, room, description})
-        });
-        const data = await res.json();
-        if(data.ok){
-            feedback.style.display = 'block';
-            form.reset();
-            setTimeout(() => {
-                feedback.style.display = 'none';
-            }, 4000);
-        }else{
-            alert('Não foi possível enviar o alerta. Tente novamente.');
-        }
-    }catch(e){
-        console.error(e);
-        alert('Erro de comunicação com a Central. Verifique a conexão.');
-    }finally{
-        btnAlert.disabled = false;
-        btnAlert.innerHTML = originalLabel;
-    }
-});
-
-// Botão LIMPAR: limpa os campos e esconde a mensagem
-btnLimpar.addEventListener('click', () => {
-    form.reset();
-    feedback.style.display = 'none';
-});
-
-// Botão REINICIAR: recarrega a página
-btnReiniciar.addEventListener('click', () => {
-    location.reload();
-});
-
-// Botão SAIR: volta para a tela inicial
-btnSair.addEventListener('click', () => {
-    window.location.href = '/';
-});
-
-function updateClockProf(){
-    const el = document.getElementById('clockProf');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
+/* Relógio */
+function updateClock(){
+    document.getElementById("clockProf").textContent =
+        new Date().toLocaleTimeString("pt-BR",{hour12:false});
 }
-setInterval(updateClockProf,1000);
-updateClockProf();
+setInterval(updateClock,1000); updateClock();
+
+/* Formulário */
+const form = document.getElementById("alertForm");
+const feedback = document.getElementById("feedbackMsg");
+const btnAlert = document.getElementById("btnAlert");
+
+/* Evitar múltiplos envios */
+let sending = false;
+
+form.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+
+    if(sending) return;
+    sending = true;
+
+    const teacher = teacher.value;
+    const room = room.value;
+    const description = description.value;
+
+    btnAlert.disabled = true;
+    btnAlert.innerHTML = "Enviando...";
+
+    try {
+        const res = await fetch("/api/alert",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body:JSON.stringify({teacher, room, description})
+        });
+
+        const data = await res.json();
+
+        if(data.ok){
+            feedback.style.display="block";
+            form.reset();
+            setTimeout(()=>feedback.style.display="none",3000);
+        }
+    } catch(err){
+        alert("Erro ao enviar.");
+    }
+
+    btnAlert.disabled = false;
+    btnAlert.innerHTML = "🚨 ENVIAR ALERTA";
+    sending = false;
+});
+
+/* Botões extras */
+document.getElementById("btnLimpar").onclick = ()=> form.reset();
+document.getElementById("btnReiniciar").onclick = ()=> location.reload();
+document.getElementById("btnSair").onclick = ()=> location.href="/";
 </script>
+
 </body>
 </html>
