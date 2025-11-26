@@ -26,17 +26,18 @@ app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
-# --- Dados da Escola (para aparecer no PDF) ---------------------------------
+# --- Dados da Escola (para relatório / telas) ---------------------------------
 SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
+SCHOOL_DIRECTOR = os.getenv("SCHOOL_DIRECTOR", "Direção não configurada")
 
-# --- Bloco em memória para edição no /admin/escola -------------------------
+# Bloco em memória editável via /admin/escola
 SCHOOL_DATA = {
     "nome": SCHOOL_NAME,
     "endereco": SCHOOL_ADDRESS,
     "telefone": SCHOOL_CONTACT,
-    "diretor": os.getenv("SCHOOL_DIRECTOR", "Direção não configurada"),
+    "diretor": SCHOOL_DIRECTOR,
 }
 
 # --- Segurança: limites de login e sessão -----------------------------------
@@ -166,9 +167,9 @@ def admin():
 @app.route("/admin/escola", methods=["GET", "POST"])
 def admin_escola():
     """
-    Tela simples para editar os dados da escola em memória.
+    Tela para editar os dados da escola em memória.
     """
-    global SCHOOL_DATA
+    global SCHOOL_DATA, SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT, SCHOOL_DIRECTOR
 
     if request.method == "POST":
         nome = (request.form.get("nome") or "").strip() or SCHOOL_DATA["nome"]
@@ -180,6 +181,12 @@ def admin_escola():
         SCHOOL_DATA["endereco"] = endereco
         SCHOOL_DATA["telefone"] = telefone
         SCHOOL_DATA["diretor"] = diretor
+
+        # Atualiza também as variáveis usadas no PDF
+        SCHOOL_NAME = nome
+        SCHOOL_ADDRESS = endereco
+        SCHOOL_CONTACT = telefone
+        SCHOOL_DIRECTOR = diretor
 
         app.logger.info(
             f"[ADMIN] Dados da escola atualizados: "
@@ -338,17 +345,22 @@ def report_pdf():
     pdf = canvas.Canvas(buffer)
     pdf.setTitle("Relatório PROF-SAFE 24")
 
+    # Pega os dados atuais da escola
+    nome_escola = SCHOOL_DATA.get("nome", SCHOOL_NAME)
+    endereco_escola = SCHOOL_DATA.get("endereco", SCHOOL_ADDRESS)
+    contato_escola = SCHOOL_DATA.get("telefone", SCHOOL_CONTACT)
+
     # Cabeçalho
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(40, 800, "PROF-SAFE 24 - Relatório de Alertas")
 
     pdf.setFont("Helvetica", 10)
     y = 780
-    pdf.drawString(40, y, f"Escola: {SCHOOL_NAME}")
+    pdf.drawString(40, y, f"Escola: {nome_escola}")
     y -= 12
-    pdf.drawString(40, y, f"Endereço: {SCHOOL_ADDRESS}")
+    pdf.drawString(40, y, f"Endereço: {endereco_escola}")
     y -= 12
-    pdf.drawString(40, y, f"Contato: {SCHOOL_CONTACT}")
+    pdf.drawString(40, y, f"Contato: {contato_escola}")
     y -= 12
 
     data_geracao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
