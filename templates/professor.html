@@ -171,6 +171,30 @@
             transform:translateY(1px);
             box-shadow:0 8px 26px rgba(127,29,29,0.9);
         }
+        .actions-row{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            margin-top:8px;
+        }
+        .btn-secondary{
+            flex:1;
+            min-width:90px;
+            border-radius:999px;
+            border:1px solid rgba(148,163,184,0.9);
+            background:rgba(15,23,42,0.96);
+            color:#e5e7eb;
+            font-size:11px;
+            padding:7px 10px;
+            cursor:pointer;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+        }
+        .btn-secondary:hover{
+            filter:brightness(1.05);
+        }
         .tip{
             margin-top:8px;
             font-size:11px;
@@ -225,7 +249,7 @@
     <div class="shell-inner">
         <header>
             <div class="brand">
-                <div class="brand-icon"></div>
+                <div class="brand-icon">PS24</div>
                 <div>
                     <div class="brand-text-title">PROF-SAFE 24</div>
                     <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
@@ -260,6 +284,19 @@
                     <span class="icon">🚨</span>
                     ENVIAR ALERTA PARA A CENTRAL
                 </button>
+
+                <!-- NOVOS BOTÕES: REINICIAR, LIMPAR, SAIR -->
+                <div class="actions-row">
+                    <button type="button" class="btn-secondary" id="btnReiniciar">
+                        ⟳ Reiniciar
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnLimpar">
+                        🧹 Limpar
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnSair">
+                        ⏻ Sair
+                    </button>
+                </div>
             </form>
 
             <div class="feedback" id="feedbackMsg">
@@ -308,6 +345,22 @@ form.addEventListener('submit', async (e) => {
         console.error(e);
         alert('Erro de comunicação com a Central. Verifique a conexão.');
     }
+});
+
+// BOTÃO LIMPAR: só limpa campos
+document.getElementById('btnLimpar').addEventListener('click', () => {
+    form.reset();
+    feedback.style.display = 'none';
+});
+
+// BOTÃO REINICIAR: recarrega a página
+document.getElementById('btnReiniciar').addEventListener('click', () => {
+    location.reload();
+});
+
+// BOTÃO SAIR: volta para a tela inicial
+document.getElementById('btnSair').addEventListener('click', () => {
+    window.location.href = '/';
 });
 
 function updateClockProf(){
