@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>PROF-SAFE 24 - Dados da Escola</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing:border-box; }
+        body {
+            margin:0;
+            min-height:100vh;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
+            color:#e5e7eb;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .shell{
+            width:100%;
+            max-width:520px;
+            padding:20px;
+        }
+        .card{
+            background:rgba(2,8,23,0.96);
+            border-radius:18px;
+            border:1px solid rgba(56,189,248,0.35);
+            box-shadow:0 24px 60px rgba(0,0,0,0.9);
+            padding:18px 20px 20px;
+            position:relative;
+            overflow:hidden;
+        }
+        .card::before{
+            content:"";
+            position:absolute;
+            inset:-35%;
+            background:
+                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
+                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
+            opacity:0.9;
+            pointer-events:none;
+        }
+        .card-inner{
+            position:relative;
+            z-index:1;
+        }
+        .brand-title{
+            font-size:16px;
+            font-weight:600;
+            letter-spacing:0.12em;
+            text-transform:uppercase;
+            margin-bottom:4px;
+        }
+        .brand-sub{
+            font-size:11px;
+            color:#9ca3af;
+            margin-bottom:14px;
+        }
+        .form-group{
+            margin-bottom:10px;
+            font-size:12px;
+        }
+        label{
+            display:block;
+            margin-bottom:4px;
+            color:#cbd5f5;
+        }
+        input{
+            width:100%;
+            padding:8px 10px;
+            border-radius:10px;
+            border:1px solid rgba(148,163,184,0.8);
+            background:rgba(15,23,42,0.95);
+            color:#e5e7eb;
+            font-size:13px;
+        }
+        input:focus{
+            outline:none;
+            border-color:#22d3ee;
+            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
+        }
+        .btn-row{
+            display:flex;
+            gap:8px;
+            margin-top:10px;
+        }
+        .btn{
+            flex:1;
+            border-radius:999px;
+            border:none;
+            padding:9px 0;
+            font-size:13px;
+            font-weight:600;
+            cursor:pointer;
+        }
+        .btn-primary{
+            background:linear-gradient(135deg,#22d3ee,#0369a1);
+            color:#0f172a;
+            box-shadow:0 12px 28px rgba(8,47,73,0.9);
+        }
+        .btn-secondary{
+            background:rgba(15,23,42,0.95);
+            color:#e5e7eb;
+            border:1px solid rgba(148,163,184,0.8);
+        }
+        .btn:hover{
+            filter:brightness(1.05);
+        }
+        .footer{
+            margin-top:10px;
+            font-size:10px;
+            color:#6b7280;
+            text-align:right;
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="card">
+        <div class="card-inner">
+            <div class="brand-title">PROF-SAFE 24</div>
+            <div class="brand-sub">Configuração dos dados oficiais da escola</div>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label for="nome">Nome da escola</label>
+                    <input type="text" id="nome" name="nome"
+                           value="{{ escola['nome'] or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="endereco">Endereço completo</label>
+                    <input type="text" id="endereco" name="endereco"
+                           value="{{ escola['endereco'] or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone / WhatsApp</label>
+                    <input type="text" id="telefone" name="telefone"
+                           value="{{ escola['telefone'] or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="diretor">Diretor(a) / Responsável</label>
+                    <input type="text" id="diretor" name="diretor"
+                           value="{{ escola['diretor'] or '' }}">
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="btn btn-primary">Salvar dados</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary" style="text-align:center; text-decoration:none;">
+                        Voltar
+                    </a>
+                </div>
+            </form>
+
+            <div class="footer">
+                As informações salvas aqui aparecerão na tela inicial e nos relatórios PDF.
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
