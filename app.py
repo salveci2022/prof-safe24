@@ -14,7 +14,8 @@ from flask import (
 )
 from dotenv import load_dotenv
 from reportlab.pdfgen import canvas
-import pytz  # <<< timezone Brasil
+import pytz  # timezone Brasil
+
 
 # --------------------------------------------------------------------------- #
 #                          Configuração inicial
@@ -24,16 +25,16 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Timezone Brasil
+# Timezone Brasil (BRT)
 BR_TZ = pytz.timezone("America/Sao_Paulo")
 
-# Caminho do .env (para salvar dados da escola)
+# Caminho do .env (para salvar dados da escola localmente quando possível)
 ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
 
 # --- Configuração básica / segredos -----------------------------------------
 app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 
-# Usuário e senha da Central vindos das variáveis de ambiente
+# Usuário e senha da Central vindos das variáveis de ambiente (ou padrão)
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
@@ -41,15 +42,6 @@ CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
-SCHOOL_DIRECTOR = os.getenv("SCHOOL_DIRECTOR", "Direção não configurada")
-
-# Bloco em memória editável via /admin/escola
-SCHOOL_DATA = {
-    "nome": SCHOOL_NAME,
-    "endereco": SCHOOL_ADDRESS,
-    "telefone": SCHOOL_CONTACT,
-    "diretor": SCHOOL_DIRECTOR,
-}
 
 # --- Segurança: limites de login e sessão -----------------------------------
 MAX_LOGIN_ATTEMPTS = 5          # tentativas máximas antes de bloquear
@@ -59,13 +51,12 @@ SESSION_TIMEOUT_MINUTES = 15    # tempo de inatividade até deslogar
 # ip -> {"count": int, "locked_until": datetime}
 login_attempts = {}
 
+
 # --------------------------------------------------------------------------- #
 #                               Funções utilitárias
 # --------------------------------------------------------------------------- #
 def get_client_ip() -> str:
-    """
-    Pega o IP real do cliente. No Render, pode vir em X-Forwarded-For.
-    """
+    """Pega o IP real do cliente. No Render, pode vir em X-Forwarded-For."""
     xff = request.headers.get("X-Forwarded-For")
     if xff:
         # Pode vir "ip1, ip2, ip3" → usamos o primeiro
@@ -74,9 +65,7 @@ def get_client_ip() -> str:
 
 
 def is_ip_locked(ip: str) -> bool:
-    """
-    Verifica se o IP está bloqueado por muitas tentativas erradas.
-    """
+    """Verifica se o IP está bloqueado por muitas tentativas erradas."""
     data = login_attempts.get(ip)
     if not data:
         return False
@@ -94,10 +83,7 @@ def is_ip_locked(ip: str) -> bool:
 
 
 def register_failed_login(ip: str) -> None:
-    """
-    Registra uma tentativa de login falha e, se ultrapassar o limite,
-    bloqueia o IP por LOCK_TIME_MINUTES.
-    """
+    """Registra tentativa de login falha e, se ultrapassar o limite, bloqueia IP."""
     now = datetime.utcnow()
     record = login_attempts.get(ip, {"count": 0, "locked_until": None})
     record["count"] += 1
@@ -113,17 +99,17 @@ def register_failed_login(ip: str) -> None:
 
 
 def reset_login_attempts(ip: str) -> None:
-    """
-    Limpa o contador de login ao logar com sucesso.
-    """
+    """Limpa o contador de login ao logar com sucesso."""
     if ip in login_attempts:
         login_attempts.pop(ip, None)
 
 
-def save_school_to_env(school: dict) -> None:
+def save_school_to_env(name: str, address: str, contact: str) -> None:
     """
-    Atualiza/insere SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT, SCHOOL_DIRECTOR no .env.
-    (Em alguns ambientes de hospedagem o .env pode não ser persistente, mas local funciona.)
+    Atualiza/insere SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT no .env.
+
+    Observação: em hospedagens como Render, isso pode não persistir entre
+    deploys/restarts. Localmente funciona normalmente.
     """
     try:
         env_data = {}
@@ -137,10 +123,9 @@ def save_school_to_env(school: dict) -> None:
                     k, v = line.split("=", 1)
                     env_data[k.strip()] = v.strip()
 
-        env_data["SCHOOL_NAME"] = school.get("nome", "")
-        env_data["SCHOOL_ADDRESS"] = school.get("endereco", "")
-        env_data["SCHOOL_CONTACT"] = school.get("telefone", "")
-        env_data["SCHOOL_DIRECTOR"] = school.get("diretor", "")
+        env_data["SCHOOL_NAME"] = name
+        env_data["SCHOOL_ADDRESS"] = address
+        env_data["SCHOOL_CONTACT"] = contact
 
         with open(ENV_PATH, "w", encoding="utf-8") as f:
             for k, v in env_data.items():
@@ -158,8 +143,8 @@ def save_school_to_env(school: dict) -> None:
 @app.before_request
 def enforce_session_timeout():
     """
-    - Define sessão como permanente.
-    - Encerra sessão da Central após SESSION_TIMEOUT_MINUTES de inatividade.
+    Define sessão como permanente e encerra sessão da Central
+    após SESSION_TIMEOUT_MINUTES de inatividade.
     """
     session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=SESSION_TIMEOUT_MINUTES)
@@ -209,38 +194,34 @@ def admin():
 # ------------------------- ROTA /admin/escola ------------------------------- #
 @app.route("/admin/escola", methods=["GET", "POST"])
 def admin_escola():
-    """
-    Tela para editar os dados da escola em memória + salvar no .env.
-    """
-    global SCHOOL_DATA, SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT, SCHOOL_DIRECTOR
+    """Tela para editar os dados da escola pela interface web."""
+    global SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT
+
+    saved = False
 
     if request.method == "POST":
-        nome = (request.form.get("nome") or "").strip() or SCHOOL_DATA["nome"]
-        endereco = (request.form.get("endereco") or "").strip() or SCHOOL_DATA["endereco"]
-        telefone = (request.form.get("telefone") or "").strip() or SCHOOL_DATA["telefone"]
-        diretor = (request.form.get("diretor") or "").strip() or SCHOOL_DATA["diretor"]
+        school_name = (request.form.get("school_name") or "").strip()
+        school_address = (request.form.get("school_address") or "").strip()
+        school_contact = (request.form.get("school_contact") or "").strip()
 
-        SCHOOL_DATA["nome"] = nome
-        SCHOOL_DATA["endereco"] = endereco
-        SCHOOL_DATA["telefone"] = telefone
-        SCHOOL_DATA["diretor"] = diretor
+        if school_name:
+            SCHOOL_NAME = school_name
+        if school_address:
+            SCHOOL_ADDRESS = school_address
+        if school_contact:
+            SCHOOL_CONTACT = school_contact
 
-        # Atualiza também as variáveis usadas no PDF
-        SCHOOL_NAME = nome
-        SCHOOL_ADDRESS = endereco
-        SCHOOL_CONTACT = telefone
-        SCHOOL_DIRECTOR = diretor
+        # Tenta gravar no .env (se permitido pelo ambiente)
+        save_school_to_env(SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
+        saved = True
 
-        # Tenta gravar no .env
-        save_school_to_env(SCHOOL_DATA)
-
-        app.logger.info(
-            f"[ADMIN] Dados da escola atualizados: "
-            f"{nome} / {endereco} / {telefone} / {diretor}"
-        )
-        return redirect(url_for("admin_escola"))
-
-    return render_template("admin_school.html", escola=SCHOOL_DATA)
+    return render_template(
+        "admin_school.html",
+        school_name=SCHOOL_NAME,
+        school_address=SCHOOL_ADDRESS,
+        school_contact=SCHOOL_CONTACT,
+        saved=saved,
+    )
 
 
 @app.route("/login_central", methods=["GET", "POST"])
@@ -393,22 +374,17 @@ def report_pdf():
     pdf = canvas.Canvas(buffer)
     pdf.setTitle("Relatório PROF-SAFE 24")
 
-    # Pega os dados atuais da escola
-    nome_escola = SCHOOL_DATA.get("nome", SCHOOL_NAME)
-    endereco_escola = SCHOOL_DATA.get("endereco", SCHOOL_ADDRESS)
-    contato_escola = SCHOOL_DATA.get("telefone", SCHOOL_CONTACT)
-
     # Cabeçalho
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(40, 800, "PROF-SAFE 24 - Relatório de Alertas")
 
     pdf.setFont("Helvetica", 10)
     y = 780
-    pdf.drawString(40, y, f"Escola: {nome_escola}")
+    pdf.drawString(40, y, f"Escola: {SCHOOL_NAME}")
     y -= 12
-    pdf.drawString(40, y, f"Endereço: {endereco_escola}")
+    pdf.drawString(40, y, f"Endereço: {SCHOOL_ADDRESS}")
     y -= 12
-    pdf.drawString(40, y, f"Contato: {contato_escola}")
+    pdf.drawString(40, y, f"Contato: {SCHOOL_CONTACT}")
     y -= 12
 
     # Horário de geração em BRT
@@ -457,5 +433,5 @@ def report_pdf():
 
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    # Em produção (Render) o comando é "python app.py"
+    # Em desenvolvimento local
     app.run(host="0.0.0.0", port=5000, debug=True)
