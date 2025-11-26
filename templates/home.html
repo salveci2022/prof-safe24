@@ -221,6 +221,7 @@
             font-size:12px;
             font-weight:600;
             margin-bottom:4px;
+            color:#e5e7eb;
         }
         .pill{
             display:inline-flex;
@@ -233,6 +234,9 @@
             color:#cbd5f5;
             margin:2px 2px 0 0;
         }
+        .pill span.icon{
+            font-size:13px;
+        }
         .footer-note{
             margin-top:10px;
             font-size:10px;
@@ -240,22 +244,44 @@
             text-align:right;
         }
 
-        /* LOGO ARREDONDADA ✔ */
         .logo-banner {
-            width: 140px;
-            height: 140px;
-            border-radius: 22px;
-            overflow: hidden;
+            display:flex;
+            justify-content:flex-start;
+            align-items:center;
             margin: 4px 0 12px;
-            box-shadow: 0 0 16px rgba(34,211,238,0.35);
         }
         .logo-banner img {
+            max-width: 140px;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display:block;
+            height:auto;
+            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
+            border-radius: 18px; /* só arredonda a imagem */
         }
 
+        @media (max-width:780px){
+            .shell{
+                margin:12px;
+                padding:16px;
+            }
+            header{
+                flex-direction:column;
+                align-items:flex-start;
+                gap:6px;
+            }
+            .status-area{
+                align-items:flex-start;
+                text-align:left;
+            }
+            main{
+                grid-template-columns:1fr;
+            }
+            .card{
+                padding:14px 14px 16px;
+            }
+            .card-title{
+                font-size:13px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -263,3 +289,107 @@
     <div class="logo-banner">
         <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
     </div>
+    <div class="shell-inner">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">PS24</div>
+                <div>
+                    <div class="brand-text-title">PROF-SAFE 24</div>
+                    <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
+                </div>
+            </div>
+            <div class="status-area">
+                <div class="pill-online"><span>●</span> Sistema Online</div>
+                <div class="clock" id="clockHome"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="card-inner">
+                    <div class="card-title">Botão de Pânico do Professor</div>
+                    <div class="card-sub">Acesso rápido e discreto para o professor pedir ajuda em qualquer situação de risco.</div>
+
+                    <div class="flex-row">
+                        <div class="km-tag">Sem instalar aplicativo</div>
+                        <div class="km-tag">Funciona em qualquer celular</div>
+                        <div class="km-tag">Uso dentro e fora da escola</div>
+                    </div>
+
+                    <button class="btn-main" onclick="irProfessor()">
+                        <span class="icon">📲</span>
+                        Acessar App do Professor
+                    </button>
+
+                    <ul class="mini-list">
+                        <li>Envio imediato do alerta para a Central.</li>
+                        <li>Registro do local, horário e descrição do ocorrido.</li>
+                        <li>Compatível com Wi-Fi ou dados móveis.</li>
+                    </ul>
+
+                    <div class="timeline">
+                        <strong>Fluxo do alerta:</strong><br>
+                        Professor aciona &rarr; Central recebe &rarr; Sirene ativa &rarr;
+                        <span class="highlight">Gestão toma decisão imediata.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="block">
+                    <div class="block-title">Painel da Central (Direção / Coordenação)</div>
+                    <p style="margin:4px 0 6px;">
+                        Monitoramento em tempo real dos alertas, com sirene digital, histórico organizado e relatório em PDF para registro oficial.
+                    </p>
+                    <div>
+                        <span class="pill"><span class="icon">👀</span> Visualização em tempo real</span>
+                        <span class="pill"><span class="icon">🚨</span> Controle da sirene</span>
+                        <span class="pill"><span class="icon">📄</span> Relatório PDF com dados da escola</span>
+                        <span class="pill"><span class="icon">🔐</span> Acesso com login e senha</span>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <button class="btn-main" style="padding:8px 14px; font-size:12px;" onclick="irCentral()">
+                            <span class="icon">🛡️</span>
+                            Acessar Central
+                        </button>
+                    </div>
+                </div>
+
+                <div class="block">
+                    <div class="block-title">Relatórios e Segurança</div>
+                    <p style="margin:4px 0 8px;">
+                        Cada alerta fica registrado com data, horário, sala e status. A Central pode exportar tudo em PDF para anexar em relatórios internos.
+                    </p>
+                    <ul class="mini-list">
+                        <li>Registro dos incidentes ocorridos.</li>
+                        <li>Ajuda na tomada de decisão e em ações preventivas.</li>
+                        <li>Fortalece a segurança institucional da escola.</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <div class="footer-note">
+            PROF-SAFE 24 &mdash; Sistema de Proteção Rápida e Inteligente para Ambientes Escolares.
+        </div>
+    </div>
+</div>
+
+<script>
+function irProfessor(){
+    window.location.href = "/professor";
+}
+function irCentral(){
+    window.location.href = "/login_central";
+}
+
+function updateClockHome(){
+    const el = document.getElementById('clockHome');
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
+}
+setInterval(updateClockHome,1000);
+updateClockHome();
+</script>
+</body>
+</html>
