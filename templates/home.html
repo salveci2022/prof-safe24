@@ -46,6 +46,25 @@
             position:relative;
             z-index:1;
         }
+
+        /* =====================================================
+           LOGO — LADO ESQUERDO + CANTOS ARREDONDADOS (FINAL)
+        ====================================================== */
+        .logo-banner {
+            display:flex;
+            justify-content:flex-start;
+            align-items:center;
+            margin: 4px 0 16px;
+        }
+        .logo-banner img {
+            max-width: 180px;
+            width: 100%;
+            height:auto;
+            border-radius: 22px; /* cantos arredondados */
+            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
+        }
+        /* ===================================================== */
+
         header{
             display:flex;
             justify-content:space-between;
@@ -110,6 +129,7 @@
             color:#facc15;
             font-weight:bold;
         }
+
         main{
             display:grid;
             grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
@@ -124,20 +144,6 @@
             position:relative;
             overflow:hidden;
         }
-        .card::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(248,250,252,0.04), transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(8,47,73,0.35), transparent 55%);
-            opacity:0.75;
-            pointer-events:none;
-        }
-        .card-inner{
-            position:relative;
-            z-index:1;
-        }
         .card-title{
             font-size:14px;
             font-weight:600;
@@ -149,19 +155,7 @@
             color:#9ca3af;
             margin-bottom:12px;
         }
-        .flex-row{
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-            margin-bottom:10px;
-        }
-        .km-tag{
-            font-size:11px;
-            padding:3px 8px;
-            border-radius:999px;
-            border:1px dashed rgba(148,163,184,0.7);
-            color:#cbd5f5;
-        }
+
         .btn-main{
             display:inline-flex;
             align-items:center;
@@ -178,109 +172,14 @@
             cursor:pointer;
             box-shadow:0 12px 25px rgba(8,47,73,0.9);
         }
-        .btn-main span.icon{
-            font-size:15px;
-        }
-        .btn-main:hover{
-            filter:brightness(1.05);
-        }
-        .mini-list{
-            margin-top:10px;
-            font-size:11px;
-            color:#cbd5f5;
-        }
-        .mini-list li{
-            margin-bottom:2px;
-        }
-        .timeline{
-            margin-top:8px;
-            border-top:1px dashed rgba(148,163,184,0.7);
-            padding-top:8px;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .timeline strong{ color:#e5e7eb; }
-        .highlight{
-            color:#22d3ee;
-            font-weight:600;
-        }
-        .right-col{
-            display:flex;
-            flex-direction:column;
-            gap:12px;
-        }
-        .block{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,1));
-            border-radius:14px;
-            border:1px solid rgba(51,65,85,0.9);
-            padding:10px 12px 12px;
-            font-size:11px;
-            color:#e5e7eb;
-        }
-        .block-title{
-            font-size:12px;
-            font-weight:600;
-            margin-bottom:4px;
-            color:#e5e7eb;
-        }
-        .pill{
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-            padding:3px 8px;
-            border-radius:999px;
-            border:1px solid rgba(148,163,184,0.8);
-            font-size:10px;
-            color:#cbd5f5;
-            margin:2px 2px 0 0;
-        }
-        .pill span.icon{
-            font-size:13px;
-        }
+
         .footer-note{
             margin-top:10px;
             font-size:10px;
             color:#6b7280;
             text-align:right;
         }
-        .logo-banner {
-            display:flex;
-            justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
-        }
-        .logo-banner img {
-            max-width: 140px;
-            width: 100%;
-            height:auto;
-            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
-            border-radius: 18px;
-        }
 
-        @media (max-width:780px){
-            .shell{
-                margin:12px;
-                padding:16px;
-            }
-            header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:6px;
-            }
-            .status-area{
-                align-items:flex-start;
-                text-align:left;
-            }
-            main{
-                grid-template-columns:1fr;
-            }
-            .card{
-                padding:14px 14px 16px;
-            }
-            .card-title{
-                font-size:13px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -288,6 +187,7 @@
     <div class="logo-banner">
         <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
     </div>
+
     <div class="shell-inner">
         <header>
             <div class="brand">
@@ -297,6 +197,7 @@
                     <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
                 </div>
             </div>
+
             <div class="status-area">
                 <div class="pill-online"><span>●</span> Sistema Online</div>
                 <div class="clock" id="clockHome"></div>
@@ -304,73 +205,31 @@
         </header>
 
         <main>
+
             <div class="card">
-                <div class="card-inner">
-                    <div class="card-title">Botão de Pânico do Professor</div>
-                    <div class="card-sub">Acesso rápido e discreto para o professor pedir ajuda em qualquer situação de risco.</div>
+                <div class="card-title">Botão de Pânico do Professor</div>
+                <div class="card-sub">Acesso rápido e discreto para pedir ajuda em qualquer situação de risco.</div>
 
-                    <div class="flex-row">
-                        <div class="km-tag">Sem instalar aplicativo</div>
-                        <div class="km-tag">Funciona em qualquer celular</div>
-                        <div class="km-tag">Uso dentro e fora da escola</div>
-                    </div>
-
-                    <button class="btn-main" onclick="irProfessor()">
-                        <span class="icon">📲</span>
-                        Acessar App do Professor
-                    </button>
-
-                    <ul class="mini-list">
-                        <li>Envio imediato do alerta para a Central.</li>
-                        <li>Registro do local, horário e descrição do ocorrido.</li>
-                        <li>Compatível com Wi-Fi ou dados móveis.</li>
-                    </ul>
-
-                    <div class="timeline">
-                        <strong>Fluxo do alerta:</strong><br>
-                        Professor aciona &rarr; Central recebe &rarr; Sirene ativa &rarr;
-                        <span class="highlight">Gestão toma decisão imediata.</span>
-                    </div>
-                </div>
+                <button class="btn-main" onclick="irProfessor()">
+                    📲 Acessar App do Professor
+                </button>
             </div>
 
-            <div class="right-col">
-                <div class="block">
-                    <div class="block-title">Painel da Central (Direção / Coordenação)</div>
-                    <p style="margin:4px 0 6px;">
-                        Monitoramento em tempo real dos alertas, com sirene digital, histórico organizado e relatório em PDF para registro oficial.
-                    </p>
-                    <div>
-                        <span class="pill"><span class="icon">👀</span> Visualização em tempo real</span>
-                        <span class="pill"><span class="icon">🚨</span> Controle da sirene</span>
-                        <span class="pill"><span class="icon">📄</span> Relatório PDF com dados da escola</span>
-                        <span class="pill"><span class="icon">🔐</span> Acesso com login e senha</span>
-                    </div>
-                    <div style="margin-top:10px;">
-                        <button class="btn-main" style="padding:8px 14px; font-size:12px;" onclick="irCentral()">
-                            <span class="icon">🛡️</span>
-                            Acessar Central
-                        </button>
-                    </div>
-                </div>
+            <div class="card">
+                <div class="card-title">Painel da Central</div>
+                <div class="card-sub">Monitoramento completo, sirene digital e relatórios da escola.</div>
 
-                <div class="block">
-                    <div class="block-title">Relatórios e Segurança</div>
-                    <p style="margin:4px 0 8px;">
-                        Cada alerta fica registrado com data, horário, sala e status. A Central pode exportar tudo em PDF para anexar em relatórios internos.
-                    </p>
-                    <ul class="mini-list">
-                        <li>Registro dos incidentes ocorridos.</li>
-                        <li>Ajuda na tomada de decisão e em ações preventivas.</li>
-                        <li>Fortalece a segurança institucional da escola.</li>
-                    </ul>
-                </div>
+                <button class="btn-main" onclick="irCentral()">
+                    🛡️ Acessar Central
+                </button>
             </div>
+
         </main>
 
         <div class="footer-note">
-            PROF-SAFE 24 &mdash; Sistema de Proteção Rápida e Inteligente para Ambientes Escolares.
+            PROF-SAFE 24 — Sistema de Proteção Rápida e Inteligente.
         </div>
+
     </div>
 </div>
 
