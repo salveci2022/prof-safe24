@@ -1,563 +1,308 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - Painel Central</title>
+    <title>Central de Segurança – PROF-SAFE 24</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        * { box-sizing:border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            margin:0;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color:#e5e7eb;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #05050a;
+            color: #f5f5f5;
+            padding: 16px;
         }
-        .shell {
-            width:100%;
-            max-width:980px;
-            background:rgba(2,8,23,0.96);
-            border-radius:20px;
-            border:1px solid rgba(56,189,248,0.35);
-            box-shadow:0 25px 70px rgba(0,0,0,0.9);
-            padding:18px 20px 20px;
-            position:relative;
-            overflow:hidden;
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
-        .shell-inner{
-            position:relative;
-            z-index:1;
+        .title {
+            font-size: 22px;
+            font-weight: bold;
         }
-        header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:18px;
+        .subtitle {
+            font-size: 12px;
+            color: #bbbbbb;
         }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:10px;
+        .badge {
+            background: #ff8800;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
         }
-        .brand-icon{
-            width:40px;
-            height:40px;
-            border-radius:16px;
-            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 30px rgba(248,250,252,0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:11px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.1em;
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 14px;
         }
-        .brand-text-title{
-            font-size:18px;
-            font-weight:600;
-            letter-spacing:0.12em;
-            text-transform:uppercase;
-            color:#e5e7eb;
+        .card {
+            background: #101018;
+            border-radius: 12px;
+            padding: 14px 14px 16px;
+            box-shadow: 0 0 14px rgba(0,0,0,0.6);
         }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 4px;
         }
-        .status-area{
-            display:flex;
-            flex-direction:column;
-            align-items:flex-end;
-            gap:6px;
-            font-size:11px;
-            color:#9ca3af;
+        .card small {
+            font-size: 11px;
+            color: #aaaaaa;
         }
-        .pill-online{
-            font-size:11px;
-            padding:4px 10px;
-            border-radius:999px;
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            background:rgba(6,95,70,0.7);
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-        }
-        .pill-online span{
-            font-size:14px;
-        }
-        .clock{
-            font-size:13px;
-            color:#facc15;
-            font-weight:bold;
-        }
-        .main-panel{
-            display:grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-            gap:18px;
-        }
-        .card{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
-            border-radius:16px;
-            border:1px solid rgba(148,163,184,0.4);
-            padding:14px 16px 16px;
-            box-shadow:0 15px 40px rgba(15,23,42,0.9);
-            position:relative;
-            overflow:hidden;
-        }
-        .card::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(248,250,252,0.05), transparent 55%),
-                radial-gradient(circle at 100% 100%, rgba(8,47,73,0.4), transparent 60%);
-            opacity:0.8;
-            pointer-events:none;
-        }
-        .card-inner{
-            position:relative;
-            z-index:1;
-        }
-        .card-title{
-            font-size:14px;
-            font-weight:600;
-            margin-bottom:4px;
-        }
-        .card-sub{
-            font-size:11px;
-            color:#9ca3af;
-            margin-bottom:10px;
-        }
-        .table-alerts{
-            width:100%;
-            border-collapse:collapse;
-            font-size:11px;
-        }
-        .table-alerts th,
-        .table-alerts td{
-            padding:6px 6px;
-            border-bottom:1px solid rgba(30,64,175,0.6);
-        }
-        .table-alerts th{
-            text-align:left;
-            font-weight:600;
-            color:#e5e7eb;
-            background:rgba(15,23,42,0.9);
-        }
-        .table-alerts tr:last-child td{
-            border-bottom:none;
-        }
-        .status-pill{
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-            padding:3px 7px;
-            border-radius:999px;
-            font-size:10px;
-        }
-        .status-ativo{
-            background:rgba(248,113,113,0.18);
-            border:1px solid rgba(248,113,113,0.7);
-            color:#fecaca;
-        }
-        .status-resolvido{
-            background:rgba(22,163,74,0.16);
-            border:1px solid rgba(34,197,94,0.7);
-            color:#bbf7d0;
-        }
-        .controls-row{
-            display:flex;
-            flex-wrap:wrap;
-            gap:8px;
-            margin-top:10px;
-        }
-        .btn{
-            border-radius:999px;
-            border:1px solid rgba(148,163,184,0.85);
-            background:rgba(15,23,42,0.95);
-            color:#e5e7eb;
-            padding:6px 12px;
-            font-size:11px;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-        }
-        .btn-primary{
-            background:linear-gradient(135deg,#22d3ee,#0369a1);
-            border-color:transparent;
-            color:#0f172a;
-            font-weight:600;
-            box-shadow:0 12px 25px rgba(8,47,73,0.9);
-        }
-        .btn-danger{
-            background:linear-gradient(135deg,#f97316,#b91c1c);
-            border-color:transparent;
-            color:#f9fafb;
-            font-weight:600;
-        }
-        .btn-ghost{
-            background:rgba(15,23,42,0.9);
-        }
-        .btn:hover{
-            filter:brightness(1.05);
-        }
-        .siren-indicator{
-            display:flex;
-            align-items:center;
-            gap:6px;
-            font-size:11px;
-            margin-top:6px;
-            color:#f87171;
-        }
-        .siren-dot{
-            width:10px;
-            height:10px;
-            border-radius:999px;
-            background:#ef4444;
-            box-shadow:0 0 10px rgba(239,68,68,0.9);
-        }
-        .siren-muted{
-            color:#9ca3af;
-        }
-        .secondary-card{
-            font-size:11px;
-            color:#cbd5f5;
-        }
-        .secondary-card p{
-            margin:3px 0 8px;
-        }
-        .pill-tag{
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-            padding:3px 7px;
-            border-radius:999px;
-            border:1px solid rgba(148,163,184,0.85);
-            margin:2px 2px 0 0;
-            font-size:10px;
-        }
-        .pill-tag span.icon{
-            font-size:12px;
-        }
-        .footer-line{
-            margin-top:10px;
-            font-size:10px;
-            color:#6b7280;
-            text-align:right;
-        }
-        .logo-banner {
-            display:flex;
-            justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
-        }
-        .logo-banner img {
-            max-width: 140px;
+        table {
             width: 100%;
-            height:auto;
-            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
-            border-radius: 18px; /* cantos arredondados da logo */
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 7px 6px;
+            border-bottom: 1px solid #262638;
+            text-align: left;
+        }
+        th {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #bbbbbb;
+        }
+        .status-ativo { color: #ffb347; font-weight: bold; }
+        .status-resolvido { color: #6be49a; font-weight: bold; }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 9px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary { background: #ff8800; color: #fff; }
+        .btn-primary:hover { background: #e67600; }
+        .btn-secondary { background: #262638; color: #f5f5f5; }
+        .btn-secondary:hover { background: #33344a; }
+        .tag-siren {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+        .dot-on { background: #ff3b3b; box-shadow: 0 0 8px #ff3b3b; }
+        .dot-off { background: #555; }
+        .footer-note {
+            margin-top: 12px;
+            font-size: 11px;
+            color: #aaaaaa;
         }
 
-        @media (max-width:780px){
-            .shell{
-                margin:10px;
-                padding:16px;
-            }
-            header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:6px;
-            }
-            .status-area{
-                align-items:flex-start;
-            }
-            .main-panel{
-                grid-template-columns:1fr;
-            }
-            .card{
-                padding:12px 12px 14px;
-            }
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-<div class="shell">
-    <div class="logo-banner">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+<div class="container">
+
+    <div class="topbar">
+        <div>
+            <div class="title">Central de Monitoramento – PROF-SAFE 24</div>
+            <div class="subtitle">Visualização em tempo real dos alertas enviados pelos professores.</div>
+        </div>
+        <div class="badge">Central</div>
     </div>
-    <div class="shell-inner">
-        <header>
-            <div class="brand">
-                <div class="brand-icon">PS24</div>
-                <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Painel Central &mdash; Monitoramento em tempo real</div>
-                </div>
-            </div>
-            <div class="status-area">
-                <div class="pill-online"><span>●</span> Central Online</div>
-                <div class="clock" id="clock"></div>
-            </div>
-        </header>
 
-        <div class="main-panel">
-            <div class="card">
-                <div class="card-inner">
-                    <div class="card-title">Alertas em tempo real</div>
-                    <div class="card-sub">Visualize os alertas enviados pelos professores, com horário, local e status.</div>
+    <div class="grid">
+        <!-- Coluna esquerda: lista de alertas -->
+        <div class="card">
+            <h2>Alertas recebidos</h2>
+            <small>Atualização automática a cada 2 segundos.</small>
 
-                    <table class="table-alerts" id="alertsTable">
-                        <thead>
-                            <tr>
-                                <th>Data/Hora</th>
-                                <th>Professor</th>
-                                <th>Sala/Local</th>
-                                <th>Descrição</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="alertsBody">
-                            <!-- Preenchido via JavaScript -->
-                        </tbody>
-                    </table>
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Professor</th>
+                    <th>Sala/Local</th>
+                    <th>Descrição</th>
+                    <th>Data/Hora</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="alerts-body">
+                <tr><td colspan="6">Carregando alertas...</td></tr>
+                </tbody>
+            </table>
 
-                    <div class="controls-row">
-                        <button class="btn btn-primary" id="btnResolver">
-                            ✅ Marcar primeiro alerta como resolvido
-                        </button>
-                        <button class="btn btn-danger" id="btnLimpar">
-                            🧹 Limpar todos os alertas
-                        </button>
-                        <button class="btn btn-ghost" id="btnPDF">
-                            📄 Gerar relatório PDF
-                        </button>
-                        <button class="btn btn-ghost" id="btnSair">
-                            ⏏ Sair da Central
-                        </button>
-                    </div>
-
-                    <div class="siren-indicator" id="sirenIndicator">
-                        <div class="siren-dot"></div>
-                        <span>Sirene ativa</span>
-                    </div>
-                    <div class="siren-indicator siren-muted" id="muteIndicator" style="display:none;">
-                        <div class="siren-dot" style="background:#6b7280; box-shadow:none;"></div>
-                        <span>Sirene em modo silencioso</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card secondary-card">
-                <div class="card-inner">
-                    <div class="card-title">Controles da Sirene</div>
-                    <p>Use os botões abaixo para controlar o aviso sonoro na Central.</p>
-
-                    <div class="controls-row" style="margin-bottom:8px;">
-                        <button class="btn btn-primary" id="btnSireneOn">
-                            🚨 Ligar Sirene
-                        </button>
-                        <button class="btn btn-ghost" id="btnSireneMute">
-                            🔇 Silenciar (sirene visual apenas)
-                        </button>
-                        <button class="btn btn-ghost" id="btnSireneOff">
-                            ⏹ Desligar Sirene
-                        </button>
-                    </div>
-
-                    <p>Recomenda-se:</p>
-                    <ul style="margin:0 0 8px 18px; padding:0;">
-                        <li>Manter a central em tela cheia durante o período letivo;</li>
-                        <li>Definir um responsável para atender os alertas;</li>
-                        <li>Registrar no relatório as providências tomadas.</li>
-                    </ul>
-
-                    <div>
-                        <span class="pill-tag"><span class="icon">📊</span> Relatório PDF com histórico</span>
-                        <span class="pill-tag"><span class="icon">🧠</span> Suporte à gestão de risco</span>
-                        <span class="pill-tag"><span class="icon">🏫</span> Focado em ambientes escolares</span>
-                    </div>
-                </div>
+            <div class="btn-row" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="refreshStatus()">🔄 Atualizar agora</button>
+                <button class="btn btn-secondary" onclick="resolverPrimeiro()">✅ Marcar primeiro como resolvido</button>
+                <button class="btn btn-secondary" onclick="limparAlertas()">🧹 Limpar todos</button>
             </div>
         </div>
 
-        <div class="footer-line">
-            PROF-SAFE 24 &mdash; Sistema de Proteção Rápida e Inteligente para Escolas.
+        <!-- Coluna direita: sirene + PDF + navegação -->
+        <div class="card">
+            <h2>Sirene & Relatórios</h2>
+            <small>Controle de som e geração de relatório em PDF.</small>
+
+            <div class="tag-siren">
+                <span id="siren-dot" class="dot dot-off"></span>
+                <span id="siren-text">Sirene desligada</span>
+            </div>
+
+            <div class="btn-row" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="sirenOn()">🚨 Ligar sirene</button>
+                <button class="btn btn-secondary" onclick="sirenMute()">🔇 Silenciar</button>
+                <button class="btn btn-secondary" onclick="sirenOff()">⏻ Desligar sirene</button>
+            </div>
+
+            <div class="btn-row" style="margin-top: 16px;">
+                <a class="btn btn-primary" href="/report.pdf" target="_blank">📄 Abrir relatório em PDF</a>
+                <a class="btn btn-secondary" href="/">🏠 Tela inicial</a>
+                <a class="btn btn-secondary" href="/admin/escola">🏫 Configurar escola</a>
+            </div>
+
+            <div class="footer-note">
+                A sirene toca localmente nesta máquina quando houver alerta ativo.
+                O relatório PDF inclui todos os alertas registrados.
+            </div>
         </div>
     </div>
 </div>
 
-<audio id="sirenSound" loop>
-    <source src="{{ url_for('static', filename='siren.wav') }}" type="audio/wav">
+<!-- Áudio da sirene (ajuste o caminho do arquivo conforme seu static) -->
+<audio id="sirenAudio">
+    <!-- Exemplo: coloque o arquivo em static/sounds/sirene.mp3 e troque abaixo -->
+    <source src="/static/sounds/sirene.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-let sirenPlaying = false;
-let muted = false;
+    let currentSiren = false;
+    let currentMuted = false;
 
-async function fetchStatus(){
-    try{
-        const res = await fetch('/api/status');
-        const data = await res.json();
-        if(!data.ok) return;
-        renderAlerts(data.alerts || []);
-        updateSirenIndicators(data.siren, data.muted);
-        if(data.siren && !muted){
-            playSiren();
-        } else {
-            stopSiren();
+    async function refreshStatus() {
+        try {
+            const resp = await fetch("/api/status");
+            const data = await resp.json();
+
+            // Atualizar tabela
+            const body = document.getElementById("alerts-body");
+            body.innerHTML = "";
+
+            if (!data.alerts || data.alerts.length === 0) {
+                body.innerHTML = '<tr><td colspan="6">Nenhum alerta no momento.</td></tr>';
+            } else {
+                data.alerts.forEach((a, idx) => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${idx + 1}</td>
+                        <td>${a.teacher || '-'}</td>
+                        <td>${a.room || '-'}</td>
+                        <td>${a.description || '-'}</td>
+                        <td>${a.ts || '-'}</td>
+                        <td class="${a.resolved ? 'status-resolvido' : 'status-ativo'}">
+                            ${a.resolved ? 'Resolvido' : 'Ativo'}
+                        </td>
+                    `;
+                    body.appendChild(tr);
+                });
+            }
+
+            // Atualizar estado da sirene
+            currentSiren = data.siren;
+            currentMuted = data.muted;
+
+            const dot = document.getElementById("siren-dot");
+            const text = document.getElementById("siren-text");
+            const audio = document.getElementById("sirenAudio");
+
+            if (currentSiren && !currentMuted) {
+                dot.className = "dot dot-on";
+                text.textContent = "Sirene ligada";
+                if (audio && audio.paused) {
+                    audio.loop = true;
+                    audio.play().catch(() => {});
+                }
+            } else if (currentSiren && currentMuted) {
+                dot.className = "dot dot-off";
+                text.textContent = "Sirene em modo silencioso";
+                if (audio && !audio.paused) audio.pause();
+            } else {
+                dot.className = "dot dot-off";
+                text.textContent = "Sirene desligada";
+                if (audio && !audio.paused) audio.pause();
+            }
+
+        } catch (e) {
+            console.error("Erro ao atualizar status:", e);
         }
-    }catch(e){
-        console.error(e);
-    }
-}
-
-function renderAlerts(alerts){
-    const tbody = document.getElementById('alertsBody');
-    tbody.innerHTML = '';
-    if(!alerts.length){
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 5;
-        td.textContent = 'Nenhum alerta registrado.';
-        td.style.textAlign = 'center';
-        td.style.color = '#9ca3af';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-        return;
     }
 
-    alerts.forEach(a => {
-        const tr = document.createElement('tr');
-
-        const tdTs = document.createElement('td');
-        tdTs.textContent = a.ts || '';
-        tr.appendChild(tdTs);
-
-        const tdProf = document.createElement('td');
-        tdProf.textContent = a.teacher || '-';
-        tr.appendChild(tdProf);
-
-        const tdSala = document.createElement('td');
-        tdSala.textContent = a.room || '-';
-        tr.appendChild(tdSala);
-
-        const tdDesc = document.createElement('td');
-        tdDesc.textContent = a.description || '-';
-        tr.appendChild(tdDesc);
-
-        const tdStatus = document.createElement('td');
-        const span = document.createElement('span');
-        span.classList.add('status-pill');
-        if(a.resolved){
-            span.classList.add('status-resolvido');
-            span.textContent = 'Resolvido';
-        } else {
-            span.classList.add('status-ativo');
-            span.textContent = 'Ativo';
-        }
-        tdStatus.appendChild(span);
-        tr.appendChild(tdStatus);
-
-        tbody.appendChild(tr);
-    });
-}
-
-function updateSirenIndicators(on, isMuted){
-    const sirenEl = document.getElementById('sirenIndicator');
-    const muteEl = document.getElementById('muteIndicator');
-    if(on){
-        sirenEl.style.display = 'flex';
-        muteEl.style.display = isMuted ? 'flex':'none';
-        if(isMuted){
-            sirenEl.classList.add('siren-muted');
-        } else {
-            sirenEl.classList.remove('siren-muted');
-        }
-    } else {
-        sirenEl.style.display = 'none';
-        muteEl.style.display = 'none';
+    async function sirenOn() {
+        await fetch("/api/siren", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({action: "on"})
+        });
+        refreshStatus();
     }
-}
 
-async function postSimple(url, payload){
-    await fetch(url,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(payload || {})
-    });
-}
-
-document.getElementById('btnSireneOn').addEventListener('click', async () => {
-    muted = false;
-    await postSimple('/api/siren', {action:'on'});
-    fetchStatus();
-});
-document.getElementById('btnSireneOff').addEventListener('click', async () => {
-    await postSimple('/api/siren', {action:'off'});
-    fetchStatus();
-});
-document.getElementById('btnSireneMute').addEventListener('click', async () => {
-    muted = true;
-    await postSimple('/api/siren', {action:'mute'});
-    fetchStatus();
-});
-
-document.getElementById('btnResolver').addEventListener('click', async () => {
-    await postSimple('/api/resolve',{});
-    fetchStatus();
-});
-document.getElementById('btnLimpar').addEventListener('click', async () => {
-    await postSimple('/api/clear',{});
-    fetchStatus();
-});
-
-document.getElementById('btnPDF').addEventListener('click', () => {
-    window.open('/report.pdf','_blank');
-});
-document.getElementById('btnSair').addEventListener('click', () => {
-    window.location.href = '/';
-});
-
-function updateClock(){
-    const el = document.getElementById('clock');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-}
-setInterval(updateClock,1000);
-updateClock();
-
-function playSiren(){
-    const audio = document.getElementById('sirenSound');
-    if(!sirenPlaying){
-        audio.currentTime = 0;
-        audio.play().catch(e=>console.log('Erro ao tocar sirene',e));
-        sirenPlaying = true;
+    async function sirenOff() {
+        await fetch("/api/siren", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({action: "off"})
+        });
+        refreshStatus();
     }
-}
-function stopSiren(){
-    const audio = document.getElementById('sirenSound');
-    audio.pause();
-    audio.currentTime = 0;
-    sirenPlaying = false;
-}
 
-setInterval(fetchStatus, 2000);
-fetchStatus();
+    async function sirenMute() {
+        await fetch("/api/siren", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({action: "mute"})
+        });
+        refreshStatus();
+    }
+
+    async function resolverPrimeiro() {
+        await fetch("/api/resolve", {method: "POST"});
+        refreshStatus();
+    }
+
+    async function limparAlertas() {
+        if (!confirm("Tem certeza que deseja limpar TODOS os alertas?")) return;
+        await fetch("/api/clear", {method: "POST"});
+        refreshStatus();
+    }
+
+    // Atualização automática
+    setInterval(refreshStatus, 2000);
+    window.addEventListener("load", refreshStatus);
 </script>
 </body>
 </html>
