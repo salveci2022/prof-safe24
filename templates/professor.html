@@ -1,671 +1,146 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - App do Professor</title>
+    <title>Painel do Professor – PROF-SAFE 24</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root {
-            --bg: #020617;
-        }
-        * { box-sizing:border-box; }
-        body {
-            margin:0;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color:#e5e7eb;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        .shell {
-            width:100%;
-            max-width:540px;
-            background:rgba(2,8,23,0.96);
-            border-radius:20px;
-            border:1px solid rgba(56,189,248,0.35);
-            box-shadow:0 22px 60px rgba(0,0,0,0.9);
-            padding:16px 16px 18px;
-            position:relative;
-            overflow:hidden;
-        }
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-        .shell-inner{
-            position:relative;
-            z-index:1;
-        }
-        header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:14px;
-        }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:8px;
-        }
-        .brand-icon{
-            width:36px;
-            height:36px;
-            border-radius:14px;
-            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 26px rgba(248,250,252,0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:10px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.08em;
-        }
-        .brand-text-title{
-            font-size:16px;
-            font-weight:600;
-            letter-spacing:0.08em;
-            text-transform:uppercase;
-            color:#e5e7eb;
-        }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .status-area{
-            text-align:right;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .pill-online{
-            font-size:11px;
-            padding:3px 9px;
-            border-radius:999px;
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            background:rgba(6,95,70,0.7);
-            display:inline-flex;
-            gap:4px;
-            align-items:center;
-        }
-        .clock{
-            margin-top:4px;
-            font-size:11px;
-            color:#facc15;
-            font-weight:bold;
-        }
-        main{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.92), rgba(15,23,42,0.98));
-            border-radius:16px;
-            border:1px solid rgba(148,163,184,0.45);
-            box-shadow:0 16px 40px rgba(15,23,42,0.9);
-            padding:12px 14px 14px;
-            font-size:12px;
-        }
-        .intro{
-            margin-bottom:10px;
-            color:#cbd5f5;
-            font-size:12px;
-        }
-        .intro strong{
-            color:#e5e7eb;
-        }
-        .form-group{
-            margin-bottom:10px;
-        }
-        label{
-            display:block;
-            font-size:11px;
-            margin-bottom:3px;
-            color:#cbd5f5;
-        }
-        input, textarea{
-            width:100%;
-            padding:7px 9px;
-            border-radius:10px;
-            border:1px solid rgba(148,163,184,0.9);
-            background:rgba(15,23,42,0.98);
-            color:#e5e7eb;
-            font-size:13px;
-        }
-        textarea{
-            resize:vertical;
-            min-height:70px;
-        }
-        input:focus, textarea:focus{
-            outline:none;
-            border-color:#22d3ee;
-            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
-        }
-        .btn-alert{
-            width:100%;
-            border-radius:999px;
-            border:none;
-            padding:9px 0;
-            margin-top:6px;
-            background:linear-gradient(135deg,#f97316,#b91c1c);
-            color:#f9fafb;
-            font-size:14px;
-            font-weight:700;
-            letter-spacing:0.04em;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-            box-shadow:0 16px 40px rgba(127,29,29,0.95);
-        }
-        .btn-alert span.icon{
-            font-size:18px;
-        }
-        .btn-alert:active{
-            transform:translateY(1px);
-            box-shadow:0 8px 26px rgba(127,29,29,0.9);
-        }
-        .actions-row{
-            display:flex;
-            flex-wrap:wrap;
-            gap:8px;
-            margin-top:8px;
-        }
-        .btn-secondary{
-            flex:1;
-            min-width:90px;
-            border-radius:999px;
-            border:1px solid rgba(148,163,184,0.9);
-            background:rgba(15,23,42,0.96);
-            color:#e5e7eb;
-            font-size:11px;
-            padding:7px 10px;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-        }
-        .btn-secondary:hover{
-            filter:brightness(1.05);
-        }
-        .tip{
-            margin-top:8px;
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .tip strong{
-            color:#e5e7eb;
-        }
-        .feedback{
-            margin-top:6px;
-            font-size:11px;
-            color:#bbf7d0;
-            display:none;
-        }
-        .logo-banner {
-            display:flex;
-            justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
-        }
-        .logo-banner img {
-            max-width: 140px;
-            width: 100%;
-            height:auto;
-            filter: drop-shadow(0 0 25px rgba(34,211,238,0.6));
-            /* NOVO: Cantos arredondados na logo */
-            border-radius: 12px;
-        }
 
-        /* NOVOS ESTILOS */
-        .quick-alerts {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #05050a;
+            color: #f5f5f5;
+            padding: 16px;
+        }
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #101018;
+            border-radius: 16px;
+            padding: 20px 18px 22px;
+            box-shadow: 0 0 18px rgba(0,0,0,0.7);
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #bbbbbb;
             margin-bottom: 12px;
         }
-        .quick-alert-btn {
-            padding: 10px 8px;
+        label { display: block; margin-top: 12px; margin-bottom: 4px; font-size: 13px; }
+        input, textarea {
+            width: 100%;
+            padding: 10px 11px;
             border-radius: 10px;
-            border: 1px solid rgba(148,163,184,0.5);
-            background: rgba(15,23,42,0.8);
-            color: #e5e7eb;
-            font-size: 12px;
-            cursor: pointer;
+            border: 1px solid #2a2a3a;
+            background: #080812;
+            color: #f5f5f5;
+            font-size: 14px;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff8800;
+            box-shadow: 0 0 0 1px rgba(255,136,0,0.3);
+        }
+        .btn-row {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            transition: all 0.2s;
-        }
-        .quick-alert-btn:hover {
-            background: rgba(30,41,59,0.8);
-            border-color: rgba(56,189,248,0.5);
-        }
-        .quick-alert-btn.active {
-            background: rgba(59,130,246,0.2);
-            border-color: rgba(56,189,248,0.8);
-            box-shadow: 0 0 10px rgba(56,189,248,0.3);
-        }
-        .quick-alert-icon {
-            font-size: 18px;
-        }
-        .location-info {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 4px;
-            font-size: 11px;
-            color: #9ca3af;
-        }
-        .location-info span {
-            color: #facc15;
-        }
-        .emergency-level {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        .emergency-level label {
-            margin-bottom: 6px;
-        }
-        .level-buttons {
-            display: flex;
-            gap: 6px;
-        }
-        .level-btn {
-            flex: 1;
-            padding: 6px;
-            border-radius: 8px;
-            border: 1px solid rgba(148,163,184,0.5);
-            background: rgba(15,23,42,0.8);
-            color: #e5e7eb;
-            font-size: 11px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .level-btn.active {
-            border-color: #f97316;
-            background: rgba(249,115,22,0.2);
-        }
-        .level-btn.high.active {
-            border-color: #dc2626;
-            background: rgba(220,38,38,0.2);
-        }
-        .teacher-preferences {
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 8px;
-            margin-top: 8px;
-            font-size: 11px;
-            color: #9ca3af;
+            margin-top: 16px;
         }
-        .teacher-preferences input {
-            width: auto;
-            margin-right: 4px;
+        .btn {
+            border-radius: 999px;
+            border: none;
+            padding: 9px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .auto-save-notice {
-            font-size: 10px;
-            color: #22c55e;
-            margin-top: 4px;
-            display: none;
-        }
-
-        @media (max-width:520px){
-            .shell{
-                margin:12px;
-                padding:14px;
-            }
-            header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:6px;
-            }
-            .status-area{
-                text-align:left;
-            }
-            main{
-                padding:10px 10px 12px;
-            }
-            .quick-alerts {
-                grid-template-columns: 1fr;
-            }
+        .btn-primary { background: #ff8800; color: #fff; }
+        .btn-primary:hover { background: #e67600; }
+        .btn-secondary { background: #262638; color: #f5f5f5; }
+        .btn-secondary:hover { background: #33344a; }
+        .status-msg {
+            margin-top: 10px;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-<div class="shell">
-    <div class="logo-banner">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
-    </div>
-    <div class="shell-inner">
-        <header>
-            <div class="brand">
-                <div class="brand-icon">PS24</div>
-                <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
-                </div>
-            </div>
-            <div class="status-area">
-                <div class="pill-online">● Conectado à Central</div>
-                <div class="clock" id="clockProf"></div>
-            </div>
-        </header>
+<div class="container">
+    <div class="card">
+        <div class="title">Botão de Pânico – Professor</div>
+        <div class="subtitle">Envie um alerta imediato para a Central de Segurança.</div>
 
-        <main>
-            <p class="intro">
-                <strong>Envie um alerta rápido</strong> em caso de emergência ou situação de risco.
-            </p>
+        <label for="teacher">Seu nome</label>
+        <input type="text" id="teacher" placeholder="Ex.: Prof. João Silva">
 
-            <!-- Botões de alerta rápido -->
-            <div class="quick-alerts">
-                <button class="quick-alert-btn" data-type="briga">
-                    <span class="quick-alert-icon">👥</span>
-                    <span>Conflito/Briga</span>
-                </button>
-                <button class="quick-alert-btn" data-type="saude">
-                    <span class="quick-alert-icon">🤒</span>
-                    <span>Problema de Saúde</span>
-                </button>
-                <button class="quick-alert-btn" data-type="suspeito">
-                    <span class="quick-alert-icon">🚷</span>
-                    <span>Pessoa Suspeita</span>
-                </button>
-                <button class="quick-alert-btn" data-type="outro">
-                    <span class="quick-alert-icon">⚠️</span>
-                    <span>Outra Situação</span>
-                </button>
-            </div>
+        <label for="room">Sala / Local</label>
+        <input type="text" id="room" placeholder="Ex.: Sala 4B, Pátio, Biblioteca" required>
 
-            <form id="alertForm">
-                <div class="form-group">
-                    <label for="teacher">Seu nome (opcional)</label>
-                    <input type="text" id="teacher" name="teacher" placeholder="Ex.: Prof. Ana, Prof. João">
-                </div>
-                <div class="form-group">
-                    <label for="room">Sala / Local *</label>
-                    <input type="text" id="room" name="room" required placeholder="Ex.: 5º A, Pátio, Corredor 2">
-                    <div class="location-info">
-                        📍 <span id="locationStatus">Detectando localização...</span>
-                    </div>
-                </div>
-                
-                <div class="emergency-level">
-                    <label>Nível de urgência</label>
-                    <div class="level-buttons">
-                        <button type="button" class="level-btn" data-level="baixa">Baixa</button>
-                        <button type="button" class="level-btn active" data-level="media">Média</button>
-                        <button type="button" class="level-btn high" data-level="alta">Alta</button>
-                    </div>
-                </div>
+        <label for="description">Descreva o que está acontecendo</label>
+        <textarea id="description" placeholder="Ex.: Briga entre alunos, aluno passando mal, suspeita na entrada..."></textarea>
 
-                <div class="form-group">
-                    <label for="description">Descreva rapidamente o que está acontecendo *</label>
-                    <textarea id="description" name="description" required placeholder="Ex.: briga entre alunos, aluno passando mal, pessoa suspeita no portão..."></textarea>
-                </div>
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="enviarAlerta()">🚨 Enviar alerta</button>
+            <button class="btn btn-secondary" onclick="limparCampos()">🧹 Limpar</button>
+            <a href="/" class="btn btn-secondary">⏻ Sair</a>
+        </div>
 
-                <button type="submit" class="btn-alert" id="btnAlert">
-                    <span class="icon">🚨</span>
-                    ENVIAR ALERTA PARA A CENTRAL
-                </button>
-
-                <div class="actions-row">
-                    <button type="button" class="btn-secondary" id="btnReiniciar">⟳ Reiniciar</button>
-                    <button type="button" class="btn-secondary" id="btnLimpar">🧹 Limpar</button>
-                    <button type="button" class="btn-secondary" id="btnSair">⏻ Sair</button>
-                </div>
-            </form>
-
-            <div class="teacher-preferences">
-                <input type="checkbox" id="savePreferences">
-                <label for="savePreferences">Salvar meus dados para próximos alertas</label>
-            </div>
-            <div class="auto-save-notice" id="autoSaveNotice">✓ Dados salvos automaticamente</div>
-
-            <div class="feedback" id="feedbackMsg">
-                Alerta enviado com sucesso à Central. Aguarde o retorno da equipe.
-            </div>
-
-            <p class="tip">
-                <strong>Dica:</strong> mantenha este atalho salvo na tela inicial do seu celular para acesso mais rápido.
-            </p>
-        </main>
+        <div id="status" class="status-msg"></div>
     </div>
 </div>
 
 <script>
-const form = document.getElementById('alertForm');
-const feedback = document.getElementById('feedbackMsg');
-const btnAlert = document.getElementById('btnAlert');
-const btnReiniciar = document.getElementById('btnReiniciar');
-const btnLimpar = document.getElementById('btnLimpar');
-const btnSair = document.getElementById('btnSair');
-const quickAlertBtns = document.querySelectorAll('.quick-alert-btn');
-const levelBtns = document.querySelectorAll('.level-btn');
-const locationStatus = document.getElementById('locationStatus');
-const savePreferences = document.getElementById('savePreferences');
-const autoSaveNotice = document.getElementById('autoSaveNotice');
+    async function enviarAlerta() {
+        const teacher = document.getElementById("teacher").value;
+        const room = document.getElementById("room").value;
+        const description = document.getElementById("description").value;
+        const status = document.getElementById("status");
 
-// CORREÇÃO: Carregar preferências salvas automaticamente
-function loadPreferences() {
-    const savedTeacher = localStorage.getItem('profSafeTeacher');
-    const savedRoom = localStorage.getItem('profSafeRoom');
-    const savedAutoSave = localStorage.getItem('profSafeAutoSave');
-    
-    if (savedTeacher) {
-        document.getElementById('teacher').value = savedTeacher;
-    }
-    
-    if (savedRoom) {
-        document.getElementById('room').value = savedRoom;
-    }
-    
-    // Marcar checkbox se já estava salvo
-    if (savedAutoSave === 'true') {
-        savePreferences.checked = true;
-        autoSaveNotice.style.display = 'block';
-    }
-}
-
-// CORREÇÃO: Salvar preferências automaticamente quando os campos mudam
-function setupAutoSave() {
-    const teacherField = document.getElementById('teacher');
-    const roomField = document.getElementById('room');
-    
-    teacherField.addEventListener('input', saveUserPreferences);
-    roomField.addEventListener('input', saveUserPreferences);
-    
-    // Salvar quando o checkbox for alterado
-    savePreferences.addEventListener('change', function() {
-        if (this.checked) {
-            saveUserPreferences();
-            autoSaveNotice.style.display = 'block';
-            // Salvar a preferência de auto-save
-            localStorage.setItem('profSafeAutoSave', 'true');
-        } else {
-            autoSaveNotice.style.display = 'none';
-            // Remover a preferência de auto-save
-            localStorage.setItem('profSafeAutoSave', 'false');
+        if (!room || !description) {
+            status.style.color = "#ffb347";
+            status.textContent = "Informe pelo menos o local e a descrição do ocorrido.";
+            return;
         }
-    });
-}
 
-// CORREÇÃO: Função melhorada para salvar preferências
-function saveUserPreferences() {
-    const teacher = document.getElementById('teacher').value;
-    const room = document.getElementById('room').value;
-    
-    // Salvar apenas se o checkbox estiver marcado
-    if (savePreferences.checked && (teacher || room)) {
-        localStorage.setItem('profSafeTeacher', teacher);
-        localStorage.setItem('profSafeRoom', room);
-        localStorage.setItem('profSafeAutoSave', 'true');
-        
-        // Mostrar feedback visual
-        autoSaveNotice.style.display = 'block';
-        setTimeout(() => {
-            autoSaveNotice.style.display = 'none';
-        }, 2000);
-    }
-}
+        try {
+            const resp = await fetch("/api/alert", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({teacher, room, description})
+            });
 
-// Obter localização
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                locationStatus.textContent = `Localização obtida (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-            },
-            error => {
-                console.error("Erro ao obter localização:", error);
-                locationStatus.textContent = "Localização não disponível";
+            if (resp.ok) {
+                status.style.color = "#6be49a";
+                status.textContent = "✅ Alerta enviado com sucesso para a Central.";
+                // limpa descrição, mas mantém nome/sala se quiser enviar rápido outro
+                document.getElementById("description").value = "";
+            } else {
+                status.style.color = "#ffb347";
+                status.textContent = "⚠ Erro ao enviar alerta. Tente novamente.";
             }
-        );
-    } else {
-        locationStatus.textContent = "Geolocalização não suportada";
-    }
-}
-
-// Configurar botões de alerta rápido
-quickAlertBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remover classe active de todos os botões
-        quickAlertBtns.forEach(b => b.classList.remove('active'));
-        // Adicionar classe active ao botão clicado
-        btn.classList.add('active');
-        
-        // Preencher descrição baseada no tipo
-        const type = btn.getAttribute('data-type');
-        const descriptionField = document.getElementById('description');
-        
-        switch(type) {
-            case 'briga':
-                descriptionField.value = "Conflito ou briga entre alunos";
-                break;
-            case 'saude':
-                descriptionField.value = "Problema de saúde com aluno/funcionário";
-                break;
-            case 'suspeito':
-                descriptionField.value = "Pessoa suspeita nas dependências da escola";
-                break;
-            case 'outro':
-                descriptionField.value = "";
-                descriptionField.focus();
-                break;
+        } catch (e) {
+            console.error(e);
+            status.style.color = "#ffb347";
+            status.textContent = "⚠ Falha de conexão com o servidor.";
         }
-    });
-});
-
-// Configurar botões de nível de urgência
-levelBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        levelBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    });
-});
-
-// Envio do formulário
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const teacher = document.getElementById('teacher').value;
-    const room = document.getElementById('room').value;
-    const description = document.getElementById('description').value;
-    
-    // Obter nível de urgência selecionado
-    const activeLevelBtn = document.querySelector('.level-btn.active');
-    const urgencyLevel = activeLevelBtn ? activeLevelBtn.getAttribute('data-level') : 'media';
-
-    if(!room || !description){
-        alert('Por favor, preencha Sala/Local e Descrição.');
-        return;
     }
 
-    const originalLabel = btnAlert.innerHTML;
-    btnAlert.disabled = true;
-    btnAlert.innerHTML = 'Enviando...';
-
-    try{
-        const res = await fetch('/api/alert', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({
-                teacher, 
-                room, 
-                description,
-                urgencyLevel,
-                timestamp: new Date().toISOString()
-            })
-        });
-        const data = await res.json();
-        if(data.ok){
-            feedback.style.display = 'block';
-            
-            // Salvar preferências se solicitado
-            saveUserPreferences();
-            
-            // Limpar formulário após envio bem-sucedido
-            setTimeout(() => {
-                form.reset();
-                quickAlertBtns.forEach(btn => btn.classList.remove('active'));
-                levelBtns[1].classList.add('active'); // Reset para nível médio
-                feedback.style.display = 'none';
-            }, 4000);
-        }else{
-            alert('Não foi possível enviar o alerta. Tente novamente.');
-        }
-    }catch(e){
-        console.error(e);
-        alert('Erro de comunicação com a Central. Verifique a conexão.');
-    }finally{
-        btnAlert.disabled = false;
-        btnAlert.innerHTML = originalLabel;
+    function limparCampos() {
+        document.getElementById("teacher").value = "";
+        document.getElementById("room").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("status").textContent = "";
     }
-});
-
-// Botão LIMPAR: limpa os campos e esconde a mensagem
-btnLimpar.addEventListener('click', () => {
-    form.reset();
-    quickAlertBtns.forEach(btn => btn.classList.remove('active'));
-    levelBtns[1].classList.add('active'); // Reset para nível médio
-    feedback.style.display = 'none';
-    autoSaveNotice.style.display = 'none';
-});
-
-// Botão REINICIAR: recarrega a página
-btnReiniciar.addEventListener('click', () => {
-    location.reload();
-});
-
-// Botão SAIR: volta para a tela inicial
-btnSair.addEventListener('click', () => {
-    window.location.href = '/';
-});
-
-// Inicialização
-function init() {
-    loadPreferences();
-    setupAutoSave(); // CORREÇÃO: Configurar auto-save
-    getLocation();
-    updateClockProf();
-}
-
-function updateClockProf(){
-    const el = document.getElementById('clockProf');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-}
-
-setInterval(updateClockProf,1000);
-init();
 </script>
 </body>
 </html>
