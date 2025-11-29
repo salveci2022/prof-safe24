@@ -1,485 +1,117 @@
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>PROF-SAFE 24 – Central</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Central – PROF-SAFE 24</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
     body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #071426 0, #020712 45%, #000 100%);
-      color: #e6f4ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
+        background:#0b0b10;
+        color:#fff;
+        font-family: Arial, Helvetica, sans-serif;
+        padding:20px;
     }
-    .shell {
-      width: 100%;
-      max-width: 1080px;
-      background: linear-gradient(145deg, rgba(5, 14, 32, 0.98), rgba(3, 10, 24, 0.98));
-      border-radius: 26px;
-      border: 1px solid rgba(0, 255, 200, 0.25);
-      box-shadow: 0 0 32px rgba(0, 255, 200, 0.16);
-      padding: 18px 24px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+
+    .container {
+        max-width:900px;
+        margin:0 auto;
     }
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+
+    img.logo {
+        width:160px;
+        border-radius:12px;
+        margin-bottom:20px;
     }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .header-left img {
-      width: 120px;
-      height: 120px;
-      border-radius: 18px;
-      object-fit: cover;
-      box-shadow: 0 0 16px rgba(0, 255, 200, 0.35);
-    }
-    .title-block h1 {
-      font-size: 20px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-    .title-block h1 span {
-      color: #3fffd7;
-    }
-    .title-block p {
-      margin-top: 4px;
-      font-size: 12px;
-      color: #9fb6ff;
-    }
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(0, 255, 157, 0.12);
-      border: 1px solid rgba(0, 255, 157, 0.6);
-      font-size: 11px;
-      color: #b9ffe0;
-    }
-    .status-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #46ffb8, #0aff9d 55%, #00996a 100%);
-      box-shadow: 0 0 10px rgba(0, 255, 157, 0.7);
-    }
-    .clock {
-      font-size: 13px;
-      color: #c2d4ff;
-      text-align: right;
-    }
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1.6fr 1.2fr;
-      gap: 16px;
-    }
+
     .card {
-      background: radial-gradient(circle at top left, #07162c 0, #050b18 48%, #02040a 100%);
-      border-radius: 18px;
-      border: 1px solid rgba(52, 120, 255, 0.55);
-      padding: 14px 16px 12px;
+        background:#15151f;
+        padding:20px;
+        border-radius:14px;
+        box-shadow:0 0 15px rgba(0,0,0,0.5);
+        margin-bottom:20px;
     }
-    .card h2 {
-      font-size: 14px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #dce6ff;
+
+    button {
+        padding:12px 20px;
+        border:none;
+        border-radius:10px;
+        font-weight:bold;
+        cursor:pointer;
+        margin-right:10px;
     }
-    .card h2 span {
-      font-size: 11px;
-      color: #8ea4ff;
-      font-weight: 400;
+    .btn-on { background:#ff8800; color:#fff; }
+    .btn-off { background:#555; color:#fff; }
+    .btn-resolve { background:#0066aa; color:#fff; }
+    .btn-clear { background:#aa0000; color:#fff; }
+
+    .alert-box {
+        background:#20202c;
+        padding:12px;
+        border-radius:8px;
+        margin-bottom:10px;
+        border-left:4px solid #ff8800;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    th, td {
-      padding: 6px 6px;
-      text-align: left;
-    }
-    th {
-      font-weight: 600;
-      font-size: 11px;
-      color: #9fb6ff;
-      border-bottom: 1px solid rgba(84, 121, 255, 0.55);
-    }
-    tr:nth-child(even) {
-      background: rgba(6, 22, 60, 0.65);
-    }
-    tr:nth-child(odd) {
-      background: rgba(4, 16, 40, 0.6);
-    }
-    td.status {
-      font-weight: 600;
-    }
-    td.status.ativo {
-      color: #ffb347;
-    }
-    td.status.resolvido {
-      color: #3fffd7;
-    }
-    .btn-row {
-      margin-top: 9px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      border: none;
-      outline: none;
-      cursor: pointer;
-      border-radius: 999px;
-      padding: 7px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease-out;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #ff7b32, #ffb347);
-      color: #1b0900;
-      box-shadow: 0 0 16px rgba(255, 140, 82, 0.4);
-    }
-    .btn-primary:hover {
-      filter: brightness(1.06);
-      transform: translateY(-1px);
-    }
-    .btn-soft {
-      background: rgba(7, 28, 64, 0.9);
-      color: #d3e4ff;
-      border: 1px solid rgba(91, 180, 255, 0.6);
-    }
-    .btn-soft:hover {
-      background: rgba(11, 40, 86, 0.9);
-    }
-    .btn-danger {
-      background: rgba(255, 77, 109, 0.14);
-      color: #ffb3c1;
-      border: 1px solid rgba(255, 99, 132, 0.75);
-    }
-    .btn-danger:hover {
-      background: rgba(255, 77, 109, 0.2);
-    }
-    .school-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 12px;
-      margin-bottom: 10px;
-    }
-    .field label {
-      font-size: 11px;
-      color: #9fb6ff;
-      margin-bottom: 2px;
-      display: block;
-    }
-    .field input {
-      width: 100%;
-      padding: 7px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(120, 162, 255, 0.6);
-      background: rgba(3, 13, 32, 0.9);
-      color: #e6f4ff;
-      font-size: 12px;
-      outline: none;
-    }
-    .field input:focus {
-      border-color: #3fffd7;
-      box-shadow: 0 0 0 1px rgba(63, 255, 215, 0.5);
-    }
-    .school-footer-note {
-      font-size: 11px;
-      color: #7f8cbb;
-      margin-top: 6px;
-    }
-    .sirene-modos {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      font-size: 12px;
-      color: #c8d6ff;
-    }
-    .sirene-modos span {
-      font-size: 11px;
-      color: #9fb6ff;
-    }
-    .footer {
-      margin-top: 6px;
-      font-size: 11px;
-      color: #7f8cbb;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .footer button {
-      font-size: 11px;
-      padding: 6px 10px;
-    }
-    @media (max-width: 900px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    @media (max-width: 720px) {
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .header-left {
-        width: 100%;
-      }
-    }
-  </style>
+</style>
+
 </head>
 <body>
-  <div class="shell">
-    <div class="header">
-      <div class="header-left">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
-        <div class="title-block">
-          <h1>PROF-SAFE <span>24</span> – Central</h1>
-          <p>Monitoramento em tempo real dos alertas dos professores.</p>
-          <div class="status-pill">
-            <span class="status-dot"></span>
-            <span>Central Online</span>
-          </div>
-        </div>
-      </div>
-      <div class="clock" id="clock">--:--:--</div>
+
+<div class="container">
+
+    <img src="/static/logo_prof_safe24.png" class="logo">
+
+    <div class="card">
+        <h2>🚨 CENTRAL DE ALERTAS</h2>
+
+        <audio id="siren" src="/static/siren.mp3"></audio>
+
+        <button class="btn-on" onclick="ligar()">Ligar Sirene</button>
+        <button class="btn-off" onclick="desligar()">Desligar</button>
+        <button class="btn-resolve" onclick="resolver()">Resolver</button>
+        <button class="btn-clear" onclick="limpar()">Limpar Tudo</button>
+
+        <br><br>
+        <a href="/report.pdf" target="_blank" class="btn-off" style="padding:12px 18px; display:inline-block;">📄 Gerar Relatório PDF</a>
     </div>
 
-    <div class="main-grid">
-      <div class="card">
-        <h2>
-          Alertas em tempo real
-          <span>Visualize últimos registros enviados pelos professores.</span>
-        </h2>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Data/Hora</th>
-                <th>Professor</th>
-                <th>Sala/Local</th>
-                <th>Descrição</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="alerts-body">
-              <!-- preenchido via JS -->
-            </tbody>
-          </table>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-soft" onclick="resolverPrimeiro()">Marcar primeiro alerta como resolvido</button>
-          <button class="btn btn-danger" onclick="limparAlertas()">Limpar todos os alertas</button>
-          <button class="btn btn-primary" onclick="gerarRelatorio()">Gerar relatório PDF</button>
-        </div>
-        <p class="school-footer-note">
-          Mantenha esta tela aberta na sala da Central durante o período letivo. Use o relatório para registrar providências tomadas.
-        </p>
-      </div>
-
-      <div class="card">
-        <h2>
-          Dados da escola & sirene
-          <span>Configure uma vez por escola e personalize o aviso sonoro.</span>
-        </h2>
-        <div class="school-grid">
-          <div class="field">
-            <label>Nome da escola</label>
-            <input type="text" id="escola_nome" placeholder="Ex: Colégio Santa Maria">
-          </div>
-          <div class="field">
-            <label>CNPJ</label>
-            <input type="text" id="escola_cnpj" placeholder="00.000.000/0000-00">
-          </div>
-          <div class="field" style="grid-column: span 2;">
-            <label>Endereço completo</label>
-            <input type="text" id="escola_endereco" placeholder="Rua, número, bairro, cidade, UF, CEP">
-          </div>
-          <div class="field">
-            <label>Telefone / WhatsApp</label>
-            <input type="text" id="escola_telefone" placeholder="(00) 00000-0000">
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-soft" onclick="salvarEscola()">Salvar escola</button>
-          <button class="btn btn-danger" onclick="limparEscola()">Limpar dados</button>
-        </div>
-        <div class="sirene-modos">
-          <button class="btn btn-primary" onclick="setSireneModo('som_visual')">🔊 Ligar Sirene</button>
-          <button class="btn btn-soft" onclick="setSireneModo('visual')">🙊 Silenciar (sirene visual apenas)</button>
-          <span>Modo atual: <strong id="sirene-modo-label">som + visual</strong></span>
-        </div>
-        <p class="school-footer-note">
-          Defina um responsável para atender aos alertas. Registre em relatório as providências tomadas após cada ocorrência.
-        </p>
-      </div>
+    <div class="card">
+        <h3>📋 Alertas Recebidos</h3>
+        <div id="alertas"></div>
     </div>
 
-    <div class="footer">
-      <span>Focado em ambientes escolares.</span>
-      <button class="btn btn-soft" onclick="sairCentral()">⏻ Sair da Central</button>
-      <span>PROF-SAFE 24 — Sistema de Proteção Rápida e Inteligente para Escolas.</span>
-    </div>
-  </div>
+</div>
 
-  <audio id="sirene-audio" src="/sirene.mp3" preload="auto"></audio>
+<script>
+function atualizar() {
+    fetch("/api/status")
+    .then(r => r.json())
+    .then(d => {
+        let box = document.getElementById("alertas");
+        box.innerHTML = "";
 
-  <script>
-    function atualizarClock() {
-      const el = document.getElementById('clock');
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      el.textContent = h + ':' + m + ':' + s;
-    }
-    setInterval(atualizarClock, 1000);
-    atualizarClock();
-
-    let sireneModo = "{{ sirene_modo if sirene_modo else 'som_visual' }}";
-    document.getElementById('sirene-modo-label').innerText =
-      sireneModo === 'visual' ? 'visual apenas' : 'som + visual';
-
-    function carregarEscola() {
-      fetch('/api/escola')
-        .then(r => r.json())
-        .then(data => {
-          document.getElementById('escola_nome').value = data.nome || '';
-          document.getElementById('escola_cnpj').value = data.cnpj || '';
-          document.getElementById('escola_endereco').value = data.endereco || '';
-          document.getElementById('escola_telefone').value = data.telefone || '';
-        });
-    }
-
-    function salvarEscola() {
-      const payload = {
-        nome: document.getElementById('escola_nome').value,
-        cnpj: document.getElementById('escola_cnpj').value,
-        endereco: document.getElementById('escola_endereco').value,
-        telefone: document.getElementById('escola_telefone').value
-      };
-      fetch('/api/escola', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(() => carregarEscola());
-    }
-
-    function limparEscola() {
-      document.getElementById('escola_nome').value = '';
-      document.getElementById('escola_cnpj').value = '';
-      document.getElementById('escola_endereco').value = '';
-      document.getElementById('escola_telefone').value = '';
-      salvarEscola();
-    }
-
-    function atualizarAlertas() {
-      fetch('/api/alertas')
-        .then(r => r.json())
-        .then(lista => {
-          const tbody = document.getElementById('alerts-body');
-          tbody.innerHTML = '';
-          if (!lista || lista.length === 0) {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.colSpan = 5;
-            td.textContent = 'Nenhum alerta registrado.';
-            td.style.textAlign = 'center';
-            td.style.padding = '16px 0';
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-          }
-          lista.forEach(alerta => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${alerta.datahora}</td>
-              <td>${alerta.professor}</td>
-              <td>${alerta.sala}</td>
-              <td>${alerta.descricao}</td>
-              <td class="status ${alerta.status === 'Ativo' ? 'ativo' : 'resolvido'}">${alerta.status}</td>
+        d.alerts.forEach(a => {
+            box.innerHTML += `
+                <div class="alert-box">
+                    <b>${a.teacher}</b> • Sala ${a.room}<br>
+                    ${a.description}<br>
+                    <small>${a.ts} — ${a.resolved ? "Resolvido" : "Ativo"}</small>
+                </div>
             `;
-            tbody.appendChild(tr);
-          });
         });
-    }
 
-    function limparAlertas() {
-      fetch('/api/alertas/limpar', { method: 'POST' })
-        .then(() => atualizarAlertas());
-    }
+        let s = document.getElementById("siren");
+        if (d.siren) s.play();
+        else s.pause();
+    });
+}
+setInterval(atualizar, 1000);
 
-    function resolverPrimeiro() {
-      fetch('/api/alertas/resolver_primeiro', { method: 'POST' })
-        .then(() => atualizarAlertas());
-    }
+function ligar(){ fetch("/api/siren", {method:"POST", headers:{"Content-Type":"application/json"}, body:'{"action":"on"}'}); }
+function desligar(){ fetch("/api/siren", {method:"POST", headers:{"Content-Type":"application/json"}, body:'{"action":"off"}'}); }
+function resolver(){ fetch("/api/resolve", {method:"POST"}); }
+function limpar(){ fetch("/api/clear", {method:"POST"}); }
+</script>
 
-    function gerarRelatorio() {
-      window.open('/relatorio.pdf', '_blank');
-    }
-
-    function setSireneModo(modo) {
-      fetch('/api/sirene_modo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ modo })
-      })
-      .then(r => r.json())
-      .then(data => {
-        sireneModo = data.modo;
-        document.getElementById('sirene-modo-label').innerText =
-          sireneModo === 'visual' ? 'visual apenas' : 'som + visual';
-      });
-    }
-
-    function tocarSireneSeNecessario() {
-      if (sireneModo !== 'som_visual') return;
-      const audio = document.getElementById('sirene-audio');
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(err => {
-          console.warn('Navegador bloqueou autoplay da sirene:', err);
-        });
-      }
-    }
-
-    function sairCentral() {
-      window.location.href = "/";
-    }
-
-    carregarEscola();
-    atualizarAlertas();
-    setInterval(atualizarAlertas, 5000);
-
-    window._tocarSireneProfSafe24 = tocarSireneSeNecessario;
-  </script>
 </body>
 </html>
