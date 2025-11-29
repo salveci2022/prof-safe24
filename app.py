@@ -14,7 +14,7 @@ from flask import (
 )
 from dotenv import load_dotenv
 from reportlab.pdfgen import canvas
-import pytz  # timezone Brasil
+
 
 # --------------------------------------------------------------------------- #
 #                          Configuração inicial
@@ -23,9 +23,6 @@ import pytz  # timezone Brasil
 load_dotenv()
 
 app = Flask(__name__)
-
-# Timezone Brasil
-BR_TZ = pytz.timezone("America/Sao_Paulo")
 
 # Caminho do .env
 ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
@@ -37,12 +34,12 @@ app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
-# Dados da escola
+# Dados da escola (preenchidos no painel admin/escola)
 SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
 
-# Controle de segurança de login
+# Controle de login e sessão
 MAX_LOGIN_ATTEMPTS = 5
 LOCK_TIME_MINUTES = 10
 SESSION_TIMEOUT_MINUTES = 15
@@ -55,7 +52,7 @@ muted = False
 
 
 # --------------------------------------------------------------------------- #
-#                            Funções utilitárias
+#                           Funções utilitárias
 # --------------------------------------------------------------------------- #
 
 def get_client_ip() -> str:
@@ -98,9 +95,6 @@ def reset_login_attempts(ip: str) -> None:
 
 
 def save_school_to_env(name: str, address: str, contact: str) -> None:
-    """
-    Salva os dados da escola no arquivo .env (opcional, se o servidor permitir gravação em disco).
-    """
     try:
         env_data = {}
 
@@ -126,7 +120,7 @@ def save_school_to_env(name: str, address: str, contact: str) -> None:
 
 
 # --------------------------------------------------------------------------- #
-#                       Controle de sessão / timeout
+#                       Tempo de sessão e timeout
 # --------------------------------------------------------------------------- #
 
 @app.before_request
@@ -148,7 +142,7 @@ def enforce_session_timeout():
 
 
 # --------------------------------------------------------------------------- #
-#                                   Rotas básicas
+#                                   Rotas
 # --------------------------------------------------------------------------- #
 
 @app.route("/")
@@ -167,15 +161,11 @@ def admin():
 
 
 # --------------------------------------------------------------------------- #
-#                ROTA DO CADASTRO DA ESCOLA (/admin/escola)
+#                  Cadastro da escola (para o Relatório)
 # --------------------------------------------------------------------------- #
 
 @app.route("/admin/escola", methods=["GET", "POST"])
 def admin_escola():
-    """
-    Tela para editar os dados da escola pela interface web.
-    Usa o template admin_school.html.
-    """
     global SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT
 
     saved = False
@@ -185,9 +175,7 @@ def admin_escola():
         SCHOOL_ADDRESS = request.form.get("school_address", "").strip()
         SCHOOL_CONTACT = request.form.get("school_contact", "").strip()
 
-        # Tenta salvar no .env (quando possível)
         save_school_to_env(SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
-
         saved = True
 
     return render_template(
@@ -200,7 +188,7 @@ def admin_escola():
 
 
 # --------------------------------------------------------------------------- #
-#                         LOGIN / CENTRAL
+#                       Login da Central
 # --------------------------------------------------------------------------- #
 
 @app.route("/login_central", methods=["GET", "POST"])
@@ -243,14 +231,11 @@ def logout_central():
 
 
 # --------------------------------------------------------------------------- #
-#                        API – ALERTAS / SIRENE
+#                   API – Alertas / Sirene / Status
 # --------------------------------------------------------------------------- #
 
 @app.route("/api/alert", methods=["POST"])
 def api_alert():
-    """
-    Recebe um alerta do professor e liga a sirene.
-    """
     global alerts, siren_on, muted
 
     data = request.get_json(silent=True) or {}
@@ -261,8 +246,8 @@ def api_alert():
     if not room or not description:
         return jsonify({"ok": False}), 400
 
-    # 🔹 Horário em Brasília
-    ts = datetime.now(BR_TZ).strftime("%d/%m/%Y %H:%M:%S")
+    # 🔥 FORÇA HORÁRIO DE BRASÍLIA (UTC-3)
+    ts = (datetime.utcnow() - timedelta(hours=3)).strftime("%d/%m/%Y %H:%M:%S")
 
     alerts.insert(
         0,
@@ -283,17 +268,11 @@ def api_alert():
 
 @app.route("/api/status")
 def api_status():
-    """
-    Status atual da sirene e lista de alertas.
-    """
     return jsonify({"ok": True, "alerts": alerts, "siren": siren_on, "muted": muted})
 
 
 @app.route("/api/siren", methods=["POST"])
 def api_siren():
-    """
-    Liga, desliga ou silencia a sirene.
-    """
     global siren_on, muted
     action = (request.get_json(silent=True) or {}).get("action", "").lower()
 
@@ -314,9 +293,6 @@ def api_siren():
 
 @app.route("/api/resolve", methods=["POST"])
 def api_resolve():
-    """
-    Marca o primeiro alerta ativo como resolvido.
-    """
     for a in alerts:
         if not a["resolved"]:
             a["resolved"] = True
@@ -326,9 +302,6 @@ def api_resolve():
 
 @app.route("/api/clear", methods=["POST"])
 def api_clear():
-    """
-    Limpa todos os alertas e desliga a sirene.
-    """
     global alerts, siren_on, muted
     alerts = []
     siren_on = False
@@ -337,19 +310,11 @@ def api_clear():
 
 
 # --------------------------------------------------------------------------- #
-#                        PDF – RELATÓRIO DE OCORRÊNCIAS
+#                            RELATÓRIO PDF
 # --------------------------------------------------------------------------- #
 
 @app.route("/report.pdf")
 def report_pdf():
-    """
-    Gera PDF com:
-    - Nome da escola
-    - Endereço
-    - Contato
-    - Data/hora da geração (Brasília)
-    - Lista de alertas
-    """
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer)
     pdf.setTitle("Relatório PROF-SAFE 24")
@@ -366,12 +331,10 @@ def report_pdf():
     pdf.drawString(40, y, f"Contato: {SCHOOL_CONTACT}")
     y -= 12
 
-    # 🔹 Data e hora da geração em Brasília
-    data_geracao = datetime.now(BR_TZ).strftime("%d/%m/%Y %H:%M:%S")
+    # 🔥 HORÁRIO DE BRASÍLIA (UTC-3)
+    data_geracao = (datetime.utcnow() - timedelta(hours=3)).strftime("%d/%m/%Y %H:%M:%S")
     pdf.drawString(40, y, f"Gerado em: {data_geracao}")
     y -= 24
-
-    pdf.setFont("Helvetica", 10)
 
     if not alerts:
         pdf.drawString(40, y, "Nenhum alerta registrado até o momento.")
@@ -396,6 +359,7 @@ def report_pdf():
     pdf.showPage()
     pdf.save()
     buffer.seek(0)
+
     return send_file(
         buffer,
         download_name="relatorio_prof_safe24.pdf",
