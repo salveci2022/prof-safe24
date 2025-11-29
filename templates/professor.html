@@ -1,343 +1,117 @@
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>PROF-SAFE 24 – Professor</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Painel do Professor – PROF-SAFE 24</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
     body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #071426 0, #020712 45%, #000 100%);
-      color: #e6f4ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
+        background:#0b0b10;
+        color:#fff;
+        font-family:Arial, Helvetica, sans-serif;
+        padding:20px;
     }
     .card {
-      width: 100%;
-      max-width: 520px;
-      background: linear-gradient(145deg, rgba(5, 14, 32, 0.98), rgba(3, 10, 24, 0.98));
-      border-radius: 26px;
-      border: 1px solid rgba(0, 255, 200, 0.25);
-      box-shadow: 0 0 30px rgba(0, 255, 200, 0.18);
-      padding: 22px 22px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+        max-width:560px;
+        margin:0 auto;
+        padding:25px;
+        background:#15151f;
+        border-radius:14px;
+        box-shadow:0 0 18px rgba(0,0,0,0.6);
     }
-    .top-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    img.logo {
+        width:140px;
+        border-radius:12px;
+        margin-bottom:20px;
     }
-    .top-row img {
-      width: 120px;
-      height: 120px;
-      border-radius: 18px;
-      object-fit: cover;
-      box-shadow: 0 0 16px rgba(0, 255, 200, 0.35);
+    label { font-weight:bold; margin-top:15px; display:block; }
+    input, textarea {
+        width:100%;
+        padding:12px;
+        border-radius:10px;
+        margin-top:6px;
+        background:#101018;
+        border:1px solid #333;
+        color:#fff;
     }
-    .title-block h1 {
-      font-size: 18px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    button {
+        margin-top:20px;
+        width:100%;
+        padding:15px;
+        background:#ff8800;
+        border:none;
+        border-radius:10px;
+        color:#fff;
+        font-size:16px;
+        font-weight:bold;
+        cursor:pointer;
     }
-    .title-block h1 span {
-      color: #3fffd7;
+    button:hover { background:#e67400; }
+
+    .btn-small {
+        margin-top:10px;
+        padding:12px;
+        border:none;
+        width:100%;
+        border-radius:10px;
+        font-weight:bold;
+        cursor:pointer;
+        font-size:14px;
     }
-    .title-block p {
-      margin-top: 4px;
-      font-size: 12px;
-      color: #9fb6ff;
-    }
-    .badge {
-      margin-top: 4px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(255, 123, 50, 0.14);
-      border: 1px solid rgba(255, 155, 92, 0.7);
-      font-size: 11px;
-      color: #ffd2a3;
-    }
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffb347, #ff7b32);
-      box-shadow: 0 0 10px rgba(255, 140, 82, 0.7);
-    }
-    .field {
-      margin-top: 8px;
-    }
-    label {
-      display: block;
-      font-size: 12px;
-      color: #c8d6ff;
-      margin-bottom: 3px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(120, 162, 255, 0.6);
-      background: rgba(3, 13, 32, 0.9);
-      color: #e6f4ff;
-      font-size: 13px;
-      outline: none;
-    }
-    textarea {
-      border-radius: 14px;
-      resize: vertical;
-      min-height: 60px;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: #3fffd7;
-      box-shadow: 0 0 0 1px rgba(63, 255, 215, 0.5);
-    }
-    .urgencia-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 6px;
-    }
-    .urgencia-btn {
-      flex: 1;
-      text-align: center;
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(120, 162, 255, 0.6);
-      font-size: 12px;
-      cursor: pointer;
-      background: rgba(3, 13, 32, 0.9);
-      color: #d3e4ff;
-      transition: all 0.16s ease-out;
-    }
-    .urgencia-btn.active-baixa {
-      background: rgba(63, 255, 215, 0.12);
-      border-color: #3fffd7;
-      color: #b9ffe0;
-    }
-    .urgencia-btn.active-media {
-      background: rgba(255, 179, 71, 0.12);
-      border-color: #ffb347;
-      color: #ffe0b3;
-    }
-    .urgencia-btn.active-alta {
-      background: rgba(255, 77, 109, 0.12);
-      border-color: #ff4d6d;
-      color: #ffc2d0;
-    }
-    .main-btn {
-      margin-top: 10px;
-      width: 100%;
-      padding: 11px 16px;
-      border-radius: 999px;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #ff7b32, #ffb347);
-      color: #1b0900;
-      box-shadow: 0 0 20px rgba(255, 140, 82, 0.5);
-      transition: all 0.16s ease-out;
-    }
-    .main-btn:hover {
-      filter: brightness(1.06);
-      transform: translateY(-1px);
-    }
-    .bottom-row {
-      margin-top: 6px;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .link-btn {
-      border: none;
-      background: none;
-      color: #9fb6ff;
-      font-size: 12px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 6px;
-      border-radius: 999px;
-      transition: background 0.15s ease;
-    }
-    .link-btn:hover {
-      background: rgba(7, 28, 64, 0.9);
-    }
-    .small-note {
-      margin-top: 4px;
-      font-size: 11px;
-      color: #7f8cbb;
-    }
-    .small-note strong {
-      color: #ffb347;
-    }
-  </style>
+    .btn-clean { background:#262638; color:#fff; }
+    .btn-reload { background:#0066aa; color:#fff; }
+    .btn-exit { background:#aa0000; color:#fff; }
+</style>
+
 </head>
 <body>
-  <div class="card">
-    <div class="top-row">
-      <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
-      <div class="title-block">
-        <h1>PROF-SAFE <span>24</span> – Professor</h1>
-        <p>Envie um alerta rápido para a Central em caso de emergência ou risco.</p>
-        <div class="badge">
-          <span class="badge-dot"></span>
-          <span>Conectado à Central</span>
-        </div>
-      </div>
-    </div>
 
-    <div class="field">
-      <label>Escola (configurada na Central)</label>
-      <input type="text" id="escola_label" readonly placeholder="Escola não configurada na Central">
-    </div>
+<div class="card">
+    <img src="/static/logo_prof_safe24.png" class="logo">
 
-    <div class="field">
-      <label>Seu nome (opcional)</label>
-      <input type="text" id="professor" placeholder="Ex: Prof. Ana, Prof. João">
-    </div>
+    <h2>Painel do Professor</h2>
 
-    <div class="field">
-      <label>Sala / Local</label>
-      <input type="text" id="sala" placeholder="Ex: 5º A, Pátio, Corredor 2">
-    </div>
+    <label>Seu nome</label>
+    <input id="teacher" placeholder="Ex.: Prof. Maria">
 
-    <div class="field">
-      <label>Tipo de ocorrência</label>
-      <select id="tipo">
-        <option value="Conflito/Briga">Conflito/Briga</option>
-        <option value="Problema de saúde">Problema de saúde</option>
-        <option value="Pessoa suspeita">Pessoa suspeita</option>
-        <option value="Outra situação">Outra situação</option>
-      </select>
-    </div>
+    <label>Sala / Local</label>
+    <input id="room" placeholder="Ex.: Sala 02">
 
-    <div class="field">
-      <label>Nível de urgência</label>
-      <div class="urgencia-row">
-        <div class="urgencia-btn active-media" data-level="Média" id="urg-baixa">Baixa</div>
-        <div class="urgencia-btn active-media" data-level="Média" id="urg-media">Média</div>
-        <div class="urgencia-btn" data-level="Alta" id="urg-alta">Alta</div>
-      </div>
-    </div>
+    <label>Descrição do problema</label>
+    <textarea id="description" placeholder="Explique o ocorrido..."></textarea>
 
-    <div class="field">
-      <label>Descreva rapidamente o que está acontecendo</label>
-      <textarea id="descricao" placeholder="Ex: briga entre alunos, aluno passando mal, pessoa suspeita no portão..."></textarea>
-    </div>
+    <button onclick="enviarAlerta()">🚨 Enviar Alerta</button>
 
-    <button class="main-btn" onclick="enviarAlerta()">
-      🚨 ENVIAR ALERTA PARA A CENTRAL
-    </button>
+    <button class="btn-clean btn-small" onclick="limpar()">🧹 Limpar</button>
+    <button class="btn-reload btn-small" onclick="location.reload()">⟳ Reiniciar</button>
+    <button class="btn-exit btn-small" onclick="window.location='/'">⏻ Sair</button>
+</div>
 
-    <div class="bottom-row">
-      <button class="link-btn" onclick="reiniciarCampos()">⟳ Reiniciar</button>
-      <button class="link-btn" onclick="limparCampos()">🧹 Limpar</button>
-      <button class="link-btn" onclick="sair()">⏻ Sair</button>
-    </div>
+<script>
+function enviarAlerta() {
+    const data = {
+        teacher: document.getElementById("teacher").value,
+        room: document.getElementById("room").value,
+        description: document.getElementById("description").value
+    };
 
-    <p class="small-note">
-      Dica: mantenha este atalho salvo na tela inicial do seu celular para acesso mais rápido. A escola configura os dados da
-      Central; o professor apenas escolhe sala/local e envia o alerta.
-    </p>
-  </div>
+    fetch("/api/alert", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    }).then(r => r.json()).then(() => {
+        alert("Alerta enviado!");
+        limpar();
+    });
+}
 
-  <script>
-    let urgenciaAtual = 'Média';
+function limpar() {
+    document.getElementById("teacher").value = "";
+    document.getElementById("room").value = "";
+    document.getElementById("description").value = "";
+}
+</script>
 
-    function setUrgencia(level) {
-      urgenciaAtual = level;
-      document.getElementById('urg-baixa').className = 'urgencia-btn';
-      document.getElementById('urg-media').className = 'urgencia-btn';
-      document.getElementById('urg-alta').className = 'urgencia-btn';
-      if (level === 'Baixa') {
-        document.getElementById('urg-baixa').className = 'urgencia-btn active-baixa';
-      } else if (level === 'Média') {
-        document.getElementById('urg-media').className = 'urgencia-btn active-media';
-      } else {
-        document.getElementById('urg-alta').className = 'urgencia-btn active-alta';
-      }
-    }
-
-    document.getElementById('urg-baixa').onclick = () => setUrgencia('Baixa');
-    document.getElementById('urg-media').onclick = () => setUrgencia('Média');
-    document.getElementById('urg-alta').onclick = () => setUrgencia('Alta');
-
-    function carregarEscolaProfessor() {
-      fetch('/api/escola')
-        .then(r => r.json())
-        .then(data => {
-          const label = document.getElementById('escola_label');
-          if (data && data.nome) {
-            label.value = data.nome + (data.cnpj ? ' • CNPJ: ' + data.cnpj : '');
-          } else {
-            label.placeholder = 'Escola não configurada na Central';
-          }
-        });
-    }
-
-    function enviarAlerta() {
-      const payload = {
-        professor: document.getElementById('professor').value || 'Não informado',
-        sala: document.getElementById('sala').value || 'Não informado',
-        descricao: document.getElementById('descricao').value || '',
-        tipo: document.getElementById('tipo').value,
-        urgencia: urgenciaAtual
-      };
-      fetch('/api/alerta', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (window.opener && window.opener._tocarSireneProfSafe24) {
-          window.opener._tocarSireneProfSafe24();
-        }
-        if (window._tocarSireneProfSafe24) {
-          window._tocarSireneProfSafe24();
-        }
-        alert('✅ Alerta enviado para a Central.');
-      })
-      .catch(() => alert('Não foi possível enviar o alerta. Verifique a conexão com a Central.'));
-    }
-
-    function reiniciarCampos() {
-      document.getElementById('professor').value = '';
-      document.getElementById('sala').value = '';
-      document.getElementById('descricao').value = '';
-      document.getElementById('tipo').value = 'Conflito/Briga';
-      setUrgencia('Média');
-    }
-
-    function limparCampos() {
-      document.getElementById('descricao').value = '';
-    }
-
-    function sair() {
-      window.location.href = "/";
-    }
-
-    carregarEscolaProfessor();
-  </script>
 </body>
 </html>
