@@ -1,254 +1,185 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Central – PROF-SAFE 24</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{
-    margin:0;
-    min-height:100vh;
-    padding:18px;
-    background:radial-gradient(circle at top,#202035 0,#050509 60%);
-    color:#fff;
-    font-family:Arial, Helvetica, sans-serif;
-}
-.container{
-    max-width:1000px;
-    margin:0 auto;
-}
-.top{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:16px;
-}
-.logo-wrap{
-    width:80px;
-    height:80px;
-    border-radius:22px;
-    overflow:hidden;
-    border:2px solid #ffb347;
-}
-.logo-wrap img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-.top-text h1{
-    margin:0;
-    font-size:22px;
-}
-.top-text small{
-    display:block;
-    font-size:12px;
-    color:#d8d8d8;
-}
-.badge{
-    margin-left:auto;
-    padding:5px 12px;
-    border-radius:999px;
-    background:#ffb347;
-    color:#111;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-}
+    <meta charset="UTF-8">
+    <title>Central • PROF-SAFE 24</title>
 
-.grid{
-    display:grid;
-    grid-template-columns:2fr 1.1fr;
-    gap:12px;
-}
-.card{
-    background:rgba(9,9,18,0.95);
-    border-radius:18px;
-    padding:16px 14px;
-    box-shadow:0 0 30px rgba(0,0,0,0.9),0 0 20px rgba(255,145,0,0.4);
-    border:1px solid rgba(255,145,0,0.55);
-}
-.card h2{
-    margin:0 0 4px;
-    font-size:16px;
-}
-.card small{color:#c8c8c8;font-size:12px;}
+    <!-- ESTILO MODERNO -->
+    <style>
+        body {
+            margin: 0;
+            background: #000c1f;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+        }
 
-button{
-    border:none;
-    border-radius:999px;
-    padding:9px 14px;
-    font-size:13px;
-    font-weight:bold;
-    cursor:pointer;
-    margin:5px 5px 0 0;
-}
-.btn-on{background:linear-gradient(135deg,#ffb347,#ff8800);color:#111;box-shadow:0 0 12px rgba(255,145,0,0.7);}
-.btn-off{background:#33354f;color:#fff;}
-.btn-resolve{background:#0066aa;color:#fff;}
-.btn-clear{background:#b02020;color:#fff;}
+        /* CABEÇALHO */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 14px 22px;
+            background: #020818;
+            border-bottom: 2px solid #00ff88;
+            box-shadow: 0 4px 25px rgba(0,255,160,0.35);
+        }
 
-.alert-list{
-    margin-top:10px;
-    max-height:430px;
-    overflow-y:auto;
-}
-.alert-box{
-    background:#191a2b;
-    border-radius:10px;
-    padding:9px 10px;
-    margin-bottom:8px;
-    border-left:4px solid #ffb347;
-    font-size:13px;
-}
-.alert-box small{color:#bcbcbc;font-size:11px;}
+        header img {
+            width: 120px;
+            border-radius: 18px;
+            margin-right: 18px;
+        }
 
-.tag-siren{
-    margin-top:10px;
-    font-size:13px;
-    display:flex;
-    align-items:center;
-    gap:7px;
-}
-.dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-}
-.dot-on{background:#ff3b3b;box-shadow:0 0 8px #ff3b3b;}
-.dot-off{background:#555;}
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
 
-a.pdf-link{
-    display:inline-block;
-    margin-top:12px;
-    padding:8px 14px;
-    border-radius:999px;
-    border:1px solid rgba(255,145,0,0.7);
-    color:#ffb347;
-    text-decoration:none;
-    font-size:13px;
-}
-a.pdf-link:hover{background:rgba(255,145,0,0.1);}
-@media(max-width:900px){
-    .grid{grid-template-columns:1fr;}
-}
-</style>
+        header small {
+            color: #00e0ff;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .container {
+            background: #041327;
+            margin: 30px;
+            padding: 25px;
+            border-radius: 22px;
+            border: 1px solid #00ff99;
+            box-shadow: 0 0 25px rgba(0,255,180,0.25);
+        }
+
+        .titulo-box {
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #00ffcc;
+        }
+
+        /* BOTÕES */
+        .btn-row {
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 12px 22px;
+            margin: 6px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00e0ff, #00ff88);
+            color: #000;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.07);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #ff4b6a, #ff914d);
+            color: #fff;
+        }
+
+        /* ÁREA DE OCORRÊNCIAS */
+        .logs-box {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(0,255,180,0.35);
+            height: 350px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            border-bottom: 1px dashed #5ce6b5;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .hora-log {
+            color: #00e0ff;
+            font-size: 13px;
+        }
+    </style>
 </head>
-<body>
-<div class="container">
 
-    <div class="top">
-        <div class="logo-wrap">
-            <img src="/static/logo_prof_safe24.png" alt="PROF-SAFE 24">
-        </div>
-        <div class="top-text">
-            <h1>Central de Monitoramento</h1>
-            <small>Visualização em tempo real dos alertas enviados pelos professores.</small>
-        </div>
-        <div class="badge">Central</div>
+<body>
+
+<!-- CABEÇALHO -->
+<header>
+    <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}">
+    <div>
+        <h1>PROF-SAFE 24</h1>
+        <small>Painel da Central de Monitoramento</small>
+    </div>
+</header>
+
+<!-- ÁUDIO DA SIRENE -->
+<audio id="siren-audio">
+    <source src="{{ url_for('static', filename='siren.mp3') }}" type="audio/mpeg">
+</audio>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div class="container">
+    <div class="titulo-box">📡 Ocorrências Recebidas em Tempo Real</div>
+
+    <!-- BOTÕES -->
+    <div class="btn-row">
+        <button onclick="limparLogs()">🧹 Limpar</button>
+        <button onclick="reiniciarPagina()">⟳ Reiniciar</button>
+        <button class="btn-danger" onclick="sair()">⏻ Sair</button>
     </div>
 
-    <div class="grid">
-        <div class="card">
-            <h2>Alertas Recebidos</h2>
-            <small>Lista em tempo real (1s de atualização).</small>
-
-            <div class="alert-list" id="alertas">
-                <div class="alert-box">
-                    Nenhum alerta carregado ainda.
+    <!-- LISTA DE OCORRÊNCIAS -->
+    <div class="logs-box" id="logsBox">
+        {% if logs %}
+            {% for log in logs %}
+                <div class="log-item">
+                    <div class="hora-log">{{ log.hora }}</div>
+                    {{ log.texto }}
                 </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Controle da Sirene & Relatório</h2>
-            <small>Som local + relatório PDF para registro.</small>
-
-            <div class="tag-siren">
-                <span id="siren-dot" class="dot dot-off"></span>
-                <span id="siren-text">Sirene desligada</span>
-            </div>
-
-            <div style="margin-top:10px;">
-                <button class="btn-on" onclick="sirenOn()">🚨 Ligar sirene</button>
-                <button class="btn-off" onclick="sirenOff()">⏻ Desligar</button>
-                <button class="btn-resolve" onclick="resolver()">✅ Marcar 1º resolvido</button>
-                <button class="btn-clear" onclick="limpar()">🧹 Limpar todos</button>
-            </div>
-
-            <a href="/report.pdf" target="_blank" class="pdf-link">📄 Gerar Relatório PDF</a>
-        </div>
+            {% endfor %}
+        {% else %}
+            <div class="log-item">Nenhuma ocorrência registrada ainda.</div>
+        {% endif %}
     </div>
 </div>
 
-<audio id="sirenAudio">
-    <source src="/static/siren.mp3" type="audio/mpeg">
-</audio>
 
+<!-- SCRIPT -->
 <script>
-let currentSiren=false;
-
-async function atualizar(){
-    const resp=await fetch("/api/status");
-    const data=await resp.json();
-
-    const lista=document.getElementById("alertas");
-    lista.innerHTML="";
-
-    if(!data.alerts || data.alerts.length===0){
-        lista.innerHTML='<div class="alert-box">Nenhum alerta no momento.</div>';
-    }else{
-        data.alerts.forEach((a,idx)=>{
-            lista.innerHTML+=`
-                <div class="alert-box">
-                    <b>${idx+1}. ${a.teacher || 'Professor não informado'}</b> • Sala: <b>${a.room || '-'}</b><br>
-                    ${a.description || '-'}<br>
-                    <small>${a.ts} — ${a.resolved ? "Resolvido" : "Ativo"}</small>
-                </div>
-            `;
-        });
+    function tocarSirene() {
+        const audio = document.getElementById("siren-audio");
+        audio.currentTime = 0;
+        audio.play();
     }
 
-    currentSiren=data.siren;
-    atualizarSireneVisual();
-}
-
-function atualizarSireneVisual(){
-    const dot=document.getElementById("siren-dot");
-    const txt=document.getElementById("siren-text");
-    const audio=document.getElementById("sirenAudio");
-
-    if(currentSiren){
-        dot.className="dot dot-on";
-        txt.textContent="Sirene ligada";
-        audio.loop=true;
-        audio.play().catch(()=>{});
-    }else{
-        dot.className="dot dot-off";
-        txt.textContent="Sirene desligada";
-        if(!audio.paused) audio.pause();
+    function limparLogs() {
+        document.getElementById("logsBox").innerHTML =
+            "<div class='log-item'>Nenhuma ocorrência registrada.</div>";
     }
-}
 
-async function sirenOn(){
-    await fetch("/api/siren",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"on"})});
-    atualizar();
-}
-async function sirenOff(){
-    await fetch("/api/siren",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"off"})});
-    atualizar();
-}
-async function resolver(){
-    await fetch("/api/resolve",{method:"POST"});
-    atualizar();
-}
-async function limpar(){
-    if(!confirm("Limpar todos os alertas?")) return;
-    await fetch("/api/clear",{method:"POST"});
-    atualizar();
-}
+    function reiniciarPagina() {
+        location.reload();
+    }
 
-setInterval(atualizar,1000);
-window.addEventListener("load",atualizar);
+    function sair() {
+        window.location.href = "{{ url_for('login_central') }}";
+    }
+
+    // Se o servidor marcou que há nova ocorrência, toca sirene
+    {% if tocar_sirene %}
+        tocarSirene();
+    {% endif %}
 </script>
+
 </body>
 </html>
