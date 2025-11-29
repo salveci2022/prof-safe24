@@ -1,50 +1,181 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Login Central – PROF-SAFE 24</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body { background:#0b0b10; color:#fff; font-family:Arial; padding:30px; text-align:center; }
-.card {
-    max-width:420px; margin:0 auto; padding:25px;
-    background:#15151f; border-radius:14px;
-    box-shadow:0 0 18px rgba(0,0,0,0.6);
-}
-input {
-    width:100%; padding:12px; margin-top:10px;
-    border-radius:10px; background:#101018; border:1px solid #333;
-    color:#fff;
-}
-button {
-    margin-top:20px; padding:12px 20px; border:none;
-    border-radius:10px; background:#ff8800; color:#fff;
-    font-weight:bold; font-size:15px; width:100%;
-}
-button:hover { background:#e67400; }
-.error { color:#f66; margin-top:15px; }
-</style>
-
+  <meta charset="UTF-8">
+  <title>PROF-SAFE 24 – Login Central</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #071426 0, #020712 45%, #000 100%);
+      color: #e6f4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(145deg, rgba(5, 14, 32, 0.98), rgba(3, 10, 24, 0.98));
+      border-radius: 26px;
+      padding: 28px 26px 24px;
+      border: 1px solid rgba(0, 255, 200, 0.25);
+      box-shadow: 0 0 26px rgba(0, 255, 200, 0.18);
+    }
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .logo-area img {
+      width: 120px;
+      height: 120px;
+      border-radius: 18px;
+      box-shadow: 0 0 16px rgba(0, 255, 200, 0.35);
+      object-fit: cover;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 71, 87, 0.12);
+      border: 1px solid rgba(255, 99, 132, 0.55);
+      font-size: 11px;
+      color: #ffb3c1;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff4b6e, #ff3355);
+      box-shadow: 0 0 10px rgba(255, 77, 109, 0.7);
+    }
+    h1 {
+      font-size: 20px;
+      text-align: center;
+    }
+    h1 span {
+      color: #3fffd7;
+    }
+    p.subtitle {
+      font-size: 12px;
+      text-align: center;
+      color: #9fb6ff;
+      margin-top: 4px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #c8d6ff;
+    }
+    .field {
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(120, 162, 255, 0.55);
+      background: rgba(3, 13, 32, 0.9);
+      color: #e6f4ff;
+      font-size: 13px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #3fffd7;
+      box-shadow: 0 0 0 1px rgba(63, 255, 215, 0.5);
+    }
+    .btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      background: linear-gradient(135deg, #ff7b32, #ffb347);
+      color: #1b0900;
+      box-shadow: 0 0 18px rgba(255, 140, 82, 0.5);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .btn:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+    .footer {
+      margin-top: 12px;
+      font-size: 11px;
+      text-align: center;
+      color: #7f8cbb;
+    }
+    .erro {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #ff7b7b;
+      text-align: center;
+    }
+    .back-link {
+      margin-top: 6px;
+      font-size: 12px;
+      text-align: center;
+    }
+    .back-link a {
+      color: #3fffd7;
+      text-decoration: none;
+    }
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-
-<div class="card">
-    <h2>Acesso à Central</h2>
-
-    {% if error %}
-    <div class="error">{{ error }}</div>
-    {% endif %}
+  <div class="card">
+    <div class="logo-area">
+      <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span>Acesso restrito à Central</span>
+      </div>
+      <h1>PROF-SAFE <span>24</span></h1>
+      <p class="subtitle">Login da Central — coordenação / direção</p>
+    </div>
 
     <form method="POST">
-        <input name="usuario" placeholder="Usuário">
-        <input name="senha" type="password" placeholder="Senha">
-        <button type="submit">Entrar</button>
+      <div class="field">
+        <label for="usuario">Usuário</label>
+        <input type="text" id="usuario" name="usuario" placeholder="Centralfe3642620" required>
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="••••••••••" required>
+      </div>
+      <button class="btn" type="submit">Entrar na Central</button>
     </form>
 
-    <br>
-    <a href="/" style="color:#aaa;">← Voltar</a>
-</div>
+    {% if erro %}
+      <div class="erro">{{ erro }}</div>
+    {% endif %}
 
+    <div class="back-link">
+      <a href="/">← Voltar para a tela inicial</a>
+    </div>
+
+    <div class="footer">
+      PROF-SAFE 24 — Sistema de Proteção Rápida e Inteligente para Escolas.
+    </div>
+  </div>
 </body>
 </html>
