@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>PROF-SAFE 24</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin:0;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background: radial-gradient(circle at top, #202035 0, #050509 60%);
+            font-family: Arial, Helvetica, sans-serif;
+            color:#fff;
+        }
+        .card {
+            width: 95%;
+            max-width:650px;
+            padding:30px 26px;
+            background:rgba(9,9,18,0.92);
+            border-radius:20px;
+            box-shadow:0 0 35px rgba(0,0,0,0.9), 0 0 25px rgba(255,145,0,0.38);
+            border:1px solid rgba(255,145,0,0.45);
+            text-align:center;
+        }
+        img.logo {
+            width:190px;
+            border-radius:18px;
+            margin-bottom:20px;
+        }
+        h1 { margin:0 0 8px; font-size:24px; }
+        p { margin:0 0 18px; color:#e0e0e0; font-size:14px; }
 
+        .btn {
+            display:block;
+            padding:12px 18px;
+            margin:8px auto;
+            max-width:320px;
+            border-radius:999px;
+            text-decoration:none;
+            font-weight:bold;
+            font-size:14px;
+            border:1px solid rgba(255,180,70,0.9);
+            background:linear-gradient(135deg,#ffb347,#ff8800);
+            color:#111;
+            box-shadow:0 0 12px rgba(255,150,0,0.6);
+        }
+        .btn:hover { filter:brightness(0.95); }
+    </style>
+</head>
+<body>
+<div class="card">
+    <img src="/static/logo_prof_safe24.png" class="logo" alt="PROF-SAFE 24">
+
+    <h1>PROF-SAFE 24</h1>
+    <p>Sistema de alerta e monitoramento escolar em tempo real.</p>
+
+    <a href="/professor" class="btn">🚨 Painel do Professor</a>
+    <a href="/login_central" class="btn">🎛 Painel da Central</a>
+    <a href="/admin" class="btn">⚙ Administração</a>
+</div>
+</body>
+</html>
