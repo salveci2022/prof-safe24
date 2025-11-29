@@ -1,182 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Painel do Professor – PROF-SAFE 24</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{
-    margin:0;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:radial-gradient(circle at top,#202035 0,#050509 60%);
-    color:#fff;
-    font-family:Arial, Helvetica, sans-serif;
-}
-.card{
-    width:95%;
-    max-width:560px;
-    padding:24px 22px;
-    background:rgba(9,9,18,0.95);
-    border-radius:20px;
-    box-shadow:0 0 30px rgba(0,0,0,0.9),0 0 22px rgba(255,145,0,0.4);
-    border:1px solid rgba(255,145,0,0.5);
-}
-.header{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:16px;
-}
-.logo-wrap{
-    width:68px;
-    height:68px;
-    border-radius:18px;
-    overflow:hidden;
-    border:2px solid #ffb347;
-    flex-shrink:0;
-}
-.logo-wrap img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-.header-text h2{
-    margin:0;
-    font-size:19px;
-}
-.header-text small{
-    display:block;
-    color:#d8d8d8;
-    font-size:12px;
-}
-.badge{
-    margin-left:auto;
-    font-size:11px;
-    padding:4px 10px;
-    border-radius:999px;
-    background:#ffb347;
-    color:#111;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-}
+    <meta charset="UTF-8">
+    <title>Professor • PROF-SAFE 24</title>
 
-label{
-    display:block;
-    margin-top:12px;
-    font-size:13px;
-    font-weight:bold;
-}
-input,textarea{
-    width:100%;
-    margin-top:5px;
-    padding:10px 11px;
-    border-radius:10px;
-    border:1px solid #343454;
-    background:#050513;
-    color:#fff;
-    font-size:14px;
-}
-textarea{min-height:90px;resize:vertical;}
-input:focus,textarea:focus{
-    outline:none;
-    border-color:#ffb347;
-    box-shadow:0 0 0 1px rgba(255,145,0,0.5);
-}
-.btn-main{
-    margin-top:18px;
-    width:100%;
-    padding:12px;
-    border-radius:999px;
-    border:none;
-    background:linear-gradient(135deg,#ffb347,#ff8800);
-    color:#111;
-    font-weight:bold;
-    font-size:15px;
-    box-shadow:0 0 16px rgba(255,145,0,0.7);
-    cursor:pointer;
-}
-.btn-main:hover{filter:brightness(0.96);}
-.btn-row{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-top:10px;
-}
-.btn-small{
-    border-radius:999px;
-    padding:9px 6px;
-    border:none;
-    font-size:12px;
-    font-weight:bold;
-    cursor:pointer;
-}
-.btn-clean{background:#26263d;color:#fff;}
-.btn-reload{background:#0066aa;color:#fff;}
-.btn-exit{background:#b02020;color:#fff;}
-@media(max-width:480px){
-    .btn-row{grid-template-columns:1fr;}
-}
-</style>
+    <!-- ESTILO MODERNO -->
+    <style>
+        body {
+            margin: 0;
+            background: #000c1f;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+        }
+
+        /* CABEÇALHO */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 14px 22px;
+            background: #020818;
+            border-bottom: 2px solid #00ff88;
+            box-shadow: 0 4px 25px rgba(0,255,160,0.35);
+        }
+
+        header img {
+            width: 120px;
+            border-radius: 18px;
+            margin-right: 18px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        header small {
+            color: #00e0ff;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .container {
+            background: #041327;
+            margin: 30px;
+            padding: 25px;
+            border-radius: 22px;
+            border: 1px solid #00ff99;
+            box-shadow: 0 0 25px rgba(0,255,180,0.25);
+        }
+
+        .titulo-box {
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00ffcc;
+        }
+
+        .descricao {
+            font-size: 14px;
+            color: #b9c8ff;
+            margin-bottom: 18px;
+        }
+
+        /* FORMULÁRIO */
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #00ff99;
+            background: #020b18;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* BOTÕES */
+        .btn-row {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 12px 22px;
+            margin: 6px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00e0ff, #00ff88);
+            color: #000;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.07);
+        }
+
+        .btn-secondary {
+            background: #041327;
+            color: #fff;
+            border: 1px solid #00e0ff;
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #ff4b6a, #ff914d);
+            color: #fff;
+        }
+
+        .info-rodape {
+            font-size: 12px;
+            color: #9fb0ff;
+            margin-top: 8px;
+        }
+    </style>
 </head>
+
 <body>
-<div class="card">
-    <div class="header">
-        <div class="logo-wrap">
-            <img src="/static/logo_prof_safe24.png" alt="PROF-SAFE 24">
-        </div>
-        <div class="header-text">
-            <h2>Painel do Professor</h2>
-            <small>Envio imediato de alerta à Central em situações de risco.</small>
-        </div>
-        <div class="badge">Professor</div>
+
+<!-- CABEÇALHO -->
+<header>
+    <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+    <div>
+        <h1>PROF-SAFE 24</h1>
+        <small>Painel do Professor • Botão de Pânico</small>
+    </div>
+</header>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div class="container">
+    <div class="titulo-box">🔴 Enviar Alerta Imediato</div>
+    <div class="descricao">
+        Use este painel apenas em situação de risco real. A mensagem será enviada diretamente para a
+        <strong>Central de Monitoramento</strong>.
     </div>
 
-    <label for="teacher">Seu nome</label>
-    <input id="teacher" placeholder="Ex.: Prof. Ana Souza">
+    <!-- FORMULÁRIO DE ALERTA -->
+    <!-- ajuste os "name=" se no seu app.py estiverem com nomes diferentes -->
+    <form method="POST" action="{{ url_for('enviar_alerta') }}">
+        <label for="sala">Sala / Local</label>
+        <input type="text" id="sala" name="sala" placeholder="Ex: 3º Ano B - Bloco 2" required>
 
-    <label for="room">Sala / Local</label>
-    <input id="room" placeholder="Ex.: 3º Ano B, Pátio, Biblioteca">
+        <label for="tipo">Tipo de ocorrência</label>
+        <select id="tipo" name="tipo" required>
+            <option value="">Selecione...</option>
+            <option value="briga">Briga / Agressão</option>
+            <option value="invasao">Invasão / Pessoa suspeita</option>
+            <option value="mal_subito">Mal súbito / Saúde</option>
+            <option value="arma">Suspeita de arma / objeto perigoso</option>
+            <option value="outro">Outro tipo de ocorrência</option>
+        </select>
 
-    <label for="description">Descrição do ocorrido</label>
-    <textarea id="description" placeholder="Descreva rapidamente o que está acontecendo."></textarea>
+        <label for="mensagem">Descrição rápida (opcional)</label>
+        <textarea id="mensagem" name="mensagem" placeholder="Descreva em poucas palavras o que está acontecendo..."></textarea>
 
-    <button class="btn-main" onclick="enviarAlerta()">🚨 Enviar alerta</button>
+        <!-- BOTÕES -->
+        <div class="btn-row">
+            <button type="submit">🚨 Enviar Alerta</button>
+            <button type="button" class="btn-secondary" onclick="limparFormulario()">🧹 Limpar</button>
+            <button type="button" class="btn-secondary" onclick="reiniciarPagina()">⟳ Reiniciar</button>
+            <button type="button" class="btn-danger" onclick="sair()">⏻ Sair</button>
+        </div>
+    </form>
 
-    <div class="btn-row">
-        <button class="btn-small btn-clean" onclick="limparCampos()">🧹 Limpar</button>
-        <button class="btn-small btn-reload" onclick="location.reload()">⟳ Reiniciar</button>
-        <button class="btn-small btn-exit" onclick="window.location='/'">⏻ Sair</button>
+    <div class="info-rodape">
+        Após o envio, a Central recebe o alerta em tempo real e a sirene é acionada.
     </div>
 </div>
 
+<!-- SCRIPT -->
 <script>
-async function enviarAlerta(){
-    const teacher=document.getElementById("teacher").value.trim();
-    const room=document.getElementById("room").value.trim();
-    const description=document.getElementById("description").value.trim();
-
-    if(!room || !description){
-        alert("Informe pelo menos a SALA e a DESCRIÇÃO.");
-        return;
+    function limparFormulario() {
+        document.getElementById('sala').value = '';
+        document.getElementById('tipo').value = '';
+        document.getElementById('mensagem').value = '';
     }
 
-    await fetch("/api/alert",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({teacher,room,description})
-    });
+    function reiniciarPagina() {
+        location.reload();
+    }
 
-    alert("Alerta enviado para a Central.");
-    document.getElementById("description").value="";
-}
-function limparCampos(){
-    document.getElementById("teacher").value="";
-    document.getElementById("room").value="";
-    document.getElementById("description").value="";
-}
+    function sair() {
+        // ajuste a rota abaixo se o seu app usar outra página de saída
+        window.location.href = "{{ url_for('home') }}";
+    }
 </script>
+
 </body>
 </html>
