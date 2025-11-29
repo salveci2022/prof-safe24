@@ -1,111 +1,66 @@
-// relatorio-prof-safe.js - CÓDIGO ATUALIZADO E PRONTO
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Ocorrências – PROF-SAFE 24</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-// ==================== CONFIGURAÇÃO DA ESCOLA ====================
-// ⚠️ EDITAR ESTES DADOS COM AS INFORMAÇÕES DA SUA ESCOLA ⚠️
-const configEscola = {
-    nome: "ESCOLA ESTADUAL PROFESSOR JOSÉ DA SILVA",
-    endereco: "Rua das Flores, 123 - Centro - São Paulo/SP",
-    telefone: "(11) 9999-8888",
-    email: "contato@escolajosesilva.edu.br",
-    responsavel: "Maria Oliveira - Diretora"
-};
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #05050a;
+            color: #f5f5f5;
+            padding: 16px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #101018;
+            border-radius: 14px;
+            padding: 18px 16px 20px;
+            box-shadow: 0 0 16px rgba(0,0,0,0.7);
+        }
+        .title { font-size: 20px; font-weight: bold; margin-bottom: 6px; }
+        .subtitle { font-size: 13px; color: #bbbbbb; margin-bottom: 14px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: none;
+            background: #ff8800;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn:hover { background: #e67600; }
+        iframe, embed {
+            margin-top: 16px;
+            width: 100%;
+            height: 480px;
+            border-radius: 10px;
+            border: 1px solid #262638;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="title">Relatório de Ocorrências</div>
+        <div class="subtitle">
+            Abaixo você visualiza o relatório em PDF gerado automaticamente com base nos alertas enviados.
+        </div>
 
-// ==================== FUNÇÃO HORA CORRETA ====================
-function getDataHoraBrasil() {
-    const agora = new Date();
-    return agora.toLocaleString('pt-BR', {
-        timeZone: 'America/Sao_Paulo',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    });
-}
+        <a class="btn" href="/report.pdf" target="_blank">📄 Abrir em nova aba</a>
+        <a class="btn" href="/central">⬅ Voltar para a Central</a>
 
-// ==================== GERAR RELATÓRIO COMPLETO ====================
-function gerarRelatorioAtualizado() {
-    const dataHora = getDataHoraBrasil();
-    
-    return `
-# PROF-SAFE 24 - RELATÓRIO DE SEGURANÇA
-
-**Instituição:** ${configEscola.nome}
-**Endereço:** ${configEscola.endereco}
-**Contato:** ${configEscola.telefone} | ${configEscola.email}
-**Responsável:** ${configEscola.responsavel}
-**Data/Hora:** ${dataHora}
-
----
-
-## STATUS DO SISTEMA
-
-- ✅ Sistema operando normalmente
-- 📊 Nenhum alerta registrado
-- 🔒 Todos os recursos disponíveis
-- 📍 Monitoramento ativo
-
-## PRÓXIMAS AÇÕES
-
-- Manutenção preventiva programada
-- Atualização automática de relatórios
-- Backup diário dos dados
-
----
-
-*Relatório gerado automaticamente pelo PROF-SAFE 24*
-*Sistema de proteção escolar - ${dataHora}*
-    `.trim();
-}
-
-// ==================== ATUALIZAR NA TELA ====================
-function atualizarRelatorio() {
-    const relatorio = gerarRelatorioAtualizado();
-    
-    // Atualiza na página web
-    const elemento = document.getElementById('relatorio-container');
-    if (elemento) {
-        elemento.innerHTML = relatorio;
-    }
-    
-    // Atualiza o título com hora atual
-    document.title = `PROF-SAFE 24 - ${getDataHoraBrasil()}`;
-    
-    console.log("✅ Relatório atualizado com sucesso!");
-    console.log(relatorio);
-}
-
-// ==================== INICIAR SISTEMA ====================
-// Executar quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("🚀 PROF-SAFE 24 - Sistema de relatórios iniciado");
-    atualizarRelatorio();
-    
-    // Atualizar a cada 30 segundos (opcional)
-    setInterval(atualizarRelatorio, 30000);
-});
-
-// ==================== TESTE RÁPIDO ====================
-function testeRapido() {
-    const relatorio = gerarRelatorioAtualizado();
-    console.log("📄 RELATÓRIO DE TESTE:");
-    console.log(relatorio);
-    alert("Relatório gerado! Verifique o console.");
-    return relatorio;
-}
-
-// ==================== INSTRUÇÕES ====================
-console.log(`
-🎯 INSTRUÇÕES PROF-SAFE 24:
-
-1. EDITAR dados da escola nas primeiras linhas
-2. CHAME atualizarRelatorio() para atualizar na tela
-3. CHAME testeRapido() para ver no console
-4. Sistema atualiza automaticamente a cada 30s
-
-📋 DADOS ATUAIS:
-Escola: ${configEscola.nome}
-Última atualização: ${getDataHoraBrasil()}
-`);
+        <embed src="/report.pdf" type="application/pdf">
+    </div>
+</div>
+</body>
+</html>
