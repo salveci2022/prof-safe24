@@ -2,181 +2,95 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel do Professor – PROF-SAFE 24</title>
+<title>Login Central – PROF-SAFE 24</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
+body {
     margin:0;
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    background:radial-gradient(circle at top,#202035 0,#050509 60%);
+    background: radial-gradient(circle at top, #202035 0, #050509 60%);
     color:#fff;
     font-family:Arial, Helvetica, sans-serif;
 }
-.card{
+.card {
     width:95%;
-    max-width:560px;
-    padding:24px 22px;
-    background:rgba(9,9,18,0.95);
-    border-radius:20px;
-    box-shadow:0 0 30px rgba(0,0,0,0.9),0 0 22px rgba(255,145,0,0.4);
-    border:1px solid rgba(255,145,0,0.5);
-}
-.header{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:16px;
-}
-.logo-wrap{
-    width:68px;
-    height:68px;
+    max-width:420px;
+    padding:26px 22px;
+    background:rgba(9,9,18,0.92);
     border-radius:18px;
-    overflow:hidden;
-    border:2px solid #ffb347;
-    flex-shrink:0;
+    box-shadow:0 0 30px rgba(0,0,0,0.9), 0 0 20px rgba(255,145,0,0.35);
+    border:1px solid rgba(255,145,0,0.55);
+    text-align:center;
 }
-.logo-wrap img{
+img.logo {
+    width:150px;
+    border-radius:16px;
+    margin-bottom:18px;
+}
+input {
     width:100%;
-    height:100%;
-    object-fit:cover;
-}
-.header-text h2{
-    margin:0;
-    font-size:19px;
-}
-.header-text small{
-    display:block;
-    color:#d8d8d8;
-    font-size:12px;
-}
-.badge{
-    margin-left:auto;
-    font-size:11px;
-    padding:4px 10px;
-    border-radius:999px;
-    background:#ffb347;
-    color:#111;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-}
-
-label{
-    display:block;
-    margin-top:12px;
-    font-size:13px;
-    font-weight:bold;
-}
-input,textarea{
-    width:100%;
-    margin-top:5px;
-    padding:10px 11px;
+    padding:11px;
+    margin-top:10px;
     border-radius:10px;
     border:1px solid #343454;
     background:#050513;
     color:#fff;
     font-size:14px;
 }
-textarea{min-height:90px;resize:vertical;}
-input:focus,textarea:focus{
+input:focus {
     outline:none;
     border-color:#ffb347;
-    box-shadow:0 0 0 1px rgba(255,145,0,0.5);
+    box-shadow:0 0 0 1px rgba(255,145,0,0.45);
 }
-.btn-main{
+button {
     margin-top:18px;
     width:100%;
     padding:12px;
-    border-radius:999px;
     border:none;
+    border-radius:999px;
     background:linear-gradient(135deg,#ffb347,#ff8800);
     color:#111;
     font-weight:bold;
     font-size:15px;
-    box-shadow:0 0 16px rgba(255,145,0,0.7);
+    box-shadow:0 0 12px rgba(255,145,0,0.65);
     cursor:pointer;
 }
-.btn-main:hover{filter:brightness(0.96);}
-.btn-row{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
+button:hover { filter:brightness(0.96); }
+.error {
+    color:#ff6b6b;
     margin-top:10px;
+    font-size:13px;
 }
-.btn-small{
-    border-radius:999px;
-    padding:9px 6px;
-    border:none;
-    font-size:12px;
-    font-weight:bold;
-    cursor:pointer;
+a.voltar {
+    display:inline-block;
+    margin-top:14px;
+    color:#ffb347;
+    text-decoration:none;
+    font-size:13px;
 }
-.btn-clean{background:#26263d;color:#fff;}
-.btn-reload{background:#0066aa;color:#fff;}
-.btn-exit{background:#b02020;color:#fff;}
-@media(max-width:480px){
-    .btn-row{grid-template-columns:1fr;}
-}
+a.voltar:hover { text-decoration:underline; }
 </style>
 </head>
 <body>
 <div class="card">
-    <div class="header">
-        <div class="logo-wrap">
-            <img src="/static/logo_prof_safe24.png" alt="PROF-SAFE 24">
-        </div>
-        <div class="header-text">
-            <h2>Painel do Professor</h2>
-            <small>Envio imediato de alerta à Central em situações de risco.</small>
-        </div>
-        <div class="badge">Professor</div>
-    </div>
+    <img src="/static/logo_prof_safe24.png" class="logo" alt="PROF-SAFE 24">
 
-    <label for="teacher">Seu nome</label>
-    <input id="teacher" placeholder="Ex.: Prof. Ana Souza">
+    <h2>Login da Central</h2>
 
-    <label for="room">Sala / Local</label>
-    <input id="room" placeholder="Ex.: 3º Ano B, Pátio, Biblioteca">
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
 
-    <label for="description">Descrição do ocorrido</label>
-    <textarea id="description" placeholder="Descreva rapidamente o que está acontecendo."></textarea>
+    <form method="POST">
+        <input name="usuario" placeholder="Usuário">
+        <input name="senha" type="password" placeholder="Senha">
+        <button type="submit">Entrar</button>
+    </form>
 
-    <button class="btn-main" onclick="enviarAlerta()">🚨 Enviar alerta</button>
-
-    <div class="btn-row">
-        <button class="btn-small btn-clean" onclick="limparCampos()">🧹 Limpar</button>
-        <button class="btn-small btn-reload" onclick="location.reload()">⟳ Reiniciar</button>
-        <button class="btn-small btn-exit" onclick="window.location='/'">⏻ Sair</button>
-    </div>
+    <a href="/" class="voltar">← Voltar</a>
 </div>
-
-<script>
-async function enviarAlerta(){
-    const teacher=document.getElementById("teacher").value.trim();
-    const room=document.getElementById("room").value.trim();
-    const description=document.getElementById("description").value.trim();
-
-    if(!room || !description){
-        alert("Informe pelo menos a SALA e a DESCRIÇÃO.");
-        return;
-    }
-
-    await fetch("/api/alert",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({teacher,room,description})
-    });
-
-    alert("Alerta enviado para a Central.");
-    document.getElementById("description").value="";
-}
-function limparCampos(){
-    document.getElementById("teacher").value="";
-    document.getElementById("room").value="";
-    document.getElementById("description").value="";
-}
-</script>
 </body>
 </html>
