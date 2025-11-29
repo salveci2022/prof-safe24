@@ -1,52 +1,198 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>PROF-SAFE 24 – Sistema de Segurança Escolar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            background:#0b0b10;
-            color:#fff;
-            font-family: Arial, Helvetica, sans-serif;
-            padding:30px;
-            text-align:center;
-        }
-        .card {
-            max-width:600px;
-            margin:0 auto;
-            padding:30px;
-            background:#15151f;
-            border-radius:14px;
-            box-shadow: 0 0 18px rgba(0,0,0,0.6);
-        }
-        h1 { font-size:26px; margin-bottom:10px; }
-        p { color:#d0d0d0; font-size:15px; }
-        .btn {
-            padding:12px 20px;
-            border-radius:999px;
-            background:#ff8800;
-            color:#fff;
-            font-weight:bold;
-            text-decoration:none;
-            display:inline-block;
-            margin-top:20px;
-            font-size:15px;
-        }
-        .btn:hover { background:#e67400; }
-    </style>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>PROF-SAFE 24 – Início</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #071426 0, #020712 45%, #000 100%);
+      color: #e6f4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 980px;
+      padding: 32px;
+      background: linear-gradient(145deg, rgba(5, 14, 32, 0.98), rgba(3, 10, 24, 0.98));
+      border-radius: 28px;
+      box-shadow: 0 0 32px rgba(0, 255, 200, 0.18);
+      border: 1px solid rgba(0, 255, 200, 0.2);
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+    }
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-wrap img {
+      width: 120px;
+      height: 120px;
+      border-radius: 18px;
+      box-shadow: 0 0 16px rgba(0, 255, 200, 0.35);
+      object-fit: cover;
+    }
+    .brand {
+      text-align: center;
+    }
+    .brand h1 {
+      font-size: 26px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .brand h1 span {
+      color: #3fffd7;
+    }
+    .brand p {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #9fb6ff;
+    }
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      justify-content: center;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at left, rgba(0, 255, 200, 0.24), transparent 60%);
+      border: 1px solid rgba(0, 255, 200, 0.35);
+      font-size: 11px;
+      color: #b6e7ff;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #46ffb8, #0aff9d 55%, #00996a 100%);
+      box-shadow: 0 0 10px rgba(0, 255, 157, 0.7);
+    }
+    h2 {
+      font-size: 22px;
+      margin-top: 4px;
+    }
+    h2 span {
+      color: #ffb347;
+    }
+    .desc {
+      font-size: 14px;
+      color: #a7bbff;
+      line-height: 1.6;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.18s ease-out;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #ff7b32, #ffb347);
+      color: #1b0900;
+      box-shadow: 0 0 20px rgba(255, 140, 82, 0.45);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(7, 28, 64, 0.9);
+      color: #d3e4ff;
+      border: 1px solid rgba(91, 180, 255, 0.6);
+    }
+    .btn-secondary:hover {
+      background: rgba(11, 40, 86, 0.9);
+    }
+    .note {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #8ea4ff;
+    }
+    .note strong {
+      color: #ffb347;
+    }
+    @media (max-width: 780px) {
+      .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .logo-wrap {
+        flex-direction: column;
+      }
+      .brand h1 {
+        font-size: 22px;
+      }
+      .content {
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<div class="card">
-    <h1>PROF-SAFE 24</h1>
-    <p>Sistema de Alerta e Monitoramento Escolar em Tempo Real.</p>
-
-    <a href="/professor" class="btn">Acessar Painel do Professor</a>
-    <br><br>
-    <a href="/login_central" class="btn">Acessar Central</a>
-</div>
-
+  <div class="container">
+    <div class="logo-wrap">
+      <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
+      <div class="brand">
+        <h1>PROF-SAFE <span>24</span></h1>
+        <p>Sistema de Proteção Rápida e Inteligente para Escolas</p>
+      </div>
+    </div>
+    <div class="content">
+      <div>
+        <div class="tag">
+          <span class="tag-dot"></span>
+          <span>Ambiente seguro para professores</span>
+        </div>
+        <h2>Escolha como deseja acessar o <span>PROF-SAFE 24</span></h2>
+      </div>
+      <p class="desc">
+        Professores enviam <strong>alertas discretos</strong> em poucos cliques. A Central recebe em tempo real,
+        com sirene configurável, histórico de ocorrências e relatório em PDF para registro oficial.
+      </p>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="window.location.href='/professor'">
+          👩‍🏫 Acessar como Professor
+        </button>
+        <button class="btn btn-secondary" onclick="window.location.href='/login_central'">
+          🛡️ Acessar Central de Monitoramento
+        </button>
+      </div>
+      <p class="note">
+        Dica: instale essa página como atalho no computador da <strong>coordenação</strong> e dos <strong>professores</strong>
+        para acesso rápido durante o período letivo.
+      </p>
+    </div>
+  </div>
 </body>
 </html>
