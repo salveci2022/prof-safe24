@@ -4,28 +4,49 @@
 <meta charset="UTF-8">
 <title>Admin – PROF-SAFE 24</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-body { background:#0b0b10; color:#fff; font-family:Arial; padding:30px; }
+body {
+    background:#0b0b10;
+    color:#fff;
+    font-family:Arial, Helvetica, sans-serif;
+    padding:30px;
+}
 .card {
-    max-width:600px; margin:0 auto; padding:25px;
-    background:#15151f; border-radius:14px;
+    max-width:600px;
+    margin:0 auto;
+    padding:25px;
+    background:#15151f;
+    border-radius:14px;
     box-shadow:0 0 18px rgba(0,0,0,0.6);
 }
 a.btn {
-    display:block; padding:15px; background:#ff8800;
-    margin:10px 0; text-align:center; color:#fff;
-    text-decoration:none; border-radius:10px;
+    display:block;
+    padding:15px;
+    background:#ff8800;
+    margin:10px 0;
+    text-align:center;
+    color:#fff;
+    text-decoration:none;
+    border-radius:10px;
     font-weight:bold;
 }
 a.btn:hover { background:#e67400; }
+
+img.logo {
+    width:150px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
+    <img src="/static/logo_prof_safe24.png" class="logo">
+
     <h2>Painel Administrativo</h2>
+
     <a class="btn" href="/admin/escola">Cadastrar Dados da Escola</a>
     <a class="btn" href="/central">Acessar Central</a>
     <a class="btn" href="/">Voltar</a>
