@@ -1,208 +1,50 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>PROF-SAFE 24 - Login Central</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * { box-sizing:border-box; }
-        body {
-            margin:0;
-            min-height:100vh;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color:#e5e7eb;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        .shell{
-            width:100%;
-            max-width:420px;
-            padding:20px;
-        }
-        .card{
-            background:rgba(2,8,23,0.96);
-            border-radius:18px;
-            border:1px solid rgba(56,189,248,0.35);
-            box-shadow:0 24px 60px rgba(0,0,0,0.9);
-            padding:18px 20px 20px;
-            position:relative;
-            overflow:hidden;
-        }
-        .card::before{
-            content:"";
-            position:absolute;
-            inset:-35%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-        .card-inner{
-            position:relative;
-            z-index:1;
-        }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            margin-bottom:16px;
-        }
-        .brand-icon{
-            width:40px;
-            height:40px;
-            border-radius:16px;
-            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 30px rgba(248,250,252,0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:11px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.1em;
-        }
-        .brand-text-title{
-            font-size:18px;
-            font-weight:600;
-            letter-spacing:0.12em;
-            text-transform:uppercase;
-            color:#e5e7eb;
-        }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .form-group{
-            margin-bottom:12px;
-            font-size:12px;
-        }
-        label{
-            display:block;
-            margin-bottom:4px;
-            color:#cbd5f5;
-        }
-        input{
-            width:100%;
-            padding:8px 10px;
-            border-radius:10px;
-            border:1px solid rgba(148,163,184,0.8);
-            background:rgba(15,23,42,0.95);
-            color:#e5e7eb;
-            font-size:13px;
-        }
-        input:focus{
-            outline:none;
-            border-color:#22d3ee;
-            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
-        }
-        .btn{
-            width:100%;
-            border-radius:999px;
-            border:none;
-            padding:9px 0;
-            font-size:13px;
-            font-weight:600;
-            background:linear-gradient(135deg,#22d3ee,#0369a1);
-            color:#0f172a;
-            cursor:pointer;
-            box-shadow:0 12px 28px rgba(8,47,73,0.9);
-            margin-top:4px;
-        }
-        .btn:hover{
-            filter:brightness(1.05);
-        }
-        .error{
-            margin-top:8px;
-            font-size:11px;
-            color:#fecaca;
-        }
-        .footer{
-            margin-top:10px;
-            font-size:10px;
-            color:#6b7280;
-            text-align:right;
-        }
-        .top-info{
-            font-size:11px;
-            color:#9ca3af;
-            margin-bottom:10px;
-        }
-        .clock{
-            font-size:11px;
-            color:#facc15;
-            font-weight:bold;
-            margin-top:4px;
-        }
-        .logo-banner {
-            display:flex;
-            justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 12px;
-        }
-        .logo-banner img {
-            max-width: 140px;
-            width: 100%;
-            height:auto;
-            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
-            border-radius: 18px; /* arredonda a imagem da logo */
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Login Central – PROF-SAFE 24</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body { background:#0b0b10; color:#fff; font-family:Arial; padding:30px; text-align:center; }
+.card {
+    max-width:420px; margin:0 auto; padding:25px;
+    background:#15151f; border-radius:14px;
+    box-shadow:0 0 18px rgba(0,0,0,0.6);
+}
+input {
+    width:100%; padding:12px; margin-top:10px;
+    border-radius:10px; background:#101018; border:1px solid #333;
+    color:#fff;
+}
+button {
+    margin-top:20px; padding:12px 20px; border:none;
+    border-radius:10px; background:#ff8800; color:#fff;
+    font-weight:bold; font-size:15px; width:100%;
+}
+button:hover { background:#e67400; }
+.error { color:#f66; margin-top:15px; }
+</style>
+
 </head>
 <body>
-<div class="shell">
-    <div class="card">
-        <div class="logo-banner">
-            <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
-        </div>
-        <div class="card-inner">
-            <div class="brand">
-                <div class="brand-icon">PS24</div>
-                <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Login da Central &mdash; Acesso restrito</div>
-                    <div class="clock" id="clockLogin"></div>
-                </div>
-            </div>
 
-            <div class="top-info">
-                Use seu usuário e senha para acessar o painel da Central.  
-                Em caso de dúvida, contate o responsável pelo sistema.
-            </div>
+<div class="card">
+    <h2>Acesso à Central</h2>
 
-            <form method="POST">
-                <div class="form-group">
-                    <label for="usuario">Usuário</label>
-                    <input type="text" id="usuario" name="usuario" autocomplete="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" autocomplete="current-password" required>
-                </div>
-                <button type="submit" class="btn">Entrar na Central</button>
-            </form>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
 
-            {% if error %}
-            <div class="error">{{ error }}</div>
-            {% endif %}
+    <form method="POST">
+        <input name="usuario" placeholder="Usuário">
+        <input name="senha" type="password" placeholder="Senha">
+        <button type="submit">Entrar</button>
+    </form>
 
-            <div class="footer">
-                PROF-SAFE 24 &mdash; Acesso exclusivo da direção / coordenação.
-            </div>
-        </div>
-    </div>
+    <br>
+    <a href="/" style="color:#aaa;">← Voltar</a>
 </div>
 
-<script>
-function updateClockLogin(){
-    const el = document.getElementById('clockLogin');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-}
-setInterval(updateClockLogin,1000);
-updateClockLogin();
-</script>
 </body>
 </html>
