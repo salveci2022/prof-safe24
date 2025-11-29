@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 from reportlab.pdfgen import canvas
 import pytz  # timezone Brasil
 
-
 # --------------------------------------------------------------------------- #
 #                          Configuração inicial
 # --------------------------------------------------------------------------- #
@@ -25,47 +24,42 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Timezone Brasil (BRT)
+# Timezone Brasil
 BR_TZ = pytz.timezone("America/Sao_Paulo")
 
-# Caminho do .env (para salvar dados da escola localmente quando possível)
+# Caminho do .env
 ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
 
-# --- Configuração básica / segredos -----------------------------------------
+# Chave de sessão
 app.secret_key = os.getenv("SECRET_KEY", "mude_esta_chave_super_secreta")
 
-# Usuário e senha da Central vindos das variáveis de ambiente (ou padrão)
+# Usuário da central
 CENTRAL_USER = os.getenv("CENTRAL_USER", "central")
 CENTRAL_PASS = os.getenv("CENTRAL_PASS", "1234")
 
-# --- Dados da Escola (para relatório / telas) ------------------------------- #
+# Dados da escola
 SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE 24")
 SCHOOL_ADDRESS = os.getenv("SCHOOL_ADDRESS", "Endereço não configurado")
 SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone/E-mail não configurados")
 
-# --- Segurança: limites de login e sessão -----------------------------------
-MAX_LOGIN_ATTEMPTS = 5          # tentativas máximas antes de bloquear
-LOCK_TIME_MINUTES = 10          # tempo de bloqueio do IP
-SESSION_TIMEOUT_MINUTES = 15    # tempo de inatividade até deslogar
-
-# ip -> {"count": int, "locked_until": datetime}
+# Controle de segurança
+MAX_LOGIN_ATTEMPTS = 5
+LOCK_TIME_MINUTES = 10
+SESSION_TIMEOUT_MINUTES = 15
 login_attempts = {}
 
+# --------------------------------------------------------------------------- #
+#                            Funções utilitárias
+# --------------------------------------------------------------------------- #
 
-# --------------------------------------------------------------------------- #
-#                               Funções utilitárias
-# --------------------------------------------------------------------------- #
 def get_client_ip() -> str:
-    """Pega o IP real do cliente. No Render, pode vir em X-Forwarded-For."""
     xff = request.headers.get("X-Forwarded-For")
     if xff:
-        # Pode vir "ip1, ip2, ip3" → usamos o primeiro
         return xff.split(",")[0].strip()
     return request.remote_addr or "unknown"
 
 
 def is_ip_locked(ip: str) -> bool:
-    """Verifica se o IP está bloqueado por muitas tentativas erradas."""
     data = login_attempts.get(ip)
     if not data:
         return False
@@ -74,7 +68,6 @@ def is_ip_locked(ip: str) -> bool:
     if locked_until and datetime.utcnow() < locked_until:
         return True
 
-    # Se já passou do tempo de bloqueio, limpamos o registro
     if locked_until and datetime.utcnow() >= locked_until:
         login_attempts.pop(ip, None)
         return False
@@ -83,34 +76,23 @@ def is_ip_locked(ip: str) -> bool:
 
 
 def register_failed_login(ip: str) -> None:
-    """Registra tentativa de login falha e, se ultrapassar o limite, bloqueia IP."""
     now = datetime.utcnow()
     record = login_attempts.get(ip, {"count": 0, "locked_until": None})
     record["count"] += 1
 
     if record["count"] >= MAX_LOGIN_ATTEMPTS:
         record["locked_until"] = now + timedelta(minutes=LOCK_TIME_MINUTES)
-        app.logger.warning(
-            f"[SEC] IP bloqueado por muitas tentativas: {ip} "
-            f"({record['count']} tentativas)"
-        )
 
     login_attempts[ip] = record
 
 
 def reset_login_attempts(ip: str) -> None:
-    """Limpa o contador de login ao logar com sucesso."""
     if ip in login_attempts:
         login_attempts.pop(ip, None)
 
 
 def save_school_to_env(name: str, address: str, contact: str) -> None:
-    """
-    Atualiza/insere SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT no .env.
-
-    Observação: em hospedagens como Render, isso pode não persistir entre
-    deploys/restarts. Localmente funciona normalmente.
-    """
+    """Salva dados da escola no .env"""
     try:
         env_data = {}
 
@@ -131,25 +113,51 @@ def save_school_to_env(name: str, address: str, contact: str) -> None:
             for k, v in env_data.items():
                 f.write(f"{k}={v}\n")
 
-        app.logger.info("[ADMIN] .env atualizado com dados da escola.")
-
     except Exception as e:
-        app.logger.error(f"[ADMIN] Erro ao salvar .env: {e}")
-
+        print(f"Erro ao salvar .env: {e}")
 
 # --------------------------------------------------------------------------- #
-#                      Controle de sessão / timeout automático
+#               ROTA NOVA — API SALVAR DADOS DA ESCOLA  (NOVO)
 # --------------------------------------------------------------------------- #
+
+@app.route("/salvar_escola", methods=["POST"])
+def salvar_escola():
+    """
+    Recebe dados da escola via JSON e salva no sistema.
+    (usado pelo formulário salvar-escola.js)
+    """
+    global SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT
+
+    data = request.get_json(silent=True) or {}
+
+    nome = (data.get("nome") or "").strip()
+    endereco = (data.get("endereco") or "").strip()
+    telefone = (data.get("telefone") or "").strip()
+    email = (data.get("email") or "").strip()
+    responsavel = (data.get("responsavel") or "").strip()
+
+    if not nome:
+        return jsonify({"ok": False, "msg": "Nome inválido"}), 400
+
+    SCHOOL_NAME = nome
+    SCHOOL_ADDRESS = endereco
+    SCHOOL_CONTACT = f"{telefone} | {email} | Resp: {responsavel}"
+
+    save_school_to_env(SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
+
+    print("📌 [ESCOLA ATUALIZADA]", SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
+
+    return jsonify({"ok": True})
+
+# --------------------------------------------------------------------------- #
+#                       Controle de sessão / timeout
+# --------------------------------------------------------------------------- #
+
 @app.before_request
 def enforce_session_timeout():
-    """
-    Define sessão como permanente e encerra sessão da Central
-    após SESSION_TIMEOUT_MINUTES de inatividade.
-    """
     session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=SESSION_TIMEOUT_MINUTES)
 
-    # Só aplicamos timeout para quem está logado na Central
     if session.get("central_logged"):
         last_seen = session.get("last_seen")
         now_ts = datetime.utcnow().timestamp()
@@ -157,61 +165,42 @@ def enforce_session_timeout():
         if last_seen is not None:
             elapsed_seconds = now_ts - float(last_seen)
             if elapsed_seconds > SESSION_TIMEOUT_MINUTES * 60:
-                app.logger.info(
-                    f"[SEC] Sessão expirada por inatividade para usuário "
-                    f"{session.get('central_user')}."
-                )
                 session.clear()
                 return redirect(url_for("login_central"))
 
-        # Atualiza timestamp a cada requisição
         session["last_seen"] = now_ts
-
 
 # --------------------------------------------------------------------------- #
 #                                   Rotas
 # --------------------------------------------------------------------------- #
+
 alerts = []
 siren_on = False
 muted = False
-
 
 @app.route("/")
 def home():
     return render_template("home.html")
 
-
 @app.route("/professor")
 def professor():
     return render_template("professor.html")
-
 
 @app.route("/admin")
 def admin():
     return render_template("admin.html")
 
-
-# ------------------------- ROTA /admin/escola ------------------------------- #
 @app.route("/admin/escola", methods=["GET", "POST"])
-def admin_escola():
-    """Tela para editar os dados da escola pela interface web."""
+def admin_escola_painel():
+    """Tela HTML antiga de cadastro manual (continua funcionando)."""
     global SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT
 
     saved = False
 
     if request.method == "POST":
-        school_name = (request.form.get("school_name") or "").strip()
-        school_address = (request.form.get("school_address") or "").strip()
-        school_contact = (request.form.get("school_contact") or "").strip()
-
-        if school_name:
-            SCHOOL_NAME = school_name
-        if school_address:
-            SCHOOL_ADDRESS = school_address
-        if school_contact:
-            SCHOOL_CONTACT = school_contact
-
-        # Tenta gravar no .env (se permitido pelo ambiente)
+        SCHOOL_NAME = request.form.get("school_name", "").strip()
+        SCHOOL_ADDRESS = request.form.get("school_address", "").strip()
+        SCHOOL_CONTACT = request.form.get("school_contact", "").strip()
         save_school_to_env(SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
         saved = True
 
@@ -223,50 +212,30 @@ def admin_escola():
         saved=saved,
     )
 
-
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
-    error = None
     client_ip = get_client_ip()
+    error = None
 
-    # 1) Verifica se o IP está bloqueado antes de tudo
     if is_ip_locked(client_ip):
-        error = (
-            "Muitas tentativas de acesso deste IP. "
-            "Tente novamente em alguns minutos."
-        )
-        app.logger.warning(
-            f"[SEC] Tentativa de login de IP bloqueado: {client_ip}"
-        )
+        error = "Muitas tentativas deste IP. Tente mais tarde."
         return render_template("login_central.html", error=error)
 
     if request.method == "POST":
-        usuario = (request.form.get("usuario") or "").strip()
-        senha = (request.form.get("senha") or "").strip()
+        usuario = request.form.get("usuario", "").strip()
+        senha = request.form.get("senha", "").strip()
 
-        # 2) Validação de credenciais
         if usuario == CENTRAL_USER and senha == CENTRAL_PASS:
-            # Sucesso
             reset_login_attempts(client_ip)
             session["central_logged"] = True
             session["central_user"] = usuario
             session["last_seen"] = datetime.utcnow().timestamp()
-
-            app.logger.info(
-                f"[SEC] Login bem-sucedido na Central pelo usuário "
-                f"{usuario} a partir do IP {client_ip}"
-            )
             return redirect(url_for("central"))
         else:
-            # Falha de login
             register_failed_login(client_ip)
             error = "Usuário ou senha inválidos."
-            app.logger.warning(
-                f"[SEC] Falha de login na Central. user={usuario} ip={client_ip}"
-            )
 
     return render_template("login_central.html", error=error)
-
 
 @app.route("/central")
 def central():
@@ -274,19 +243,19 @@ def central():
         return redirect(url_for("login_central"))
     return render_template("central.html")
 
-
 @app.route("/logout_central")
 def logout_central():
-    user = session.get("central_user")
-    app.logger.info(f"[SEC] Logout manual da Central para usuário {user}")
     session.clear()
     return redirect(url_for("home"))
 
+# --------------------------------------------------------------------------- #
+#                        API – ALERTAS / SIRENE
+# --------------------------------------------------------------------------- #
 
-# -------------------------- API de alertas / sirene ------------------------- #
 @app.route("/api/alert", methods=["POST"])
 def api_alert():
     global alerts, siren_on, muted
+
     data = request.get_json(silent=True) or {}
     teacher = (data.get("teacher") or "").strip()
     room = (data.get("room") or "").strip()
@@ -295,7 +264,6 @@ def api_alert():
     if not room or not description:
         return jsonify({"ok": False}), 400
 
-    # Horário Brasil
     ts = datetime.now(BR_TZ).strftime("%d/%m/%Y %H:%M:%S")
 
     alerts.insert(
@@ -308,27 +276,20 @@ def api_alert():
             "resolved": False,
         },
     )
+
     siren_on = True
     muted = False
 
-    app.logger.info(
-        f"[ALERTA] Novo alerta - Professor: {teacher} | Sala: {room} | "
-        f"Descrição: {description}"
-    )
-
     return jsonify({"ok": True})
-
 
 @app.route("/api/status")
 def api_status():
     return jsonify({"ok": True, "alerts": alerts, "siren": siren_on, "muted": muted})
 
-
 @app.route("/api/siren", methods=["POST"])
 def api_siren():
     global siren_on, muted
-    data = request.get_json(silent=True) or {}
-    action = (data.get("action") or "").lower()
+    action = (request.get_json(silent=True) or {}).get("action", "").lower()
 
     if action == "on":
         siren_on = True
@@ -342,20 +303,15 @@ def api_siren():
     else:
         return jsonify({"ok": False}), 400
 
-    app.logger.info(f"[ALERTA] Sirene ação='{action}'")
     return jsonify({"ok": True})
-
 
 @app.route("/api/resolve", methods=["POST"])
 def api_resolve():
-    global alerts
     for a in alerts:
         if not a["resolved"]:
             a["resolved"] = True
             break
-    app.logger.info("[ALERTA] Primeiro alerta marcado como resolvido.")
     return jsonify({"ok": True})
-
 
 @app.route("/api/clear", methods=["POST"])
 def api_clear():
@@ -363,18 +319,18 @@ def api_clear():
     alerts = []
     siren_on = False
     muted = False
-    app.logger.info("[ALERTA] Todos os alertas foram limpos.")
     return jsonify({"ok": True})
 
+# --------------------------------------------------------------------------- #
+#                        GERAÇÃO DE RELATÓRIO PDF
+# --------------------------------------------------------------------------- #
 
-# ---------------------------- Relatório em PDF ------------------------------ #
 @app.route("/report.pdf")
 def report_pdf():
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer)
     pdf.setTitle("Relatório PROF-SAFE 24")
 
-    # Cabeçalho
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(40, 800, "PROF-SAFE 24 - Relatório de Alertas")
 
@@ -387,14 +343,11 @@ def report_pdf():
     pdf.drawString(40, y, f"Contato: {SCHOOL_CONTACT}")
     y -= 12
 
-    # Horário de geração em BRT
-    data_geracao = datetime.now(BR_TZ).strftime("%d/%m/%Y %H:%M:%S")
-    pdf.drawString(40, y, f"Gerado em: {data_geracao}")
+    pdf.drawString(40, y, f"Gerado em: {datetime.now(BR_TZ).strftime('%d/%m/%Y %H:%M:%S')}")
     y -= 24
 
     pdf.setFont("Helvetica", 10)
 
-    # Corpo do relatório
     if not alerts:
         pdf.drawString(40, y, "Nenhum alerta registrado até o momento.")
     else:
@@ -404,17 +357,11 @@ def report_pdf():
                 y = 800
                 pdf.setFont("Helvetica", 10)
 
-            pdf.drawString(
-                40,
-                y,
-                f"{idx}. Professor: {a['teacher']}  Sala: {a['room']}",
-            )
+            pdf.drawString(40, y, f"{idx}. Prof: {a['teacher']} Sala: {a['room']}")
             y -= 14
             pdf.drawString(
-                40,
-                y,
-                f"   Data/Hora: {a['ts']}  "
-                f"Status: {'Resolvido' if a['resolved'] else 'Ativo'}",
+                40, y,
+                f"   Data/Hora: {a['ts']}  Status: {'Resolvido' if a['resolved'] else 'Ativo'}"
             )
             y -= 14
             pdf.drawString(40, y, f"   Descrição: {a['description']}")
@@ -423,15 +370,8 @@ def report_pdf():
     pdf.showPage()
     pdf.save()
     buffer.seek(0)
-    return send_file(
-        buffer,
-        as_attachment=False,
-        download_name="relatorio_prof_safe24.pdf",
-        mimetype="application/pdf",
-    )
-
+    return send_file(buffer, download_name="relatorio_prof_safe24.pdf", mimetype="application/pdf")
 
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    # Em desenvolvimento local
     app.run(host="0.0.0.0", port=5000, debug=True)
