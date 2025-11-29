@@ -48,6 +48,11 @@ LOCK_TIME_MINUTES = 10
 SESSION_TIMEOUT_MINUTES = 15
 login_attempts = {}
 
+alerts = []
+siren_on = False
+muted = False
+
+
 # --------------------------------------------------------------------------- #
 #                            Funções utilitárias
 # --------------------------------------------------------------------------- #
@@ -92,7 +97,6 @@ def reset_login_attempts(ip: str) -> None:
 
 
 def save_school_to_env(name: str, address: str, contact: str) -> None:
-    """Salva dados da escola no .env"""
     try:
         env_data = {}
 
@@ -116,38 +120,6 @@ def save_school_to_env(name: str, address: str, contact: str) -> None:
     except Exception as e:
         print(f"Erro ao salvar .env: {e}")
 
-# --------------------------------------------------------------------------- #
-#               ROTA NOVA — API SALVAR DADOS DA ESCOLA  (NOVO)
-# --------------------------------------------------------------------------- #
-
-@app.route("/salvar_escola", methods=["POST"])
-def salvar_escola():
-    """
-    Recebe dados da escola via JSON e salva no sistema.
-    (usado pelo formulário salvar-escola.js)
-    """
-    global SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT
-
-    data = request.get_json(silent=True) or {}
-
-    nome = (data.get("nome") or "").strip()
-    endereco = (data.get("endereco") or "").strip()
-    telefone = (data.get("telefone") or "").strip()
-    email = (data.get("email") or "").strip()
-    responsavel = (data.get("responsavel") or "").strip()
-
-    if not nome:
-        return jsonify({"ok": False, "msg": "Nome inválido"}), 400
-
-    SCHOOL_NAME = nome
-    SCHOOL_ADDRESS = endereco
-    SCHOOL_CONTACT = f"{telefone} | {email} | Resp: {responsavel}"
-
-    save_school_to_env(SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
-
-    print("📌 [ESCOLA ATUALIZADA]", SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
-
-    return jsonify({"ok": True})
 
 # --------------------------------------------------------------------------- #
 #                       Controle de sessão / timeout
@@ -170,29 +142,32 @@ def enforce_session_timeout():
 
         session["last_seen"] = now_ts
 
+
 # --------------------------------------------------------------------------- #
 #                                   Rotas
 # --------------------------------------------------------------------------- #
-
-alerts = []
-siren_on = False
-muted = False
 
 @app.route("/")
 def home():
     return render_template("home.html")
 
+
 @app.route("/professor")
 def professor():
     return render_template("professor.html")
+
 
 @app.route("/admin")
 def admin():
     return render_template("admin.html")
 
+
+# --------------------------------------------------------------------------- #
+#                   ROTA COMPLETA DO CADASTRO DA ESCOLA
+# --------------------------------------------------------------------------- #
+
 @app.route("/admin/escola", methods=["GET", "POST"])
 def admin_escola_painel():
-    """Tela HTML antiga de cadastro manual (continua funcionando)."""
     global SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT
 
     saved = False
@@ -201,6 +176,7 @@ def admin_escola_painel():
         SCHOOL_NAME = request.form.get("school_name", "").strip()
         SCHOOL_ADDRESS = request.form.get("school_address", "").strip()
         SCHOOL_CONTACT = request.form.get("school_contact", "").strip()
+
         save_school_to_env(SCHOOL_NAME, SCHOOL_ADDRESS, SCHOOL_CONTACT)
         saved = True
 
@@ -209,8 +185,13 @@ def admin_escola_painel():
         school_name=SCHOOL_NAME,
         school_address=SCHOOL_ADDRESS,
         school_contact=SCHOOL_CONTACT,
-        saved=saved,
+        saved=saved
     )
+
+
+# --------------------------------------------------------------------------- #
+#                         LOGIN DA CENTRAL
+# --------------------------------------------------------------------------- #
 
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
@@ -237,16 +218,19 @@ def login_central():
 
     return render_template("login_central.html", error=error)
 
+
 @app.route("/central")
 def central():
     if not session.get("central_logged"):
         return redirect(url_for("login_central"))
     return render_template("central.html")
 
+
 @app.route("/logout_central")
 def logout_central():
     session.clear()
     return redirect(url_for("home"))
+
 
 # --------------------------------------------------------------------------- #
 #                        API – ALERTAS / SIRENE
@@ -282,9 +266,11 @@ def api_alert():
 
     return jsonify({"ok": True})
 
+
 @app.route("/api/status")
 def api_status():
     return jsonify({"ok": True, "alerts": alerts, "siren": siren_on, "muted": muted})
+
 
 @app.route("/api/siren", methods=["POST"])
 def api_siren():
@@ -305,6 +291,7 @@ def api_siren():
 
     return jsonify({"ok": True})
 
+
 @app.route("/api/resolve", methods=["POST"])
 def api_resolve():
     for a in alerts:
@@ -312,6 +299,7 @@ def api_resolve():
             a["resolved"] = True
             break
     return jsonify({"ok": True})
+
 
 @app.route("/api/clear", methods=["POST"])
 def api_clear():
@@ -321,8 +309,9 @@ def api_clear():
     muted = False
     return jsonify({"ok": True})
 
+
 # --------------------------------------------------------------------------- #
-#                        GERAÇÃO DE RELATÓRIO PDF
+#                        PDF – RELATÓRIO
 # --------------------------------------------------------------------------- #
 
 @app.route("/report.pdf")
@@ -371,6 +360,7 @@ def report_pdf():
     pdf.save()
     buffer.seek(0)
     return send_file(buffer, download_name="relatorio_prof_safe24.pdf", mimetype="application/pdf")
+
 
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
