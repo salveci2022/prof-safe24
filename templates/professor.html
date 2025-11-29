@@ -1,146 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Painel do Professor – PROF-SAFE 24</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Painel do Professor – PROF-SAFE 24</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #05050a;
-            color: #f5f5f5;
-            padding: 16px;
-        }
-        .container {
-            max-width: 520px;
-            margin: 0 auto;
-        }
-        .card {
-            background: #101018;
-            border-radius: 16px;
-            padding: 20px 18px 22px;
-            box-shadow: 0 0 18px rgba(0,0,0,0.7);
-        }
-        .title {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .subtitle {
-            font-size: 13px;
-            color: #bbbbbb;
-            margin-bottom: 12px;
-        }
-        label { display: block; margin-top: 12px; margin-bottom: 4px; font-size: 13px; }
-        input, textarea {
-            width: 100%;
-            padding: 10px 11px;
-            border-radius: 10px;
-            border: 1px solid #2a2a3a;
-            background: #080812;
-            color: #f5f5f5;
-            font-size: 14px;
-        }
-        textarea { min-height: 80px; resize: vertical; }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #ff8800;
-            box-shadow: 0 0 0 1px rgba(255,136,0,0.3);
-        }
-        .btn-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .btn {
-            border-radius: 999px;
-            border: none;
-            padding: 9px 15px;
-            font-size: 14px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-primary { background: #ff8800; color: #fff; }
-        .btn-primary:hover { background: #e67600; }
-        .btn-secondary { background: #262638; color: #f5f5f5; }
-        .btn-secondary:hover { background: #33344a; }
-        .status-msg {
-            margin-top: 10px;
-            font-size: 12px;
-        }
-    </style>
+<style>
+    body { background:#0b0b10; color:#fff; font-family: Arial; padding:20px; }
+    .card {
+        max-width:500px; margin:0 auto; padding:20px;
+        background:#15151f; border-radius:14px;
+        box-shadow:0 0 15px rgba(0,0,0,0.5);
+    }
+    label { display:block; margin-top:15px; font-weight:bold; }
+    input, textarea {
+        width:100%; padding:10px; margin-top:5px;
+        border-radius:10px; background:#101018; color:#fff;
+        border:1px solid #333;
+    }
+    button {
+        width:100%; padding:12px; margin-top:20px;
+        background:#ff8800; color:#fff; border:none;
+        border-radius:10px; font-weight:bold;
+        cursor:pointer; font-size:16px;
+    }
+    button:hover { background:#e67400; }
+
+    .btn-small {
+        margin-top:10px;
+        width:100%;
+        padding:10px;
+        border-radius:10px;
+        font-size:14px;
+        font-weight:bold;
+        cursor:pointer;
+        border:none;
+    }
+    .btn-clean { background:#262638; color:#fff; }
+    .btn-exit { background:#aa0000; color:#fff; }
+    .btn-reload { background:#0066aa; color:#fff; }
+</style>
+
 </head>
 <body>
-<div class="container">
-    <div class="card">
-        <div class="title">Botão de Pânico – Professor</div>
-        <div class="subtitle">Envie um alerta imediato para a Central de Segurança.</div>
 
-        <label for="teacher">Seu nome</label>
-        <input type="text" id="teacher" placeholder="Ex.: Prof. João Silva">
+<div class="card">
+    <h2>Painel do Professor</h2>
 
-        <label for="room">Sala / Local</label>
-        <input type="text" id="room" placeholder="Ex.: Sala 4B, Pátio, Biblioteca" required>
+    <label>Seu nome</label>
+    <input id="teacher" placeholder="Ex.: Prof. João">
 
-        <label for="description">Descreva o que está acontecendo</label>
-        <textarea id="description" placeholder="Ex.: Briga entre alunos, aluno passando mal, suspeita na entrada..."></textarea>
+    <label>Sala / Local</label>
+    <input id="room" placeholder="Ex.: Sala 03">
 
-        <div class="btn-row">
-            <button class="btn btn-primary" onclick="enviarAlerta()">🚨 Enviar alerta</button>
-            <button class="btn btn-secondary" onclick="limparCampos()">🧹 Limpar</button>
-            <a href="/" class="btn btn-secondary">⏻ Sair</a>
-        </div>
+    <label>Descrição do problema</label>
+    <textarea id="description" placeholder="Explique o ocorrido..."></textarea>
 
-        <div id="status" class="status-msg"></div>
-    </div>
+    <button onclick="enviarAlerta()">🚨 Enviar Alerta</button>
+
+    <button class="btn-clean btn-small" onclick="limparCampos()">🧹 Limpar</button>
+    <button class="btn-reload btn-small" onclick="location.reload()">⟳ Reiniciar</button>
+    <button class="btn-exit btn-small" onclick="window.location='/'">⏻ Sair</button>
 </div>
 
 <script>
-    async function enviarAlerta() {
-        const teacher = document.getElementById("teacher").value;
-        const room = document.getElementById("room").value;
-        const description = document.getElementById("description").value;
-        const status = document.getElementById("status");
+function enviarAlerta() {
+    const data = {
+        teacher: document.getElementById("teacher").value,
+        room: document.getElementById("room").value,
+        description: document.getElementById("description").value
+    };
 
-        if (!room || !description) {
-            status.style.color = "#ffb347";
-            status.textContent = "Informe pelo menos o local e a descrição do ocorrido.";
-            return;
-        }
+    fetch("/api/alert", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    }).then(r => r.json()).then(r => {
+        alert("Alerta enviado com sucesso!");
+        limparCampos();
+    });
+}
 
-        try {
-            const resp = await fetch("/api/alert", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({teacher, room, description})
-            });
-
-            if (resp.ok) {
-                status.style.color = "#6be49a";
-                status.textContent = "✅ Alerta enviado com sucesso para a Central.";
-                // limpa descrição, mas mantém nome/sala se quiser enviar rápido outro
-                document.getElementById("description").value = "";
-            } else {
-                status.style.color = "#ffb347";
-                status.textContent = "⚠ Erro ao enviar alerta. Tente novamente.";
-            }
-        } catch (e) {
-            console.error(e);
-            status.style.color = "#ffb347";
-            status.textContent = "⚠ Falha de conexão com o servidor.";
-        }
-    }
-
-    function limparCampos() {
-        document.getElementById("teacher").value = "";
-        document.getElementById("room").value = "";
-        document.getElementById("description").value = "";
-        document.getElementById("status").textContent = "";
-    }
+function limparCampos() {
+    document.getElementById("teacher").value = "";
+    document.getElementById("room").value = "";
+    document.getElementById("description").value = "";
+}
 </script>
+
 </body>
 </html>
