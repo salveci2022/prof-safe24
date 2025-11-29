@@ -1,168 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Configuração da Escola – PROF-SAFE 24</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro da Escola – PROF-SAFE 24</title>
 
     <style>
-        * { box-sizing:border-box; }
         body {
-            margin:0;
             font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color:#e5e7eb;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:20px;
+            background: #f5f5f5;
+            padding: 20px;
         }
-
-        .shell{
-            width:100%;
-            max-width:620px;
-            background:rgba(2,8,23,0.96);
-            border-radius:18px;
-            border:1px solid rgba(56,189,248,0.35);
-            padding:22px 26px;
-            box-shadow:0 24px 60px rgba(0,0,0,0.9);
-            position:relative;
-            overflow:hidden;
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.2);
         }
-
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-35%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 55%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.2), transparent 55%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-
-        .shell-inner{
-            position:relative;
-            z-index:1;
-        }
-
         h2 {
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color:#e5e7eb;
-            margin-bottom:12px;
-            font-size:18px;
+            text-align: center;
+            margin-bottom: 25px;
         }
-
-        .form-group{
-            margin-bottom:14px;
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
         }
-
-        label{
-            display:block;
-            font-size:12px;
-            color:#cbd5f5;
-            margin-bottom:4px;
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
         }
-
-        input{
-            width:100%;
-            padding:9px 12px;
-            border-radius:12px;
-            border:1px solid rgba(148,163,184,0.75);
-            background:rgba(15,23,42,0.95);
-            color:#e5e7eb;
-            font-size:13px;
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background: #FF8800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
         }
-
-        input:focus{
-            outline:none;
-            border-color:#22d3ee;
-            box-shadow:0 0 0 1px rgba(34,211,238,0.6);
-        }
-
-        .btn{
-            width:100%;
-            border-radius:999px;
-            padding:10px 0;
-            background:linear-gradient(135deg,#22d3ee,#0369a1);
-            color:#0f172a;
-            font-weight:bold;
-            font-size:14px;
-            border:none;
-            cursor:pointer;
-            box-shadow:0 14px 32px rgba(8,47,73,0.9);
-        }
-
-        .btn:hover{
-            filter:brightness(1.06);
-        }
-
-        .success-box{
-            background:rgba(6,95,70,0.5);
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            padding:10px 14px;
-            border-radius:10px;
-            font-size:12px;
-            margin-bottom:12px;
-        }
-
-        .footer{
-            text-align:right;
-            font-size:10px;
-            color:#6b7280;
-            margin-top:14px;
-        }
-
-        .back-btn{
-            display:inline-block;
-            margin-bottom:12px;
-            font-size:12px;
-            color:#22d3ee;
-            text-decoration:none;
+        button:hover {
+            background: #e57600;
         }
     </style>
 </head>
 
 <body>
-<div class="shell">
-    <div class="shell-inner">
+    <div class="container">
+        <h2>Cadastro da Escola – PROF SAFE 24</h2>
 
-        <a class="back-btn" href="/admin">← Voltar ao Painel Admin</a>
+        <form id="formEscola">
+            <label>Nome da Escola</label>
+            <input type="text" id="nome" required>
 
-        <h2>Configuração da Escola</h2>
+            <label>Endereço</label>
+            <input type="text" id="endereco" required>
 
-        {% if saved %}
-        <div class="success-box">
-            ✔ Dados atualizados com sucesso!
-        </div>
-        {% endif %}
+            <label>Telefone</label>
+            <input type="text" id="telefone" required>
 
-        <form method="POST">
-            <div class="form-group">
-                <label for="school_name">Nome da Escola</label>
-                <input type="text" id="school_name" name="school_name" value="{{ school_name }}">
-            </div>
+            <label>E-mail</label>
+            <input type="email" id="email" required>
 
-            <div class="form-group">
-                <label for="school_address">Endereço</label>
-                <input type="text" id="school_address" name="school_address" value="{{ school_address }}">
-            </div>
+            <label>Responsável (Diretor/Coordenador)</label>
+            <input type="text" id="responsavel" required>
 
-            <div class="form-group">
-                <label for="school_contact">Contato (Telefone / WhatsApp / E-mail)</label>
-                <input type="text" id="school_contact" name="school_contact" value="{{ school_contact }}">
-            </div>
-
-            <button class="btn" type="submit">Salvar Dados da Escola</button>
+            <button type="submit">Salvar Dados</button>
         </form>
-
-        <div class="footer">
-            PROF-SAFE 24 — Administração da Escola
-        </div>
     </div>
-</div>
+
+    <script src="/static/js/salvar-escola.js"></script>
 </body>
 </html>
