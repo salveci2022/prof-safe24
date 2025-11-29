@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Configuração da Escola – PROF-SAFE 24</title>
+    <title>Dados da Escola – PROF-SAFE 24</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -13,7 +13,10 @@
             color: #f5f5f5;
             padding: 20px;
         }
-        .container { max-width: 720px; margin: 0 auto; }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
         .card {
             background: #15151f;
             border-radius: 14px;
@@ -23,12 +26,18 @@
         .header {
             display: flex;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 18px;
             align-items: flex-start;
         }
-        .title { font-size: 22px; font-weight: bold; }
-        .subtitle { font-size: 13px; color: #bbbbbb; }
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #bbbbbb;
+        }
         .badge {
             background: #ff8800;
             color: #fff;
@@ -39,7 +48,7 @@
             letter-spacing: .06em;
         }
         .info-bar {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 12px;
             color: #dddddd;
             display: flex;
@@ -47,8 +56,9 @@
             flex-wrap: wrap;
             gap: 6px;
         }
-        .info-bar strong { color: #ffcc7a; }
-
+        .info-bar strong {
+            color: #ffcc7a;
+        }
         label {
             display: block;
             font-weight: 600;
@@ -131,28 +141,31 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .info-bar { flex-direction: column; align-items: flex-start; }
+            .info-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
-
 <body>
 <div class="container">
     <div class="card">
 
         <div class="header">
             <div>
-                <div class="title">Configuração da Escola</div>
+                <div class="title">Ficha da Escola</div>
                 <div class="subtitle">
-                    Preencha os dados oficiais da instituição. Esta ficha pode ser impressa e anexada ao processo.
+                    Preencha os dados oficiais da instituição. Esta tela pode ser impressa.
                 </div>
             </div>
             <div class="badge">PROF-SAFE 24</div>
         </div>
 
+        <!-- BARRA COM DATA E HORA -->
         <div class="info-bar">
-            <div>📍 <strong>Formulário da escola</strong></div>
-            <div>🕒 Data/Hora: <span id="data-hora-br"></span></div>
+            <div>📍 <strong>Cadastro da escola</strong></div>
+            <div>🕒 Data/Hora: <span id="dataHora"></span></div>
         </div>
 
         {% if saved %}
@@ -161,21 +174,21 @@
         </div>
         {% endif %}
 
-        <!-- IMPORTANTE: não muda o action, usa a rota que já existe no seu app.py -->
-        <form method="POST" action="{{ url_for('admin_escola') if 'admin_escola' in globals() else url_for('admin_escola_painel', _fallback=False) }}">
-            <!-- Se no seu app.py a função se chama admin_escola, ele usa admin_escola.
-                 Se você renomeou pra admin_escola_painel, ele tenta usar essa. -->
-
+        <!-- AQUI É ONDE VOCÊ INSERE OS DADOS DA ESCOLA -->
+        <form method="POST" action="{{ url_for('admin_escola') }}">
+            <!-- NOME DA ESCOLA -->
             <label for="school_name">Nome da escola</label>
             <input type="text" id="school_name" name="school_name"
                    value="{{ school_name or '' }}" required>
-            <div class="hint">Ex.: Escola Municipal Primavera / Colégio PROF-SAFE 24.</div>
+            <div class="hint">Ex.: Escola Municipal Primavera / Colégio Modelo PROF-SAFE 24.</div>
 
+            <!-- ENDEREÇO -->
             <label for="school_address">Endereço completo</label>
             <input type="text" id="school_address" name="school_address"
                    value="{{ school_address or '' }}" required>
             <div class="hint">Rua, número, bairro, cidade/UF.</div>
 
+            <!-- CONTATO -->
             <label for="school_contact">Contato (telefone / e-mail / responsável)</label>
             <textarea id="school_contact" name="school_contact" required>{{ school_contact or '' }}</textarea>
             <div class="hint">Ex.: (61) 99999-0000 • contato@escola.br • Direção: Maria da Silva.</div>
@@ -196,35 +209,28 @@
         </form>
 
         <div class="footer-note">
-            Esta tela pode ser impressa depois de salvar (Ctrl+P / Imprimir).  
-            A data e horário são atualizados automaticamente em horário de Brasília (America/Sao_Paulo).
+            Após salvar, você pode usar Ctrl+P para imprimir esta ficha com data e horário.
         </div>
     </div>
 </div>
 
 <script>
-    // Data e horário sempre em horário de Brasília
-    function atualizarDataHoraBrasil() {
-        try {
-            const agora = new Date();
-            const texto = agora.toLocaleString("pt-BR", {
-                timeZone: "America/Sao_Paulo",
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
-            });
-            const el = document.getElementById("data-hora-br");
-            if (el) el.textContent = texto;
-        } catch (e) {
-            console.error("Erro ao atualizar data/hora:", e);
-        }
+    // Relógio simples usando a hora do próprio computador (normalmente já em Brasília)
+    function atualizarDataHora() {
+        const agora = new Date();
+        const texto = agora.toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+        document.getElementById("dataHora").textContent = texto;
     }
 
-    atualizarDataHoraBrasil();
-    setInterval(atualizarDataHoraBrasil, 1000);
+    atualizarDataHora();
+    setInterval(atualizarDataHora, 1000);
 </script>
 </body>
 </html>
