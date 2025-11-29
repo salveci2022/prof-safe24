@@ -1,19 +1,28 @@
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>PROF-SAFE 24 - Início</title>
-  <link rel="stylesheet" href="/static/css/styles.css" />
+    <meta charset="UTF-8">
+    <title>PROF-SAFE 24 – Início</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-  <div class="container">
-    <h1>PROF-SAFE 24</h1>
-    <p>Sistema de alerta rápido para escolas.</p>
-    <div class="links">
-      <a href="/professor">Painel Professor</a>
-      <a href="/central">Painel Central</a>
-      <a href="/admin">Administração</a>
+<body class="bg">
+<div class="container center">
+    <div class="card card-inicio">
+        <div class="logo-area">
+            <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24" class="logo-rounded">
+        </div>
+        <h1 class="titulo">PROF-SAFE 24</h1>
+        <p class="subtitulo">Sistema de Proteção Rápida e Inteligente para Escolas</p>
+        {% if escola.nome %}
+        <p class="escola-nome">Escola configurada: <strong>{{ escola.nome }}</strong></p>
+        {% endif %}
+        <div class="botoes-inicio">
+            <a href="{{ url_for('professor') }}" class="btn btn-laranja">Acessar painel do Professor</a>
+            <a href="{{ url_for('login_central') }}" class="btn btn-azul">Acessar painel da Central</a>
+        </div>
+        <p class="rodape">Sugestão: deixe o painel da Central sempre aberto em um computador na coordenação.</p>
     </div>
-  </div>
+</div>
 </body>
 </html>
