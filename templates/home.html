@@ -1,253 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE 24</title>
+    <title>PROF-SAFE 24 – Sistema de Segurança Escolar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        :root {
-            --bg: #020617;
-            --panel: #020818;
-            --accent: #22d3ee;
-            --accent-soft: #0369a1;
-        }
-        * { box-sizing:border-box; }
         body {
-            margin:0;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top left, #0f172a 0, #020617 55%, #000 100%);
-            color:#e5e7eb;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            min-height:100vh;
+            background:#0b0b10;
+            color:#fff;
+            font-family: Arial, Helvetica, sans-serif;
+            padding:30px;
+            text-align:center;
         }
-        .shell {
-            width:100%;
-            max-width:920px;
-            background:rgba(2,8,23,0.96);
-            border-radius:20px;
-            border:1px solid rgba(56,189,248,0.3);
-            box-shadow:0 22px 60px rgba(0,0,0,0.85);
-            padding:20px 22px 22px;
-            position:relative;
-            overflow:hidden;
-        }
-        .shell::before{
-            content:"";
-            position:absolute;
-            inset:-40%;
-            background:
-                radial-gradient(circle at 0 0, rgba(56,189,248,0.14), transparent 60%),
-                radial-gradient(circle at 100% 0, rgba(59,130,246,0.18), transparent 60%);
-            opacity:0.9;
-            pointer-events:none;
-        }
-        .shell-inner{
-            position:relative;
-            z-index:1;
-        }
-
-        /* =====================================================
-           LOGO — LADO ESQUERDO + CANTOS ARREDONDADOS (FINAL)
-        ====================================================== */
-        .logo-banner {
-            display:flex;
-            justify-content:flex-start;
-            align-items:center;
-            margin: 4px 0 16px;
-        }
-        .logo-banner img {
-            max-width: 180px;
-            width: 100%;
-            height:auto;
-            border-radius: 22px; /* cantos arredondados */
-            filter: drop-shadow(0 0 16px rgba(34,211,238,0.5));
-        }
-        /* ===================================================== */
-
-        header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:18px;
-        }
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:10px;
-        }
-        .brand-icon{
-            width:38px;
-            height:38px;
+        .card {
+            max-width:600px;
+            margin:0 auto;
+            padding:30px;
+            background:#15151f;
             border-radius:14px;
-            background:radial-gradient(circle at 30% 0, #facc15, #e11d48 45%, #0f172a 100%);
-            box-shadow:0 0 25px rgba(248,250,252,0.45);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:11px;
-            font-weight:bold;
-            color:#f9fafb;
-            letter-spacing:0.08em;
+            box-shadow: 0 0 18px rgba(0,0,0,0.6);
         }
-        .brand-text-title{
-            font-size:17px;
-            font-weight:600;
-            letter-spacing:0.08em;
-            text-transform:uppercase;
-            color:#e5e7eb;
-        }
-        .brand-text-sub{
-            font-size:11px;
-            color:#9ca3af;
-        }
-        .status-area{
-            display:flex;
-            flex-direction:column;
-            align-items:flex-end;
-            gap:6px;
-            font-size:12px;
-            color:#6b7280;
-            text-align:right;
-        }
-        .pill-online{
-            font-size:11px;
-            padding:4px 10px;
+        h1 { font-size:26px; margin-bottom:10px; }
+        p { color:#d0d0d0; font-size:15px; }
+        .btn {
+            padding:12px 20px;
             border-radius:999px;
-            border:1px solid #22c55e;
-            color:#bbf7d0;
-            background:rgba(6,95,70,0.7);
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-        }
-        .pill-online span{
-            font-size:14px;
-        }
-        .clock{
-            font-size:13px;
-            color:#facc15;
+            background:#ff8800;
+            color:#fff;
             font-weight:bold;
+            text-decoration:none;
+            display:inline-block;
+            margin-top:20px;
+            font-size:15px;
         }
-
-        main{
-            display:grid;
-            grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-            gap:18px;
-        }
-        .card{
-            background:radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
-            border-radius:16px;
-            border:1px solid rgba(148,163,184,0.35);
-            padding:16px 18px 18px;
-            box-shadow:0 12px 30px rgba(15,23,42,0.85);
-            position:relative;
-            overflow:hidden;
-        }
-        .card-title{
-            font-size:14px;
-            font-weight:600;
-            color:#e5e7eb;
-            margin-bottom:4px;
-        }
-        .card-sub{
-            font-size:11px;
-            color:#9ca3af;
-            margin-bottom:12px;
-        }
-
-        .btn-main{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-            background:linear-gradient(135deg,#22d3ee,#0369a1);
-            color:#0f172a;
-            border:none;
-            border-radius:999px;
-            padding:9px 18px;
-            font-size:13px;
-            font-weight:600;
-            letter-spacing:0.03em;
-            cursor:pointer;
-            box-shadow:0 12px 25px rgba(8,47,73,0.9);
-        }
-
-        .footer-note{
-            margin-top:10px;
-            font-size:10px;
-            color:#6b7280;
-            text-align:right;
-        }
-
+        .btn:hover { background:#e67400; }
     </style>
 </head>
 <body>
-<div class="shell">
-    <div class="logo-banner">
-        <img src="{{ url_for('static', filename='logo_prof_safe24.png') }}" alt="PROF-SAFE 24">
-    </div>
 
-    <div class="shell-inner">
-        <header>
-            <div class="brand">
-                <div class="brand-icon">PS24</div>
-                <div>
-                    <div class="brand-text-title">PROF-SAFE 24</div>
-                    <div class="brand-text-sub">Proteção inteligente 24h para quem ensina</div>
-                </div>
-            </div>
+<div class="card">
+    <h1>PROF-SAFE 24</h1>
+    <p>Sistema de Alerta e Monitoramento Escolar em Tempo Real.</p>
 
-            <div class="status-area">
-                <div class="pill-online"><span>●</span> Sistema Online</div>
-                <div class="clock" id="clockHome"></div>
-            </div>
-        </header>
-
-        <main>
-
-            <div class="card">
-                <div class="card-title">Botão de Pânico do Professor</div>
-                <div class="card-sub">Acesso rápido e discreto para pedir ajuda em qualquer situação de risco.</div>
-
-                <button class="btn-main" onclick="irProfessor()">
-                    📲 Acessar App do Professor
-                </button>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Painel da Central</div>
-                <div class="card-sub">Monitoramento completo, sirene digital e relatórios da escola.</div>
-
-                <button class="btn-main" onclick="irCentral()">
-                    🛡️ Acessar Central
-                </button>
-            </div>
-
-        </main>
-
-        <div class="footer-note">
-            PROF-SAFE 24 — Sistema de Proteção Rápida e Inteligente.
-        </div>
-
-    </div>
+    <a href="/professor" class="btn">Acessar Painel do Professor</a>
+    <br><br>
+    <a href="/login_central" class="btn">Acessar Central</a>
 </div>
 
-<script>
-function irProfessor(){
-    window.location.href = "/professor";
-}
-function irCentral(){
-    window.location.href = "/login_central";
-}
-
-function updateClockHome(){
-    const el = document.getElementById('clockHome');
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-}
-setInterval(updateClockHome,1000);
-updateClockHome();
-</script>
 </body>
 </html>
