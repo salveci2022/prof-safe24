@@ -2,80 +2,201 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <title>Configuração da Escola – PROF-SAFE 24</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro da Escola – PROF-SAFE 24</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b0b10;
+            color: #f5f5f5;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.2);
+            max-width: 720px;
+            margin: 0 auto;
         }
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
+        .card {
+            background: #15151f;
+            border-radius: 14px;
+            padding: 24px 22px 26px;
+            box-shadow: 0 0 18px rgba(0,0,0,0.6);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #bbbbbb;
+        }
+        .badge {
+            background: #ff8800;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        form {
+            margin-top: 10px;
         }
         label {
-            font-weight: bold;
-            margin-top: 12px;
             display: block;
+            font-weight: 600;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-size: 14px;
         }
-        input {
+        input[type="text"],
+        input[type="email"],
+        textarea {
             width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-top: 6px;
-        }
-        button {
-            margin-top: 25px;
-            width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            background: #FF8800;
-            color: white;
-            border: none;
+            padding: 11px 12px;
             border-radius: 10px;
-            cursor: pointer;
+            border: 1px solid #2a2a3a;
+            background: #101018;
+            color: #f5f5f5;
+            font-size: 14px;
         }
-        button:hover {
-            background: #e57600;
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #ff8800;
+            box-shadow: 0 0 0 1px rgba(255,136,0,0.25);
+        }
+        .hint {
+            font-size: 11px;
+            color: #aaaaaa;
+            margin-top: 3px;
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 11px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: #ff8800;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #e67600;
+        }
+        .btn-secondary {
+            background: #262638;
+            color: #f5f5f5;
+        }
+        .btn-secondary:hover {
+            background: #33344a;
+        }
+        .alert {
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+        .alert-success {
+            background: rgba(0, 180, 90, 0.1);
+            border: 1px solid #00b45a;
+            color: #9ff6c8;
+        }
+        .footer-note {
+            margin-top: 18px;
+            font-size: 11px;
+            color: #888;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 18px 16px 20px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h2>Cadastro da Escola – PROF SAFE 24</h2>
+<div class="container">
+    <div class="card">
 
-        <form id="formEscola">
-            <label>Nome da Escola</label>
-            <input type="text" id="nome" required>
+        <div class="header">
+            <div>
+                <div class="title">Configuração da Escola</div>
+                <div class="subtitle">Defina o nome, endereço e contato da instituição.</div>
+            </div>
+            <div class="badge">PROF-SAFE 24</div>
+        </div>
 
-            <label>Endereço</label>
-            <input type="text" id="endereco" required>
+        {% if saved %}
+        <div class="alert alert-success">
+            ✅ Dados da escola salvos com sucesso.
+        </div>
+        {% endif %}
 
-            <label>Telefone</label>
-            <input type="text" id="telefone" required>
+        <form method="POST" action="{{ url_for('admin_escola_painel') }}">
+            <label for="school_name">Nome da escola</label>
+            <input type="text" id="school_name" name="school_name"
+                   value="{{ school_name or '' }}" required>
+            <div class="hint">Ex.: Escola Municipal Primavera / Colégio Prof-Safe 24</div>
 
-            <label>E-mail</label>
-            <input type="email" id="email" required>
+            <label for="school_address">Endereço completo</label>
+            <input type="text" id="school_address" name="school_address"
+                   value="{{ school_address or '' }}" required>
+            <div class="hint">Rua, número, bairro, cidade/UF.</div>
 
-            <label>Responsável (Diretor/Coordenador)</label>
-            <input type="text" id="responsavel" required>
+            <label for="school_contact">Contato (telefone / e-mail / responsável)</label>
+            <textarea id="school_contact" name="school_contact" required>{{ school_contact or '' }}</textarea>
+            <div class="hint">Ex.: (61) 99999-0000 • contato@escola.br • Direção: Maria da Silva.</div>
 
-            <button type="submit">Salvar Dados</button>
+            <div class="buttons">
+                <button type="submit" class="btn btn-primary">
+                    💾 Salvar dados da escola
+                </button>
+
+                <a href="{{ url_for('central') }}" class="btn btn-secondary">
+                    ⏎ Voltar para a Central
+                </a>
+
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                    🏠 Tela inicial
+                </a>
+            </div>
         </form>
-    </div>
 
-    <script src="/static/js/salvar-escola.js"></script>
+        <div class="footer-note">
+            Essas informações serão usadas nos relatórios PDF, painel central e telas do sistema.
+        </div>
+    </div>
+</div>
 </body>
 </html>
