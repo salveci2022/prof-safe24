@@ -1,138 +1,165 @@
-import os
-import io
-from datetime import datetime, timedelta
-
 from flask import (
     Flask,
     render_template,
     request,
     jsonify,
-    send_file,
     redirect,
+    url_for,
+    session,
 )
-from reportlab.pdfgen import canvas
-from dotenv import load_dotenv
+from datetime import datetime
+import os
 
-load_dotenv()
+# Se seus HTMLs estiverem na pasta "templates" e os arquivos estáticos na "static"
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
-app = Flask(__name__)
+# Chave de sessão (para login da central)
+app.secret_key = os.environ.get("SECRET_KEY", "spynet-secret-key")
 
-# ============================
-# CONFIGURAÇÃO INICIAL
-# ============================
+# Credenciais da central (pode mudar via variável de ambiente no Render)
+ADMIN_USER = os.environ.get("ADMIN_USER", "central")
+ADMIN_PASS = os.environ.get("ADMIN_PASS", "1234")
 
-CENTRAL_USER = "admin"
-CENTRAL_PASS = "1234"
+# =========================
+# ESTADO EM MEMÓRIA
+# (suficiente para demonstração)
+# =========================
 
-dados_escola = {
-    "nome": "",
-    "endereco": "",
-    "telefone": "",
-    "email": "",
-    "responsavel": "",
-}
-
-alertas = []
-siren_on = False
+alerts = []        # lista de dicionários: {teacher, room, description, ts, resolved}
+siren_on = False   # True = sirene ligada
+siren_muted = False  # já deixo pronto caso queira usar depois
 
 
-# ============================
-# HORA BRASÍLIA (UTC-3)
-# ============================
-
-def agora_brasilia():
-    return datetime.utcnow() - timedelta(hours=3)
-
-
-# ============================
-# ROTAS DE PÁGINA
-# ============================
+# =========================
+# ROTAS DE PÁGINA (HTML)
+# =========================
 
 @app.route("/")
 def home():
+    # Tela inicial SPYNET (home.html)
     return render_template("home.html")
 
 
 @app.route("/professor")
 def professor():
+    # App do Professor (professor.html)
     return render_template("professor.html")
-
-
-@app.route("/admin")
-def admin():
-    return render_template("admin.html")
-
-
-@app.route("/admin/escola", methods=["GET", "POST"])
-def admin_escola():
-    global dados_escola
-    if request.method == "POST":
-        dados_escola["nome"] = request.form.get("nome", "")
-        dados_escola["endereco"] = request.form.get("endereco", "")
-        dados_escola["telefone"] = request.form.get("telefone", "")
-        dados_escola["email"] = request.form.get("email", "")
-        dados_escola["responsavel"] = request.form.get("responsavel", "")
-        return redirect("/admin")
-    return render_template("admin_school.html", escola=dados_escola)
 
 
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
+    """
+    Tela de login para a Central.
+    O formulário de login_central.html faz POST para esta mesma rota. :contentReference[oaicite:10]{index=10}
+    """
+    error = None
+
     if request.method == "POST":
-        user = request.form.get("usuario", "")
-        pw = request.form.get("senha", "")
-        if user == CENTRAL_USER and pw == CENTRAL_PASS:
-            return redirect("/central")
+        usuario = (request.form.get("usuario") or "").strip()
+        senha = (request.form.get("senha") or "").strip()
+
+        if usuario == ADMIN_USER and senha == ADMIN_PASS:
+            session["central_logged"] = True
+            return redirect(url_for("central"))
         else:
-            return render_template(
-                "login_central.html", error="Usuário ou senha inválidos"
-            )
-    return render_template("login_central.html")
+            # Mesmo que o HTML não exiba erro, já deixo pronto
+            error = "Usuário ou senha inválidos."
+
+    return render_template("login_central.html", error=error)
 
 
 @app.route("/central")
 def central():
+    """
+    Painel Central – só acessa se estiver logado.
+    O home.html redireciona para /login_central primeiro. :contentReference[oaicite:11]{index=11}
+    """
+    if not session.get("central_logged"):
+        return redirect(url_for("login_central"))
     return render_template("central.html")
 
 
-# ============================
-# API – ALERTAS / SIRENE
-# ============================
+@app.route("/admin")
+def admin():
+    # Área administrativa (admin.html) – resumo bonito para diretores. :contentReference[oaicite:12]{index=12}
+    return render_template("admin.html")
+
+
+@app.route("/painel_publico")
+def painel_publico():
+    """
+    Painel público para TV/corredor, que consome /api/status via fetch(). :contentReference[oaicite:13]{index=13}
+    """
+    return render_template("painel_publico.html")
+
+
+# =========================
+# ROTAS DE API (JSON)
+# =========================
 
 @app.route("/api/alert", methods=["POST"])
 def api_alert():
-    global alertas
-    data = request.get_json(force=True)
-    teacher = data.get("teacher", "").strip()
-    room = data.get("room", "").strip()
-    description = data.get("description", "").strip()
+    """
+    Recebe alerta enviado pelo professor.
+    O professor.html faz:
+    fetch('/api/alert', { method:'POST', body: JSON.stringify({ teacher, room, description }) })
+    e espera { ok: true/false, message: '...' }. :contentReference[oaicite:14]{index=14}
+    """
+    global siren_on
 
-    alerta = {
+    data = request.get_json() or {}
+    teacher = data.get("teacher") or "Professor"
+    room = (data.get("room") or "").strip()
+    description = (data.get("description") or "").strip()
+
+    if not room or not description:
+        return jsonify({
+            "ok": False,
+            "message": "Sala e descrição são obrigatórias."
+        }), 400
+
+    alert = {
         "teacher": teacher,
         "room": room,
         "description": description,
-        "ts": agora_brasilia().strftime("%d/%m/%Y %H:%M:%S"),
+        "ts": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
         "resolved": False,
     }
-    alertas.insert(0, alerta)
-    return jsonify({"status": "ok"})
+    alerts.append(alert)
+
+    # Ativa a sirene no painel central
+    siren_on = True
+
+    return jsonify({
+        "ok": True,
+        "message": "Alerta recebido com sucesso pela Central."
+    })
 
 
-@app.route("/api/status")
+@app.route("/api/status", methods=["GET"])
 def api_status():
-    return jsonify(
-        {
-            "alerts": alertas,
-            "siren": siren_on,
-            "muted": False,
-        }
-    )
+    """
+    Usado pelo Painel Central e pelo Painel Público para ler:
+    - lista de alertas
+    - estado da sirene (ligada/desligada)
+    - flag de mudo (já deixo no JSON para futura expansão). :contentReference[oaicite:15]{index=15} :contentReference[oaicite:16]{index=16}
+    """
+    return jsonify({
+        "alerts": alerts,
+        "siren": siren_on,
+        "muted": siren_muted,
+    })
 
 
 @app.route("/api/siren", methods=["POST"])
 def api_siren():
+    """
+    Controle da sirene vindo do Painel Central.
+    O central.html chama siren('on') e siren('off'). :contentReference[oaicite:17]{index=17}
+    """
     global siren_on
-    data = request.get_json(force=True)
+
+    data = request.get_json() or {}
     action = data.get("action")
 
     if action == "on":
@@ -140,93 +167,47 @@ def api_siren():
     elif action == "off":
         siren_on = False
 
-    return jsonify({"siren": siren_on})
+    return jsonify({
+        "ok": True,
+        "siren": siren_on
+    })
 
 
 @app.route("/api/resolve", methods=["POST"])
-def resolve():
-    global alertas
-    for a in alertas:
-        if not a["resolved"]:
-            a["resolved"] = True
+def api_resolve():
+    """
+    Marca o PRÓXIMO alerta pendente como resolvido.
+    O Painel Central chama esta rota ao clicar em "RESOLVER ALERTA". :contentReference[oaicite:18]{index=18}
+    """
+    global siren_on
+
+    for alert in alerts:
+        if not alert.get("resolved"):
+            alert["resolved"] = True
             break
-    return jsonify({"status": "resolved"})
+
+    # Se não sobrou nenhum alerta ativo, pode desligar a sirene
+    if not any(not a.get("resolved") for a in alerts):
+        siren_on = False
+
+    return jsonify({"ok": True})
 
 
 @app.route("/api/clear", methods=["POST"])
-def clear():
-    global alertas
-    alertas = []
-    return jsonify({"status": "cleared"})
+def api_clear():
+    """
+    Limpa TODOS os alertas (botão LIMPAR FEED no Painel Central). :contentReference[oaicite:19]{index=19}
+    """
+    global alerts, siren_on
+    alerts = []
+    siren_on = False
+    return jsonify({"ok": True})
 
 
-# ============================
-# RELATÓRIO PDF (COM LOGO)
-# ============================
-
-@app.route("/report.pdf")
-def report_pdf():
-    global alertas, dados_escola
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    logo_path = os.path.join(app.root_path, "static", "logo_prof_safe24.png")
-    if os.path.exists(logo_path):
-        pdf.drawImage(logo_path, 50, 750, width=120, height=80, mask="auto")
-
-    pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(200, 800, "RELATÓRIO PROF-SAFE 24")
-
-    pdf.setFont("Helvetica", 12)
-    y = 770
-    pdf.drawString(200, y, f"Data/Hora: {agora_brasilia().strftime('%d/%m/%Y %H:%M:%S')}")
-    y -= 20
-    pdf.drawString(50, y, f"Escola: {dados_escola['nome']}")
-    y -= 20
-    pdf.drawString(50, y, f"Endereço: {dados_escola['endereco']}")
-    y -= 20
-    pdf.drawString(50, y, f"Telefone: {dados_escola['telefone']}")
-    y -= 20
-    pdf.drawString(50, y, f"E-mail: {dados_escola['email']}")
-    y -= 20
-    pdf.drawString(50, y, f"Responsável: {dados_escola['responsavel']}")
-    y -= 30
-
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, "Alertas Registrados:")
-    y -= 25
-    pdf.setFont("Helvetica", 12)
-
-    if not alertas:
-        pdf.drawString(50, y, "Nenhum alerta registrado até o momento.")
-    else:
-        for a in alertas:
-            linha = (
-                f"- {a['ts']} | {a['teacher']} | {a['room']} | "
-                f"{a['description']} ({'Resolvido' if a['resolved'] else 'Ativo'})"
-            )
-            pdf.drawString(50, y, linha)
-            y -= 18
-            if y < 50:
-                pdf.showPage()
-                y = 800
-                pdf.setFont("Helvetica", 12)
-
-    pdf.save()
-    buffer.seek(0)
-    return send_file(
-        buffer,
-        mimetype="application/pdf",
-        as_attachment=True,
-        download_name="relatorio_prof_safe24.pdf",
-    )
-
-
-# ============================
-# EXECUTAR LOCAL
-# ============================
+# =========================
+# MAIN – para rodar no Render com python app.py
+# =========================
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
