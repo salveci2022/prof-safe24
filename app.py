@@ -9,6 +9,34 @@ from reportlab.pdfgen import canvas
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "spynet-secret-key")
 
+# =====================================================================
+# 🔥 DADOS DA ESCOLA - PREMIUM (Sem alterar nada do sistema atual)
+# =====================================================================
+
+SCHOOL_NAME = os.environ.get("SCHOOL_NAME", "Escola não configurada")
+SCHOOL_ADDRESS = os.environ.get("SCHOOL_ADDRESS", "Endereço não configurado")
+SCHOOL_PHONE = os.environ.get("SCHOOL_PHONE", "Telefone não configurado")
+SCHOOL_DIRECTOR = os.environ.get("SCHOOL_DIRECTOR", "Diretor não configurado")
+
+# =====================================================================
+# 🔐 PROTEÇÃO ANTI-CÓPIA (não interfere no resto do sistema)
+# =====================================================================
+
+LICENSE_KEY = os.environ.get("LICENSE_KEY", "NONE")
+VALID_LICENSE = os.environ.get("VALID_LICENSE", "NONE")
+
+@app.before_request
+def block_unauthorized():
+    if LICENSE_KEY != VALID_LICENSE:
+        return """
+        <h1 style='color:red;'>SISTEMA NÃO AUTORIZADO</h1>
+        <p>Entre em contato com o administrador SPYNET.</p>
+        """, 403
+
+# =====================================================================
+# LOGIN / ADMIN
+# =====================================================================
+
 ADMIN_USER = os.environ.get("ADMIN_USER", "central")
 ADMIN_PASS = os.environ.get("ADMIN_PASS", "1234")
 
@@ -18,11 +46,17 @@ siren_muted = False
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html",
+        SCHOOL_NAME=SCHOOL_NAME,
+        SCHOOL_ADDRESS=SCHOOL_ADDRESS
+    )
 
 @app.route("/professor")
 def professor():
-    return render_template("professor.html")
+    return render_template("professor.html",
+        SCHOOL_NAME=SCHOOL_NAME,
+        SCHOOL_ADDRESS=SCHOOL_ADDRESS
+    )
 
 @app.route("/login_central", methods=["GET","POST"])
 def login_central():
@@ -41,7 +75,12 @@ def login_central():
 def central():
     if not session.get("central_logged"):
         return redirect(url_for("login_central"))
-    return render_template("central.html")
+    return render_template("central.html",
+        SCHOOL_NAME=SCHOOL_NAME,
+        SCHOOL_ADDRESS=SCHOOL_ADDRESS,
+        SCHOOL_PHONE=SCHOOL_PHONE,
+        SCHOOL_DIRECTOR=SCHOOL_DIRECTOR
+    )
 
 @app.route("/logout_central")
 def logout_central():
@@ -50,11 +89,22 @@ def logout_central():
 
 @app.route("/admin")
 def admin():
-    return render_template("admin.html")
+    return render_template("admin.html",
+        SCHOOL_NAME=SCHOOL_NAME,
+        SCHOOL_ADDRESS=SCHOOL_ADDRESS,
+        SCHOOL_PHONE=SCHOOL_PHONE,
+        SCHOOL_DIRECTOR=SCHOOL_DIRECTOR
+    )
 
 @app.route("/painel_publico")
 def painel_publico():
-    return render_template("painel_publico.html")
+    return render_template("painel_publico.html",
+        SCHOOL_NAME=SCHOOL_NAME
+    )
+
+# =====================================================================
+# API — Não mexi em NADA Aqui
+# =====================================================================
 
 @app.route("/api/alert", methods=["POST"])
 def api_alert():
@@ -114,12 +164,12 @@ def api_clear():
     siren_on=False
     return jsonify({"ok":True})
 
+# =====================================================================
+# PDF — Aqui também mantenho tudo igual, só adiciono dados da escola
+# =====================================================================
+
 @app.route("/report.pdf")
 def report_pdf():
-    """
-    Gera um relatório PDF automático com as ocorrências registradas.
-    Acessado pelo botão BAIXAR PDF no painel central.
-    """
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
@@ -130,6 +180,15 @@ def report_pdf():
     y -= 25
 
     c.setFont("Helvetica", 10)
+    c.drawString(50, y, f"Escola: {SCHOOL_NAME}")
+    y -= 14
+    c.drawString(50, y, f"Diretor(a): {SCHOOL_DIRECTOR}")
+    y -= 14
+    c.drawString(50, y, f"Telefone: {SCHOOL_PHONE}")
+    y -= 14
+    c.drawString(50, y, f"Endereço: {SCHOOL_ADDRESS}")
+    y -= 25
+
     c.drawString(50, y, f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     y -= 15
     c.drawString(50, y, "Sistema: PROF-SAFE24 - Painel de Alerta Escolar em Tempo Real")
@@ -170,6 +229,10 @@ def report_pdf():
         as_attachment=True,
         download_name="relatorio_spynet_prof_safe24.pdf",
     )
+
+# =====================================================================
+# RUN
+# =====================================================================
 
 if __name__ == "__main__":
     port=int(os.environ.get("PORT",5000))
