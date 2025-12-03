@@ -1,584 +1,447 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>SPYNET - App do Professor</title>
+    <title>Painel do Professor – SPYNET SECURITY</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        :root {
-            --premium-blue: #0066ff;
-            --electric-orange: #ff6a00;
-            --deep-purple: #7b42f6;
-            --vibrant-cyan: #00ffcc;
-            --premium-black: #0a0f1a;
-            --dark-card: #131a2a;
-        }
-        
-        * { box-sizing:border-box; margin:0; padding:0; }
-        
         body {
-            margin:0;
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--premium-black) 0%, #0f172a 50%, #1e293b 100%);
-            color:#f1f5f9;
-            min-height:100vh;
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
+            color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top:0; left:0;
-            width:100%; height:100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 102, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(255, 106, 0, 0.1) 0%, transparent 40%);
-            pointer-events: none;
-            z-index: -1;
+        .shell {
+            width: 100%;
+            max-width: 480px;
+            padding: 18px;
         }
 
-        .premium-shell {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .card {
+            background: rgba(15, 23, 42, 0.96);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.95);
+            padding: 18px 18px 16px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .premium-header {
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:20px;
-            border-radius:20px;
-            background: rgba(19, 26, 42, 0.8);
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            margin-bottom:20px;
-            backdrop-filter: blur(10px);
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
 
-        .brand-premium {
-            display:flex;
-            align-items:center;
-            gap:15px;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .brand-icon-premium {
-            width:40px;
-            height:40px;
-            border-radius:10px;
-            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-            box-shadow: 0 0 25px rgba(0, 102, 255, 0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:14px;
-            font-weight:bold;
-            color:white;
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 16px;
+            background: radial-gradient(circle at 0 0, #facc15, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #020617;
+            font-size: 14px;
+            box-shadow: 0 0 25px rgba(234, 88, 12, 0.8);
         }
 
-        .brand-text-premium {
-            font-size:24px;
-            font-weight:700;
-            background: linear-gradient(135deg, var(--premium-blue), var(--vibrant-cyan));
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            background: linear-gradient(120deg, #facc15, #f97316, #facc15);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing:1px;
         }
 
-        .brand-sub-premium {
-            font-size:14px;
-            color:#94a3b8;
+        .brand-sub {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
         }
 
-        .status-premium {
-            display:flex;
-            align-items:center;
-            gap:15px;
+        .clock {
+            text-align: right;
+            font-size: 14px;
+            color: #f97316;
+            font-weight: 600;
         }
 
-        .pill-premium {
-            font-size:12px;
-            padding:6px 14px;
-            border-radius:20px;
-            border:1px solid var(--vibrant-cyan);
-            color:white;
-            background:rgba(0, 255, 204, 0.1);
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            backdrop-filter: blur(10px);
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
-        .clock-premium {
-            font-size:16px;
-            color: var(--electric-orange);
-            font-weight:600;
+        .subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 14px;
         }
 
-        .back-link {
-            display:inline-block;
-            margin:10px 0 15px;
-            color: var(--vibrant-cyan);
-            font-size:14px;
-            text-decoration:none;
-            padding: 8px 16px;
-            border-radius:10px;
-            border: 1px solid rgba(0, 255, 204, 0.3);
-            background: rgba(0, 255, 204, 0.05);
-            transition: all 0.3s ease;
+        /* Botão SOS */
+        .panic-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
-        .back-link:hover {
-            background: rgba(0, 255, 204, 0.1);
-            border-color: var(--vibrant-cyan);
+        .panic-ring {
+            width: 210px;
+            height: 210px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 0, rgba(248, 113, 113, 0.35), transparent 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .panel-premium {
-            margin-top:10px;
-            border-radius:24px;
-            background: rgba(10, 15, 26, 0.8);
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            padding:25px 30px 30px;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
+        .panic-button {
+            width: 170px;
+            height: 170px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: radial-gradient(circle at 30% 0, #ef4444, #b91c1c);
+            box-shadow:
+                0 0 40px rgba(248, 113, 113, 0.85),
+                0 18px 40px rgba(15, 23, 42, 0.95);
+            color: #fee2e2;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
         }
 
-        .panel-title-premium {
-            font-size:28px;
-            font-weight:700;
-            margin-bottom:8px;
-            color:white;
-            letter-spacing:0.5px;
+        .panic-button span.small {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            margin-top: 4px;
         }
 
-        .panel-sub-premium {
-            font-size:15px;
-            color:#94a3b8;
-            margin-bottom:25px;
-            line-height:1.5;
+        .panic-caption {
+            font-size: 11px;
+            color: #e5e7eb;
+            margin-top: 8px;
+            text-align: center;
         }
 
-        .grid-premium {
-            display:grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap:30px;
-            align-items:flex-start;
+        /* Form + problemas rápidos */
+
+        .section {
+            background: rgba(15, 23, 42, 0.98);
+            border-radius: 16px;
+            border: 1px solid rgba(30, 64, 175, 0.7);
+            padding: 12px 12px 10px;
+            margin-bottom: 10px;
         }
 
-        .card-premium {
-            background: linear-gradient(135deg, var(--dark-card), #1a243f);
-            border-radius:20px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            padding:25px;
-            box-shadow: 
-                0 15px 35px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
-            position:relative;
-            overflow:hidden;
-            backdrop-filter: blur(10px);
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
         }
 
-        .card-premium::before {
-            content:"";
-            position:absolute;
-            top:0; left:0;
-            right:0;
-            height:2px;
-            background: linear-gradient(90deg, var(--premium-blue), var(--electric-orange));
-        }
-
-        .card-title-premium {
-            font-size:18px;
-            font-weight:700;
-            color:white;
-            margin-bottom:15px;
-            letter-spacing:0.5px;
-        }
-
-        label {
-            display:block;
-            margin-top:15px;
-            margin-bottom:8px;
-            font-size:14px;
-            color:#e2e8f0;
-            font-weight:500;
+        .label {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 3px;
+            display: block;
         }
 
         input, textarea {
-            width:100%;
-            padding:12px 15px;
-            background: rgba(15, 23, 42, 0.6);
-            color:#f1f5f9;
-            border-radius:12px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            font-size:15px;
-            transition: all 0.3s ease;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 12px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
         }
 
-        input:focus, textarea:focus {
-            outline:none;
-            border-color: var(--premium-blue);
-            box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.2);
-            background: rgba(15, 23, 42, 0.8);
-        }
-
-        input::placeholder, textarea::placeholder { 
-            color:#64748b; 
+        input::placeholder,
+        textarea::placeholder {
+            color: #6b7280;
         }
 
         textarea {
-            min-height:120px;
-            resize:vertical;
+            resize: vertical;
+            min-height: 48px;
+            max-height: 110px;
         }
 
-        /* BOTÕES DE PROBLEMAS PRÉ-DEFINIDOS */
-        .quick-buttons {
-            margin: 15px 0;
-        }
-
-        .quick-title {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 10px;
-            font-weight: 500;
+        .quick-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         .btn-quick {
-            padding: 8px 12px;
-            font-size: 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(123, 66, 246, 0.4);
-            background: rgba(123, 66, 246, 0.1);
-            color: #e2e8f0;
+            flex: 1 1 48%;
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: #020617;
+            font-size: 11px;
+            color: #e5e7eb;
+            padding: 7px 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 5px 8px 0;
-            backdrop-filter: blur(5px);
+            text-align: center;
         }
 
         .btn-quick:hover {
-            background: rgba(123, 66, 246, 0.2);
-            border-color: var(--deep-purple);
-            transform: translateY(-1px);
-        }
-
-        .btn-quick:active {
-            background: rgba(0, 102, 255, 0.3);
-            border-color: var(--premium-blue);
+            border-color: #f97316;
         }
 
         .btn-row {
-            margin-top:25px;
-            display:flex;
-            gap:12px;
-            flex-wrap:wrap;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
         }
 
-        .btn-alert {
-            flex:1;
-            padding:15px;
-            font-size:16px;
-            border-radius:15px;
-            border:none;
-            cursor:pointer;
-            font-weight:600;
-            color:white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg, #ff4757, var(--electric-orange));
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            border-radius: 999px;
+            border: none;
+            padding: 9px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .btn-alert:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(255, 71, 87, 0.4);
+        .btn-main {
+            background: linear-gradient(135deg, #fb923c, #ea580c);
+            color: #111827;
         }
 
-        .btn-reset {
-            flex:1;
-            padding:15px;
-            font-size:16px;
-            border-radius:15px;
-            border:none;
-            cursor:pointer;
-            font-weight:600;
-            color:white;
-            background: linear-gradient(135deg, var(--electric-orange), #ffa502);
+        .btn-blue {
+            background: #1e3a8a;
+            color: #e5e7eb;
         }
 
-        .btn-clear {
-            flex:1;
-            padding:15px;
-            font-size:16px;
-            border-radius:15px;
-            border:none;
-            cursor:pointer;
-            font-weight:600;
-            color:white;
-            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-        }
-
-        .btn-exit {
-            flex:1;
-            padding:15px;
-            font-size:16px;
-            border-radius:15px;
-            border:none;
-            cursor:pointer;
-            font-weight:600;
-            color:white;
-            background: linear-gradient(135deg, #64748b, #475569);
+        .btn-red {
+            background: #b91c1c;
+            color: #fee2e2;
         }
 
         #status {
-            margin-top:15px;
-            font-size:14px;
-            padding:12px;
-            border-radius:10px;
-            text-align:center;
-            font-weight:500;
+            margin-top: 8px;
+            font-size: 11px;
+            padding: 8px 9px;
+            border-radius: 10px;
+            background: #020617;
+            border: 1px solid rgba(30, 64, 175, 0.7);
+            color: #38bdf8;
         }
 
-        .log-box-premium {
-            height:280px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius:15px;
-            border: 1px solid rgba(0, 102, 255, 0.2);
-            padding:15px;
-            font-size:13px;
-            color:#cbd5e1;
-            overflow-y:auto;
-            font-family: 'Courier New', monospace;
-        }
-
-        .log-title-premium {
-            font-size:15px;
-            margin-bottom:10px;
-            color:white;
-            font-weight:600;
-        }
-
-        @media (max-width: 768px) {
-            .premium-shell {
-                padding:15px;
-            }
-            .premium-header {
-                flex-direction:column;
-                align-items:flex-start;
-                gap:12px;
-            }
-            .status-premium {
-                align-self:flex-end;
-            }
-            .grid-premium {
-                grid-template-columns: 1fr;
-            }
-            .card-premium {
-                padding:20px;
-            }
-            .btn-row {
-                flex-direction:column;
-            }
-            .log-box-premium {
-                height:200px;
-            }
-            .btn-quick {
-                font-size:11px;
-                padding:6px 10px;
-            }
+        @media (max-width: 480px) {
+            .card { padding: 16px 14px 14px; }
+            .panic-ring { width: 190px; height: 190px; }
+            .panic-button { width: 150px; height: 150px; font-size: 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="premium-shell">
-        <div class="premium-header">
-            <div class="brand-premium">
-                <div class="brand-icon-premium">SN</div>
+<div class="shell">
+    <div class="card">
+        <div class="header">
+            <div class="brand">
+                <div class="brand-icon">SN</div>
                 <div>
-                    <div class="brand-text-premium">SPYNET SECURITY</div>
-                    <div class="brand-sub-premium">Sistema de Proteção Avançado</div>
+                    <div class="brand-title">SPYNET SECURITY</div>
+                    <div class="brand-sub">PAINEL DO PROFESSOR</div>
                 </div>
             </div>
-            <div class="status-premium">
-                <span class="pill-premium">● Online</span>
-                <span class="clock-premium" id="clock"></span>
+            <div class="clock" id="clockProf"></div>
+        </div>
+
+        <div class="title">Botão de Pânico do Professor</div>
+        <div class="subtitle">
+            Use o botão <b>SOS</b> ou selecione um problema rápido. A Central será acionada em tempo real.
+        </div>
+
+        <!-- Botão SOS -->
+        <div class="panic-zone">
+            <div class="panic-ring">
+                <button class="panic-button" type="button" onclick="enviarSOS()">
+                    SOS
+                    <span class="small">TOQUE APENAS EM EMERGÊNCIA</span>
+                </button>
+            </div>
+            <div class="panic-caption">
+                🔴 O botão SOS envia um alerta imediato com prioridade máxima para a Central.
             </div>
         </div>
 
-        <a href="/" class="back-link">⬅ Voltar para o início</a>
+        <!-- Identificação + problemas rápidos -->
+        <div class="section">
+            <div class="section-title">Identificação e tipo de ocorrência</div>
 
-        <section class="panel-premium">
-            <div class="panel-title-premium">App do Professor</div>
-            <div class="panel-sub-premium">Preencha e acione o botão de pânico para enviar um alerta à Central.</div>
+            <label class="label" for="teacher">Nome do professor(a) (opcional)</label>
+            <input id="teacher" placeholder="Ex.: Prof. Ana Paula">
 
-            <div class="grid-premium">
-                <div class="card-premium">
-                    <div class="card-title-premium">Dados do Alerta</div>
+            <label class="label" for="room">Sala / Local</label>
+            <input id="room" placeholder="Ex.: 7º Ano B - Sala 12">
 
-                    <label for="teacher">Nome do Professor</label>
-                    <input id="teacher" type="text" placeholder="Ex.: Maria Souza">
-
-                    <label for="room">Sala/Nº da Turma</label>
-                    <input id="room" type="text" placeholder="Ex.: Sala 203">
-
-                    <label for="description">Descrição do Problema</label>
-                    <textarea id="description" placeholder="Ex.: briga entre alunos, suspeita de objeto, aluno passando mal..."></textarea>
-
-                    <!-- BOTÕES DE PROBLEMAS PRÉ-DEFINIDOS -->
-                    <div class="quick-buttons">
-                        <div class="quick-title">Problemas comuns:</div>
-                        <div>
-                            <button type="button" class="btn-quick" data-desc="Briga entre alunos em sala">🚨 Briga entre alunos</button>
-                            <button type="button" class="btn-quick" data-desc="Aluno passando mal">🤒 Aluno passando mal</button>
-                            <button type="button" class="btn-quick" data-desc="Suspeita de objeto proibido">⚠️ Objeto proibido</button>
-                            <button type="button" class="btn-quick" data-desc="Problema de indisciplina grave">📢 Indisciplina grave</button>
-                            <button type="button" class="btn-quick" data-desc="Emergência médica">🚑 Emergência médica</button>
-                            <button type="button" class="btn-quick" data-desc="Situação de risco externo">🔒 Risco externo</button>
-                        </div>
-                    </div>
-
-                    <div class="btn-row">
-                        <button id="btnAlertar" class="btn-alert">🚨 ACIONAR PÂNICO</button>
-                        <button id="btnReiniciar" class="btn-reset">⟳ REINICIAR</button>
-                        <button id="btnLimpar" class="btn-clear">🧹 LIMPAR</button>
-                        <button id="btnSair" class="btn-exit">⏻ SAIR</button>
-                    </div>
-
-                    <div id="status"></div>
-                </div>
-
-                <div class="card-premium">
-                    <div class="log-title-premium">Log do Professor</div>
-                    <div id="logBox" class="log-box-premium">
-                        Nenhum alerta enviado ainda.
-                    </div>
-                </div>
+            <span class="label">Problemas rápidos (1 clique):</span>
+            <div class="quick-grid">
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Briga entre alunos em sala ou corredor')">⚠️ Briga na sala/corredor</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Possível invasão ou pessoa estranha na escola')">🚨 Invasão / pessoa estranha</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Agressão verbal ou física contra professor(a)')">🚫 Agressão ao professor</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito / arma</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio')">🛑 Tentativa de arrombamento</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
+                <button class="btn-quick" type="button"
+                        onclick="setDesc('Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
             </div>
-        </section>
+
+            <label class="label" for="description">Descrição (edite se quiser)</label>
+            <textarea id="description"
+                      placeholder="Você pode ajustar ou complementar a descrição do que está acontecendo."></textarea>
+
+            <div class="btn-row">
+                <button class="btn btn-main" type="button" onclick="enviarAlertaDetalhado()">🚨 Enviar alerta</button>
+                <button class="btn btn-blue" type="button" onclick="limparCampos()">🧹 Limpar</button>
+                <button class="btn btn-red" type="button" onclick="resetarSistema()">⟳ Reiniciar</button>
+                <button class="btn btn-red" type="button" onclick="sair()">⏻ Sair</button>
+            </div>
+
+            <div id="status">Pronto para uso.</div>
+        </div>
     </div>
+</div>
 
-    <script>
-        // PROBLEMAS PRÉ-DEFINIDOS
-        document.querySelectorAll('.btn-quick').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const descricao = this.getAttribute('data-desc');
-                document.getElementById('description').value = descricao;
-                
-                // Feedback visual
-                this.style.background = 'rgba(0, 102, 255, 0.3)';
-                this.style.borderColor = 'var(--premium-blue)';
-                setTimeout(() => {
-                    this.style.background = 'rgba(123, 66, 246, 0.1)';
-                    this.style.borderColor = 'rgba(123, 66, 246, 0.4)';
-                }, 500);
-            });
+<script>
+function atualizarRelogio() {
+    const el = document.getElementById('clockProf');
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('pt-BR', {hour12: false});
+}
+setInterval(atualizarRelogio, 1000);
+atualizarRelogio();
+
+function setDesc(texto) {
+    document.getElementById("description").value = texto;
+    document.getElementById("status").textContent = "Problema selecionado: " + texto;
+}
+
+async function enviarSOS() {
+    const teacher = document.getElementById('teacher').value.trim();
+    const room = document.getElementById('room').value.trim();
+    const statusEl = document.getElementById('status');
+
+    statusEl.textContent = "Enviando SOS...";
+    statusEl.style.color = "#38bdf8";
+
+    await enviarAlerta({
+        teacher: teacher || "Professor(a)",
+        room: room || "Local não informado",
+        description: "Alerta de pânico acionado (SOS rápido)."
+    }, statusEl, "SOS enviado com sucesso! Central acionada.");
+}
+
+async function enviarAlertaDetalhado() {
+    const teacher = document.getElementById('teacher').value.trim();
+    const room = document.getElementById('room').value.trim();
+    const desc = document.getElementById('description').value.trim();
+    const statusEl = document.getElementById('status');
+
+    if (!room || !desc) {
+        statusEl.textContent = "Preencha Sala/Local e selecione ou descreva o problema.";
+        statusEl.style.color = "#f97316";
+        return;
+    }
+
+    statusEl.textContent = "Enviando alerta...";
+    statusEl.style.color = "#38bdf8";
+
+    await enviarAlerta({
+        teacher: teacher || "Professor(a)",
+        room: room,
+        description: desc
+    }, statusEl, "Alerta enviado com sucesso! Central notificada.");
+}
+
+async function enviarAlerta(payload, statusEl, mensagemOk) {
+    try {
+        const resp = await fetch("/api/alert", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
         });
-
-        // FUNÇÃO CORRIGIDA PARA ENVIAR ALERTA
-        async function enviarAlerta(){
-            const teacher = document.getElementById('teacher').value.trim();
-            const room = document.getElementById('room').value.trim();
-            const desc = document.getElementById('description').value.trim();
-            const statusEl = document.getElementById('status');
-            const logBox = document.getElementById('logBox');
-
-            if (!room || !desc){
-                statusEl.textContent = "Preencha ao menos Sala/Nº da Turma e a Descrição do Problema.";
-                statusEl.style.background = "rgba(239, 68, 68, 0.2)";
-                statusEl.style.color = "#fca5a5";
-                statusEl.style.border = "1px solid rgba(239, 68, 68, 0.3)";
-                return;
-            }
-            
-            statusEl.textContent = "Enviando alerta...";
-            statusEl.style.background = "rgba(59, 130, 246, 0.2)";
-            statusEl.style.color = "#93c5fd";
-            statusEl.style.border = "1px solid rgba(59, 130, 246, 0.3)";
-
-            try{
-                // ✅ CORREÇÃO: Usando a rota correta com POST
-                const resp = await fetch('/api/alert', {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({ 
-                        teacher: teacher || 'Professor', 
-                        room: room, 
-                        description: desc 
-                    })
-                });
-                
-                const data = await resp.json();
-                
-                if(data.ok){
-                    statusEl.textContent = "✅ Alerta enviado com sucesso para o Painel Central.";
-                    statusEl.style.background = "rgba(34, 197, 94, 0.2)";
-                    statusEl.style.color = "#86efac";
-                    statusEl.style.border = "1px solid rgba(34, 197, 94, 0.3)";
-                    
-                    const now = new Date().toLocaleTimeString('pt-BR',{hour12:false});
-                    const line = `[${now}] Alerta enviado - Sala: ${room} | Desc: ${desc}`;
-                    
-                    if (logBox.textContent.includes("Nenhum alerta")){
-                        logBox.textContent = line;
-                    } else {
-                        logBox.textContent = line + "\n" + logBox.textContent;
-                    }
-                    
-                    // Tocar sirene automaticamente
-                    try {
-                        const audio = new Audio('/tocar_sirene');
-                        audio.volume = 0.3;
-                        await audio.play();
-                    } catch (audioError) {
-                        console.log('Sirene não pôde ser reproduzida:', audioError);
-                    }
-                    
-                } else {
-                    statusEl.textContent = "Falha ao enviar alerta: " + (data.error || 'Erro desconhecido');
-                    statusEl.style.background = "rgba(239, 68, 68, 0.2)";
-                    statusEl.style.color = "#fca5a5";
-                    statusEl.style.border = "1px solid rgba(239, 68, 68, 0.3)";
-                }
-            } catch(e){
-                console.error('Erro completo:', e);
-                statusEl.textContent = "Erro de comunicação com o servidor: " + e.message;
-                statusEl.style.background = "rgba(239, 68, 68, 0.2)";
-                statusEl.style.color = "#fca5a5";
-                statusEl.style.border = "1px solid rgba(239, 68, 68, 0.3)";
-            }
+        const data = await resp.json();
+        if (data.ok) {
+            statusEl.textContent = mensagemOk;
+            statusEl.style.color = "#22c55e";
+        } else {
+            statusEl.textContent = "Erro ao enviar alerta.";
+            statusEl.style.color = "#f97316";
         }
+    } catch (e) {
+        console.error(e);
+        statusEl.textContent = "Falha de comunicação com o servidor.";
+        statusEl.style.color = "#f97316";
+    }
+}
 
-        // ✅ CORREÇÃO: Event listeners corrigidos
-        document.getElementById('btnAlertar').addEventListener('click', enviarAlerta);
+function limparCampos() {
+    document.getElementById("teacher").value = "";
+    document.getElementById("room").value = "";
+    document.getElementById("description").value = "";
+    const statusEl = document.getElementById("status");
+    statusEl.textContent = "Campos limpos. Sistema pronto.";
+    statusEl.style.color = "#38bdf8";
+}
 
-        document.getElementById('btnReiniciar').addEventListener('click', () => {
-            document.getElementById('teacher').value = "";
-            document.getElementById('room').value = "";
-            document.getElementById('description').value = "";
-            document.getElementById('status').textContent = "";
-            document.getElementById('status').style.background = "transparent";
-            document.getElementById('status').style.border = "none";
-        });
+async function resetarSistema() {
+    try {
+        await fetch("/api/clear", {method: "POST"});
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "Sistema reiniciado. Nenhum alerta ativo.";
+        statusEl.style.color = "#38bdf8";
+    } catch (e) {
+        console.error(e);
+    }
+}
 
-        document.getElementById('btnLimpar').addEventListener('click', () => {
-            document.getElementById('status').textContent = "";
-            document.getElementById('status').style.background = "transparent";
-            document.getElementById('status').style.border = "none";
-            document.getElementById('logBox').textContent = "Nenhum alerta enviado ainda.";
-        });
-
-        document.getElementById('btnSair').addEventListener('click', () => {
-            window.location.href = '/';
-        });
-
-        function updateClock(){
-            const el = document.getElementById('clock');
-            const now = new Date();
-            el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-        }
-        setInterval(updateClock,1000);
-        updateClock();
-    </script>
+function sair() {
+    window.location.href = "/login_central";
+}
+</script>
 </body>
 </html>
